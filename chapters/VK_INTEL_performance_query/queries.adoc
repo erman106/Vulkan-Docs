@@ -4,7 +4,7 @@
 
 ifdef::VK_INTEL_performance_query[]
 [[queries-performance-intel]]
-== Intel performance queries
+== Intel Performance Queries
 
 Intel performance queries allow an application to capture performance data
 for a set of commands.
@@ -211,6 +211,12 @@ To do so, application can generate stream markers that will be used to trace
 back a particular draw call with a particular performance data item.
 
 include::{generated}/api/protos/vkCmdSetPerformanceStreamMarkerINTEL.adoc[]
+
+  * pname:commandBuffer is a slink:VkCommandBuffer into which a stream
+    marker is added.
+  * pname:pMarkerInfo is a pointer to a
+    slink:VkPerformanceStreamMarkerInfoINTEL structure describing the marker
+    to insert.
 
 include::{generated}/validity/protos/vkCmdSetPerformanceStreamMarkerINTEL.adoc[]
 --

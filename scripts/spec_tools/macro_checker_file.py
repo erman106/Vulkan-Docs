@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Author(s):    Ryan Pavlik <ryan.pavlik@collabora.com>
+# Author(s):    Rylie Pavlik <rylie.pavlik@collabora.com>
 
 import logging
 import re
@@ -955,7 +955,7 @@ class MacroCheckerFile(object):
 
         if entity not in members:
             self.warning(MessageId.UNKNOWN_MEMBER, ["Could not find member/param named '{}' in {}".format(entity, pname_context),
-                                                    'Known {} mamber/param names are: {}'.format(
+                                                    'Known {} member/param names are: {}'.format(
                 pname_context, ', '.join(members))], group='entity_name')
 
     def checkIncludeRefPageRelation(self, entity, generated_type):

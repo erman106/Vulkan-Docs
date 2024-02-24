@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #
-# Copyright 2016-2023 The Khronos Group Inc.
+# Copyright 2016-2024 The Khronos Group Inc.
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -337,6 +337,16 @@ def fixupRefs(pageMap, specFile, file):
         pi.param = clampToBlock(pi.param, pi.include, pi.end)
         pi.body = clampToBlock(pi.body, pi.param, pi.end)
 
+        if pi.type in ['funcpointers', 'protos']:
+            # It is possible for the inferred parameter section to be invalid,
+            # such as for the type PFN_vkVoidFunction, which has no parameters.
+            # Since the parameter section is always a bullet-point list, we know
+            # the section is invalid if its text does not start with a list item.
+            # Note: This also deletes parameter sections that are simply empty.
+            if pi.param is not None and not file[pi.param].startswith('  * '):
+                pi.body = pi.param
+                pi.param = None
+
         # We can get to this point with .include, .param, and .validity
         # all being None, indicating those sections were not found.
 
@@ -405,12 +415,13 @@ bodyPat    = re.compile(r'^// *refBody')
 errorPat   = re.compile(r'^// *refError')
 
 # This regex transplanted from check_spec_links
-# It looks for either OpenXR or Vulkan generated file conventions, and for
-# the api/validity include (generated_type), protos/struct/etc path
-# (category), and API name (entity_name). It could be put into the API
-# conventions object.
+# It looks for various generated file conventions, and for the api/validity
+# include (generated_type), protos/struct/etc path (category), and API name
+# (entity_name).
+# It could be put into the API conventions object, instead of being
+# generalized for all the different specs.
 INCLUDE = re.compile(
-        r'include::(?P<directory_traverse>((../){1,4}|\{generated\}/)(generated/)?)(?P<generated_type>[\w]+)/(?P<category>\w+)/(?P<entity_name>[^./]+).adoc[\[][\]]')
+        r'include::(?P<directory_traverse>((../){1,4}|\{generated\}/)(generated/)?)(?P<generated_type>[\w]+)/(?P<category>\w+)/(?P<entity_name>[^./]+)\.(adoc|txt)[\[][\]]')
 
 def findRefs(file, filename):
     """Identify reference pages in a list of strings, returning a dictionary of

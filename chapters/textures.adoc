@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -1432,30 +1432,30 @@ The range-expanded values are converted between color models, according to
 the color model conversion specified in the pname:ycbcrModel member:
 
 ename:VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY::
-  The color components are not modified by the color model conversion since
-  they are assumed already to represent the desired color model in which the
-  shader is operating; {YCbCr} range expansion is also ignored.
+    The color components are not modified by the color model conversion
+    since they are assumed already to represent the desired color model in
+    which the shader is operating; {YCbCr} range expansion is also ignored.
 ename:VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_IDENTITY::
-  The color components are not modified by the color model conversion and
-  are assumed to be treated as though in {YCbCr} form both in memory and in
-  the shader; {YCbCr} range expansion is applied to the components as for
-  other {YCbCr} models, with the vector (C~R~,Y{prime},C~B~,A) provided to
-  the shader.
+    The color components are not modified by the color model conversion and
+    are assumed to be treated as though in {YCbCr} form both in memory and
+    in the shader; {YCbCr} range expansion is applied to the components as
+    for other {YCbCr} models, with the vector (C~R~,Y{prime},C~B~,A)
+    provided to the shader.
 ename:VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_709::
-  The color components are transformed from a {YCbCr} representation to an
-  {RGBprime} representation as described in the "`BT.709 {YCbCr}
-  conversion`" section of the <<data-format,Khronos Data Format
-  Specification>>.
+    The color components are transformed from a {YCbCr} representation to an
+    {RGBprime} representation as described in the "`BT.709 {YCbCr}
+    conversion`" section of the <<data-format,Khronos Data Format
+    Specification>>.
 ename:VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_601::
-  The color components are transformed from a {YCbCr} representation to an
-  {RGBprime} representation as described in the "`BT.601 {YCbCr}
-  conversion`" section of the <<data-format,Khronos Data Format
-  Specification>>.
+    The color components are transformed from a {YCbCr} representation to an
+    {RGBprime} representation as described in the "`BT.601 {YCbCr}
+    conversion`" section of the <<data-format,Khronos Data Format
+    Specification>>.
 ename:VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_2020::
-  The color components are transformed from a {YCbCr} representation to an
-  {RGBprime} representation as described in the "`BT.2020 {YCbCr}
-  conversion`" section of the <<data-format,Khronos Data Format
-  Specification>>.
+    The color components are transformed from a {YCbCr} representation to an
+    {RGBprime} representation as described in the "`BT.2020 {YCbCr}
+    conversion`" section of the <<data-format,Khronos Data Format
+    Specification>>.
 
 In this operation, each output component is dependent on each input
 component.
@@ -2214,7 +2214,7 @@ Operations then proceed to Unnormalized Texel Coordinate Operations.
 
 
 [[textures-unnormalized-to-integer]]
-=== (u,v,w,a) to (i,j,k,l,n) Transformation And Array Layer Selection
+=== (u,v,w,a) to (i,j,k,l,n) Transformation and Array Layer Selection
 
 The unnormalized texel coordinates are transformed to integer texel
 coordinates relative to the selected mipmap level.
@@ -3594,9 +3594,9 @@ The target view and reference view can be the same view, allowing block
 matching of two blocks within a single image.
 
 Similar to an equivalent code:OpImageFetch instruction,
-code:opImageBlockMatchSAD and code:opImageBlockMatchSAD specify a code:image
-and an integer texel code:coordinate which which describes the bottom-left
-texel of the target block.
+code:opImageBlockMatchSAD and code:opImageBlockMatchSAD specify an
+code:image and an integer texel code:coordinate which which describes the
+bottom-left texel of the target block.
 There are three additional inputs.
 The code:reference and code:refCoodinate specifies bottom-left texel of the
 reference block.
@@ -3771,7 +3771,7 @@ slink:VkSamplerBlockMatchWindowCreateInfoQCOM::pname:windowExtent.
 At each each target coordinate, a
 <<textures-blockmatch-filteroperation,block matching operation>> is
 performed, resulting in a difference metric.
-The the reference coordinate latexmath:[(s,t)] is fixed.
+The reference coordinate latexmath:[(s,t)] is fixed.
 The block matching operation is repeated latexmath:[windowWidth \times
 windowHeight] times.
 
@@ -3783,7 +3783,7 @@ The A component is 0.
 The minimum or maximum behavior is selected by
 slink:VkSamplerBlockMatchWindowCreateInfoQCOM::pname:windowCompareMode.
 
-The following psuedocode describes the operation
+The following pseudocode describes the operation
 code:opImageBlockMatchWindowSAD.
 The pseudocode for code:opImageBlockMatchWindowSSD follows an identical
 pattern.
@@ -3849,7 +3849,7 @@ For each block match operation, the reference coordinate is
 latexmath:[(s,t)].
 For each block match operation, only the R component of the target and
 reference images are compared.
-The following psuedocode describes the operation opImageBlockMatchGatherSAD.
+The following pseudocode describes the operation opImageBlockMatchGatherSAD.
 The pseudocode for opImageBlockMatchGatherSSD follows an identical pattern.
 
 [source,c]

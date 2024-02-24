@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -74,12 +74,12 @@ met for the slink:VkDevice specified in the pname:device parameter of the
 ptext:vkCreate*Pipelines command:
 endif::VKSC_VERSION_1_0[]
 
-* The corresponding field in the table is blank.
-* Any corresponding Vulkan feature is enabled.
-* Any corresponding Vulkan extension is enabled.
-* Any corresponding Vulkan property is supported.
-* The corresponding core version is supported (as returned by
-  slink:VkPhysicalDeviceProperties::pname:apiVersion).
+  * The corresponding field in the table is blank.
+  * Any corresponding Vulkan feature is enabled.
+  * Any corresponding Vulkan extension is enabled.
+  * Any corresponding Vulkan property is supported.
+  * The corresponding core version is supported (as returned by
+    slink:VkPhysicalDeviceProperties::pname:apiVersion).
 
 :captableindent: {nbsp} {nbsp} {nbsp} {nbsp} {nbsp} {nbsp} {nbsp} {nbsp}
 [[spirvenv-capabilities-table]]
@@ -128,9 +128,9 @@ met for the slink:VkDevice specified in the pname:device parameter of the
 ptext:vkCreate*Pipelines command:
 endif::VKSC_VERSION_1_0[]
 
-* Any corresponding Vulkan extension is enabled.
-* The corresponding core version is supported (as returned by
-  slink:VkPhysicalDeviceProperties::pname:apiVersion).
+  * Any corresponding Vulkan extension is enabled.
+  * The corresponding core version is supported (as returned by
+    slink:VkPhysicalDeviceProperties::pname:apiVersion).
 
 [[spirvenv-extensions-table]]
 .List of SPIR-V Extensions and corresponding Vulkan extensions or core version
@@ -143,7 +143,7 @@ include::{generated}/spirvcap/exttable.adoc[]
 
 
 [[spirvenv-module-validation]]
-== Validation Rules within a Module
+== Validation Rules Within a Module
 
 ifndef::VKSC_VERSION_1_0[]
 A SPIR-V module passed to flink:vkCreateShaderModule must: conform to the
@@ -380,6 +380,10 @@ or knowledge of runtime information, such as enabled features.
   * [[VUID-{refpage}-Component-07703]]
     The code:Component decorations must: not be used for a 64-bit vector
     type with more than two components
+  * [[VUID-{refpage}-Input-09557]]
+    The pointers of any code:Input or code:Output
+    <<interfaces-iointerfaces-user,Interface user-defined variables>> must:
+    not contain any code:PhysicalStorageBuffer {StorageClass} pointers
   * [[VUID-{refpage}-GLSLShared-04669]]
     The code:GLSLShared and code:GLSLPacked decorations must: not be used
   * [[VUID-{refpage}-Flat-04670]]
@@ -742,6 +746,16 @@ ifndef::VK_VERSION_1_3,VK_KHR_format_feature_flags2[]
     operand of 2 and an "`Image Format`" operand of code:Unknown must: be
     decorated with code:NonReadable
 endif::VK_VERSION_1_3,VK_KHR_format_feature_flags2[]
+  * [[VUID-{refpage}-None-09558]]
+    {empty}
+ifdef::VK_KHR_dynamic_rendering_local_read[]
+    If <<features-dynamicRenderingLocalRead,
+    pname:dynamicRenderingLocalRead>> is not enabled, any
+endif::VK_KHR_dynamic_rendering_local_read[]
+ifndef::VK_KHR_dynamic_rendering_local_read[Any]
+    variable created with a "`Type`" of code:OpTypeImage that has a "`Dim`"
+    operand of code:SubpassData must: be decorated with
+    code:InputAttachmentIndex
 ifdef::VK_VERSION_1_3[]
 ifndef::VK_KHR_format_feature_flags2[]
   * [[VUID-{refpage}-apiVersion-07952]]
@@ -854,44 +868,7 @@ ifdef::VK_KHR_shader_atomic_int64[]
     must: be enabled for 64-bit integer atomic operations to be supported on
     a _Pointer_ with a {StorageClass} of code:Workgroup
 endif::VK_KHR_shader_atomic_int64[]
-ifdef::VK_EXT_shader_atomic_float[]
-ifndef::VK_EXT_shader_atomic_float2[]
-  * [[VUID-{refpage}-None-06280]]
-    <<features-shaderBufferFloat32Atomics,
-    pname:shaderBufferFloat32Atomics>>, or
-    <<features-shaderBufferFloat32AtomicAdd,
-    pname:shaderBufferFloat32AtomicAdd>>, or
-    <<features-shaderBufferFloat64Atomics,
-    pname:shaderBufferFloat64Atomics>>, or
-    <<features-shaderBufferFloat64AtomicAdd,
-    pname:shaderBufferFloat64AtomicAdd>> must: be enabled for floating-point
-    atomic operations to be supported on a _Pointer_ with a {StorageClass}
-    of code:StorageBuffer
-  * [[VUID-{refpage}-None-06281]]
-    <<features-shaderSharedFloat32Atomics,
-    pname:shaderSharedFloat32Atomics>>, or
-    <<features-shaderSharedFloat32AtomicAdd,
-    pname:shaderSharedFloat32AtomicAdd>>, or
-    <<features-shaderSharedFloat64Atomics,
-    pname:shaderSharedFloat64Atomics>>, or
-    <<features-shaderSharedFloat64AtomicAdd,
-    pname:shaderSharedFloat64AtomicAdd>> must: be enabled for floating-point
-    atomic operations to be supported on a _Pointer_ with a {StorageClass}
-    of code:Workgroup
-  * [[VUID-{refpage}-None-06282]]
-    <<features-shaderImageFloat32Atomics, pname:shaderImageFloat32Atomics>>
-    or <<features-shaderImageFloat32AtomicAdd,
-    pname:shaderImageFloat32AtomicAdd>> must: be enabled for 32-bit
-    floating-point atomic operations to be supported on a _Pointer_ with a
-    {StorageClass} of code:Image
-  * [[VUID-{refpage}-None-06283]]
-    <<features-sparseImageFloat32Atomics, pname:sparseImageFloat32Atomics>>
-    or <<features-sparseImageFloat32AtomicAdd,
-    pname:sparseImageFloat32AtomicAdd>> must: be enabled for 32-bit
-    floating-point atomics to be supported on sparse images
-endif::VK_EXT_shader_atomic_float2[]
-endif::VK_EXT_shader_atomic_float[]
-ifdef::VK_EXT_shader_atomic_float2[]
+ifdef::VK_EXT_shader_atomic_float,VK_EXT_shader_atomic_float2[]
   * [[VUID-{refpage}-None-06284]]
     <<features-shaderBufferFloat32Atomics,
     pname:shaderBufferFloat32Atomics>>, or
@@ -900,8 +877,9 @@ ifdef::VK_EXT_shader_atomic_float2[]
     <<features-shaderBufferFloat64Atomics,
     pname:shaderBufferFloat64Atomics>>, or
     <<features-shaderBufferFloat64AtomicAdd,
-    pname:shaderBufferFloat64AtomicAdd>>, or
-    <<features-shaderBufferFloat16AtomicMinMax,
+    pname:shaderBufferFloat64AtomicAdd>>,
+ifdef::VK_EXT_shader_atomic_float2[]
+    or <<features-shaderBufferFloat16AtomicMinMax,
     pname:shaderBufferFloat16Atomics>>, or
     <<features-shaderBufferFloat16AtomicMinMax,
     pname:shaderBufferFloat16AtomicAdd>>, or
@@ -910,9 +888,14 @@ ifdef::VK_EXT_shader_atomic_float2[]
     <<features-shaderBufferFloat32AtomicMinMax,
     pname:shaderBufferFloat32AtomicMinMax>>, or
     <<features-shaderBufferFloat64AtomicMinMax,
-    pname:shaderBufferFloat64AtomicMinMax>> must: be enabled for
-    floating-point atomic operations to be supported on a _Pointer_ with a
-    {StorageClass} of code:StorageBuffer
+    pname:shaderBufferFloat64AtomicMinMax>>,
+endif::VK_EXT_shader_atomic_float2[]
+ifdef::VK_NV_shader_atomic_float16_vector[]
+    or <<features-shaderFloat16VectorAtomics,
+    pname:shaderFloat16VectorAtomics>>
+endif::VK_NV_shader_atomic_float16_vector[]
+    must: be enabled for floating-point atomic operations to be supported on
+    a _Pointer_ with a {StorageClass} of code:StorageBuffer
   * [[VUID-{refpage}-None-06285]]
     <<features-shaderSharedFloat32Atomics,
     pname:shaderSharedFloat32Atomics>>, or
@@ -921,8 +904,9 @@ ifdef::VK_EXT_shader_atomic_float2[]
     <<features-shaderSharedFloat64Atomics,
     pname:shaderSharedFloat64Atomics>>, or
     <<features-shaderSharedFloat64AtomicAdd,
-    pname:shaderSharedFloat64AtomicAdd>>, or
-    <<features-shaderBufferFloat16AtomicMinMax,
+    pname:shaderSharedFloat64AtomicAdd>>,
+ifdef::VK_EXT_shader_atomic_float2[]
+    or <<features-shaderBufferFloat16AtomicMinMax,
     pname:shaderSharedFloat16Atomics>>, or
     <<features-shaderBufferFloat16AtomicMinMax,
     pname:shaderSharedFloat16AtomicAdd>>, or
@@ -931,25 +915,35 @@ ifdef::VK_EXT_shader_atomic_float2[]
     <<features-shaderSharedFloat32AtomicMinMax,
     pname:shaderSharedFloat32AtomicMinMax>>, or
     <<features-shaderSharedFloat64AtomicMinMax,
-    pname:shaderSharedFloat64AtomicMinMax>> must: be enabled for
-    floating-point atomic operations to be supported on a _Pointer_ with a
-    {StorageClass} of code:Workgroup
+    pname:shaderSharedFloat64AtomicMinMax>>,
+endif::VK_EXT_shader_atomic_float2[]
+ifdef::VK_NV_shader_atomic_float16_vector[]
+    or <<features-shaderFloat16VectorAtomics,
+    pname:shaderFloat16VectorAtomics>>,
+endif::VK_NV_shader_atomic_float16_vector[]
+    must: be enabled for floating-point atomic operations to be supported on
+    a _Pointer_ with a {StorageClass} of code:Workgroup
   * [[VUID-{refpage}-None-06286]]
     <<features-shaderImageFloat32Atomics, pname:shaderImageFloat32Atomics>>,
     or <<features-shaderImageFloat32AtomicAdd,
-    pname:shaderImageFloat32AtomicAdd>>, or
-    <<features-shaderImageFloat32AtomicMinMax,
-    pname:shaderImageFloat32AtomicMinMax>> must: be enabled for 32-bit
-    floating-point atomic operations to be supported on a _Pointer_ with a
-    {StorageClass} of code:Image
+    pname:shaderImageFloat32AtomicAdd>>,
+ifdef::VK_EXT_shader_atomic_float2[]
+    or <<features-shaderImageFloat32AtomicMinMax,
+    pname:shaderImageFloat32AtomicMinMax>>,
+endif::VK_EXT_shader_atomic_float2[]
+    must: be enabled for 32-bit floating-point atomic operations to be
+    supported on a _Pointer_ with a {StorageClass} of code:Image
   * [[VUID-{refpage}-None-06287]]
     <<features-sparseImageFloat32Atomics, pname:sparseImageFloat32Atomics>>,
     or <<features-sparseImageFloat32AtomicAdd,
-    pname:sparseImageFloat32AtomicAdd>>, or
-    <<features-sparseImageFloat32AtomicMinMax,
-    pname:sparseImageFloat32AtomicMinMax>> must: be enabled for 32-bit
-    floating-point atomics to be supported on sparse images
+    pname:sparseImageFloat32AtomicAdd>>,
+ifdef::VK_EXT_shader_atomic_float2[]
+    or <<features-sparseImageFloat32AtomicMinMax,
+    pname:sparseImageFloat32AtomicMinMax>>,
 endif::VK_EXT_shader_atomic_float2[]
+    must: be enabled for 32-bit floating-point atomics to be supported on
+    sparse images
+endif::VK_EXT_shader_atomic_float,VK_EXT_shader_atomic_float2[]
 ifdef::VK_EXT_shader_image_atomic_int64[]
   * [[VUID-{refpage}-None-06288]]
     <<features-shaderImageInt64Atomics, pname:shaderImageInt64Atomics>>
@@ -1043,6 +1037,41 @@ ifdef::VK_VERSION_1_2,VK_KHR_shader_float_controls[]
     pname:shaderRoundingModeRTZFloat64>> is ename:VK_FALSE, then
     code:RoundingModeRTZ for 64-bit floating-point type must: not be used
 endif::VK_VERSION_1_2,VK_KHR_shader_float_controls[]
+ifdef::VK_KHR_shader_float_controls2[]
+  * [[VUID-{refpage}-shaderSignedZeroInfNanPreserveFloat16-09559]]
+    If <<limits-shaderSignedZeroInfNanPreserveFloat16,
+    pname:shaderSignedZeroInfNanPreserveFloat16>> is ename:VK_FALSE then any
+    code:FPFastMathDefault execution mode with a type of 16-bit float must:
+    include the code:NSZ, code:NotInf, and code:NotNaN flags.
+  * [[VUID-{refpage}-shaderSignedZeroInfNanPreserveFloat16-09560]]
+    If <<limits-shaderSignedZeroInfNanPreserveFloat16,
+    pname:shaderSignedZeroInfNanPreserveFloat16>> is ename:VK_FALSE then any
+    code:FPFastMath decoration on an instruction with result type or any
+    operand type that includes a 16-bit float must: include the code:NSZ,
+    code:NotInf, and code:NotNaN flags.
+  * [[VUID-{refpage}-shaderSignedZeroInfNanPreserveFloat32-09561]]
+    If <<limits-shaderSignedZeroInfNanPreserveFloat32,
+    pname:shaderSignedZeroInfNanPreserveFloat32>> is ename:VK_FALSE then any
+    code:FPFastMathDefault execution mode with a type of 32-bit float must:
+    include the code:NSZ, code:NotInf, and code:NotNaN flags.
+  * [[VUID-{refpage}-shaderSignedZeroInfNanPreserveFloat32-09562]]
+    If <<limits-shaderSignedZeroInfNanPreserveFloat32,
+    pname:shaderSignedZeroInfNanPreserveFloat32>> is ename:VK_FALSE then any
+    code:FPFastMath decoration on an instruction with result type or any
+    operand type that includes a 32-bit float must: include the code:NSZ,
+    code:NotInf, and code:NotNaN flags.
+  * [[VUID-{refpage}-shaderSignedZeroInfNanPreserveFloat64-09563]]
+    If <<limits-shaderSignedZeroInfNanPreserveFloat64,
+    pname:shaderSignedZeroInfNanPreserveFloat64>> is ename:VK_FALSE then any
+    code:FPFastMathDefault execution mode with a type of 64-bit float must:
+    include the code:NSZ, code:NotInf, and code:NotNaN flags.
+  * [[VUID-{refpage}-shaderSignedZeroInfNanPreserveFloat64-09564]]
+    If <<limits-shaderSignedZeroInfNanPreserveFloat64,
+    pname:shaderSignedZeroInfNanPreserveFloat64>> is ename:VK_FALSE then any
+    code:FPFastMath decoration on an instruction with result type or any
+    operand type that includes a 64-bit float must: include the code:NSZ,
+    code:NotInf, and code:NotNaN flags.
+endif::VK_KHR_shader_float_controls2[]
 ifdef::VK_EXT_transform_feedback[]
   * [[VUID-{refpage}-Offset-06308]]
     The code:Offset plus size of the type of each variable, in the output
@@ -1471,6 +1500,12 @@ ifdef::VK_EXT_shader_atomic_float2[]
     pname:shaderSharedFloat64AtomicMinMax>>, must: be enabled for 64-bit
     floating point atomic operations
 endif::VK_EXT_shader_atomic_float2[]
+ifdef::VK_NV_shader_atomic_float16_vector[]
+  * [[VUID-{refpage}-shaderFloat16VectorAtomics-09581]]
+    <<features-shaderFloat16VectorAtomics,pname:shaderFloat16VectorAtomics>>,
+    must: be enabled for 16-bit floating-point, 2- and 4-component vector
+    atomic operations to be supported
+endif::VK_NV_shader_atomic_float16_vector[]
   * [[VUID-{refpage}-NonWritable-06340]]
     If <<features-fragmentStoresAndAtomics, pname:fragmentStoresAndAtomics>>
     is not enabled, then all storage image, storage texel buffer, and
@@ -2041,7 +2076,19 @@ ifdef::VK_QCOM_image_processing2[]
     asampler object that included
     slink:VkSamplerBlockMatchWindowCreateInfoQCOM in the pname:pNext chain.
 endif::VK_QCOM_image_processing2[]
-
+ifdef::VK_KHR_shader_maximal_reconvergence[]
+  * [[VUID-{refpage}-MaximallyReconvergesKHR-09565]]
+    The execution mode code:MaximallyReconvergesKHR must: not be applied to
+    an entry point unless the entry point does not execute any
+    <<ray-tracing-repack,_invocation repack instructions_>>.
+endif::VK_KHR_shader_maximal_reconvergence[]
+ifdef::VK_KHR_shader_subgroup_rotate[]
+  * [[VUID-{refpage}-shaderSubgroupRotateClustered-09566]]
+    If <<features-shaderSubgroupRotateClustered,
+    pname:shaderSubgroupRotateClustered>> is ename:VK_FALSE, then the
+    code:ClusterSize operand to code:OpGroupNonUniformRotateKHR must: not be
+    used.
+endif::VK_KHR_shader_subgroup_rotate[]
 ****
 --
 
@@ -2061,6 +2108,32 @@ point instructions:
     are never raised.
     Signaling [eq]##NaN## may: be converted to quiet [eq]##NaN##s values by
     any floating point instruction.
+ifdef::VK_KHR_shader_float_controls2[]
+  * The floating-point environment used for an instruction can be determined
+    as follows:
+  ** If the SPIR-V specifies it explicitly using the code:FPFastMath
+     decoration or code:FPFastMathDefault {ExecutionMode} then that is used.
+  ** If the environment is not specified in the SPIR-V then it is determined
+     as follows:
+  *** If the operation is not decorated code:NoContraction then the flags
+      code:AllowContract, code:AllowReassoc, code:AllowRecip, and
+      code:AllowTransform are assumed.
+  *** If any of the following conditions are true then the flags code:NSZ,
+      code:NotInf, and code:NotNaN are assumed:
+  **** The entry point does not use the {ExecutionMode}
+       code:SignedZeroInfNanPreserve with a bit-width corresponding to one
+       of the operands or to the result type.
+  **** The operation is not one of: code:OpPhi, code:OpSelect,
+         code:OpReturnValue, code:OpVectorExtractDynamic,
+         code:OpVectorInsertDynamic, code:OpVectorShuffle,
+         code:OpCompositeConstruct, code:OpCompositeExtract,
+         code:OpCompositeInsert, code:OpCopyObject, code:OpTranspose,
+         code:OpFConvert, code:OpFNegate, code:OpFAdd, code:OpFSub,
+         code:OpFMul, code:OpStore, code:OpLoad.
+  **** The operation is an code:OpLoad from the code:Input {StorageClass} in
+       the fragment shader stage.
+endif::VK_KHR_shader_float_controls2[]
+ifndef::VK_KHR_shader_float_controls2[]
   * By default, the implementation may: perform optimizations on half,
     single, or double-precision floating-point instructions that ignore sign
     of a zero, or assume that arguments and results are not NaNs or
@@ -2083,6 +2156,7 @@ ifdef::VK_VERSION_1_2,VK_KHR_shader_float_controls[]
      Other SPIR-V instructions may: also respect the
      code:SignedZeroInfNanPreserve {ExecutionMode}.
 endif::VK_VERSION_1_2,VK_KHR_shader_float_controls[]
+endif::VK_KHR_shader_float_controls2[]
   * The following instructions must: not flush denormalized values:
     code:OpConstant, code:OpConstantComposite, code:OpSpecConstant,
     code:OpSpecConstantComposite, code:OpLoad, code:OpStore, code:OpBitcast,
@@ -2582,7 +2656,7 @@ The _SPIR-V Type_ is defined by an instruction in SPIR-V, declared with the
 Type-Declaration Instruction, Bit Width, and Signedness from above.
 
 [[spirvenv-image-formats]]
-== Compatibility Between SPIR-V Image Formats And Vulkan Formats
+== Compatibility Between SPIR-V Image Formats and Vulkan Formats
 
 SPIR-V code:Image code:Format values are compatible with elink:VkFormat
 values as defined below:

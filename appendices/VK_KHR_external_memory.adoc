@@ -1,4 +1,4 @@
-// Copyright 2016-2023 The Khronos Group Inc.
+// Copyright 2016-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -13,7 +13,6 @@ include::{generated}/meta/{refprefix}VK_KHR_external_memory.adoc[]
 *Interactions and External Dependencies*::
   - Interacts with `apiext:VK_KHR_dedicated_allocation`.
   - Interacts with `apiext:VK_NV_dedicated_allocation`.
-  - Promoted to Vulkan 1.1 Core
 *Contributors*::
   - Faith Ekstrand, Intel
   - Ian Elliott, Google
@@ -229,7 +228,7 @@ transfer any information between the exporting and importing instances and
 APIs other than that required to share the data contained in the memory
 objects explicitly shared.
 As specific examples, data from previously freed memory objects that used
-the same underlying physical memory, and data from memory obects using
+the same underlying physical memory, and data from memory objects using
 adjacent physical memory must not be visible to applications importing an
 exported memory object.
 

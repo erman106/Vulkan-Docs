@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -200,8 +200,7 @@ ifdef::VK_HUAWEI_subpass_shading[]
 A subpass shading dispatches a compute pipeline work with the work dimension
 of render area of the calling subpass and work groups are partitioned by
 specified work group size.
-Subpass operations like subpassLoad and subpassLoadMS are allowed to be
-used.
+Subpass operations like code:subpassLoad are allowed to be used.
 
 To record a subpass shading, call:
 
@@ -227,3 +226,7 @@ include::{chapters}/commonvalidity/draw_dispatch_common.adoc[]
 include::{generated}/validity/protos/vkCmdSubpassShadingHUAWEI.adoc[]
 --
 endif::VK_HUAWEI_subpass_shading[]
+
+ifdef::VK_NV_cuda_kernel_launch[]
+include::{chapters}/VK_NV_cuda_kernel_launch/dispatch.adoc[]
+endif::VK_NV_cuda_kernel_launch[]

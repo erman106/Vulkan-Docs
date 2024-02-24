@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -922,8 +922,9 @@ or more elink:VkSparseImageFormatFlagBits.
 --
 fname:vkGetPhysicalDeviceSparseImageFormatProperties returns an array of
 slink:VkSparseImageFormatProperties.
-Each element will describe properties for one set of image aspects that are
-bound simultaneously in the image.
+Each element describes properties for one set of image aspects that are
+bound simultaneously for a sname:VkImage created with the provided image
+creation parameters.
 This is usually one element for each aspect in the image, but for
 interleaved depth/stencil images there is only one element describing the
 combined aspects.
@@ -933,7 +934,7 @@ include::{generated}/api/protos/vkGetPhysicalDeviceSparseImageFormatProperties.a
   * pname:physicalDevice is the physical device from which to query the
     sparse image format properties.
   * pname:format is the image format.
-  * pname:type is the dimensionality of image.
+  * pname:type is the dimensionality of the image.
   * pname:samples is a elink:VkSampleCountFlagBits value specifying the
     number of samples per texel.
   * pname:usage is a bitmask describing the intended usage of the image.
@@ -969,12 +970,10 @@ ename:VK_IMAGE_ASPECT_STENCIL_BIT.
 .Valid Usage
 ****
   * [[VUID-vkGetPhysicalDeviceSparseImageFormatProperties-samples-01094]]
-    pname:samples must: be a bit value that is set in
-    sname:VkImageFormatProperties::pname:sampleCounts returned by
+    pname:samples must: be a valid elink:VkSampleCountFlagBits value that is
+    set in sname:VkImageFormatProperties::pname:sampleCounts returned by
     fname:vkGetPhysicalDeviceImageFormatProperties with pname:format,
     pname:type, pname:tiling, and pname:usage equal to those in this command
-    and pname:flags equal to the value that is set in
-    slink:VkImageCreateInfo::pname:flags when the image is created
 ****
 
 include::{generated}/validity/protos/vkGetPhysicalDeviceSparseImageFormatProperties.adoc[]
@@ -985,8 +984,9 @@ ifdef::VK_VERSION_1_1,VK_KHR_get_physical_device_properties2[]
 --
 fname:vkGetPhysicalDeviceSparseImageFormatProperties2 returns an array of
 slink:VkSparseImageFormatProperties2.
-Each element will describe properties for one set of image aspects that are
-bound simultaneously in the image.
+Each element describes properties for one set of image aspects that are
+bound simultaneously for a sname:VkImage created with the provided image
+creation parameters.
 This is usually one element for each aspect in the image, but for
 interleaved depth/stencil images there is only one element describing the
 combined aspects.
@@ -1035,7 +1035,7 @@ endif::VK_KHR_get_physical_device_properties2[]
   * pname:pNext is `NULL` or a pointer to a structure extending this
     structure.
   * pname:format is the image format.
-  * pname:type is the dimensionality of image.
+  * pname:type is the dimensionality of the image.
   * pname:samples is a elink:VkSampleCountFlagBits value specifying the
     number of samples per texel.
   * pname:usage is a bitmask describing the intended usage of the image.
@@ -1044,12 +1044,10 @@ endif::VK_KHR_get_physical_device_properties2[]
 .Valid Usage
 ****
   * [[VUID-VkPhysicalDeviceSparseImageFormatInfo2-samples-01095]]
-    pname:samples must: be a bit value that is set in
-    sname:VkImageFormatProperties::pname:sampleCounts returned by
+    pname:samples must: be a valid elink:VkSampleCountFlagBits value that is
+    set in sname:VkImageFormatProperties::pname:sampleCounts returned by
     fname:vkGetPhysicalDeviceImageFormatProperties with pname:format,
     pname:type, pname:tiling, and pname:usage equal to those in this command
-    and pname:flags equal to the value that is set in
-    slink:VkImageCreateInfo::pname:flags when the image is created
 ****
 
 include::{generated}/validity/structs/VkPhysicalDeviceSparseImageFormatInfo2.adoc[]
@@ -1448,6 +1446,17 @@ the binding range must: be within the range
     If pname:memory is not dlink:VK_NULL_HANDLE, pname:memory and
     pname:memoryOffset must: match the memory requirements of the resource,
     as described in section <<resources-association>>
+  * [[VUID-VkSparseMemoryBind-resourceOffset-09491]]
+    If the resource being bound is a sname:VkBuffer, pname:resourceOffset
+    and pname:memoryOffset must: be an integer multiple of the
+    pname:alignment of the slink:VkMemoryRequirements structure returned
+    from a call to flink:vkGetBufferMemoryRequirements with the buffer
+    resource
+  * [[VUID-VkSparseMemoryBind-resourceOffset-09492]]
+    If the resource being bound is a sname:VkImage, pname:resourceOffset and
+    pname:memoryOffset must: be an integer multiple of the pname:alignment
+    of the slink:VkMemoryRequirements structure returned from a call to
+    flink:vkGetImageMemoryRequirements with the image resource
   * [[VUID-VkSparseMemoryBind-memory-01097]]
     If pname:memory is not dlink:VK_NULL_HANDLE, pname:memory must: not have
     been created with a memory type that reports
@@ -1661,6 +1670,8 @@ include::{generated}/api/structs/VkSparseImageMemoryBind.adoc[]
     pname:offset.x must: be a multiple of the sparse image block width
     (sname:VkSparseImageFormatProperties::pname:imageGranularity.width) of
     the image
+  * [[VUID-VkSparseImageMemoryBind-extent-09388]]
+    pname:extent.width must: be greater than `0`
   * [[VUID-VkSparseImageMemoryBind-extent-01108]]
     pname:extent.width must: either be a multiple of the sparse image block
     width of the image, or else [eq]#(pname:extent.width {plus}
@@ -1669,6 +1680,8 @@ include::{generated}/api/structs/VkSparseImageMemoryBind.adoc[]
     pname:offset.y must: be a multiple of the sparse image block height
     (sname:VkSparseImageFormatProperties::pname:imageGranularity.height) of
     the image
+  * [[VUID-VkSparseImageMemoryBind-extent-09389]]
+    pname:extent.height must: be greater than `0`
   * [[VUID-VkSparseImageMemoryBind-extent-01110]]
     pname:extent.height must: either be a multiple of the sparse image block
     height of the image, or else [eq]#(pname:extent.height {plus}
@@ -1677,6 +1690,8 @@ include::{generated}/api/structs/VkSparseImageMemoryBind.adoc[]
     pname:offset.z must: be a multiple of the sparse image block depth
     (sname:VkSparseImageFormatProperties::pname:imageGranularity.depth) of
     the image
+  * [[VUID-VkSparseImageMemoryBind-extent-09390]]
+    pname:extent.depth must: be greater than `0`
   * [[VUID-VkSparseImageMemoryBind-extent-01112]]
     pname:extent.depth must: either be a multiple of the sparse image block
     depth of the image, or else [eq]#(pname:extent.depth {plus}
@@ -1754,23 +1769,16 @@ Additional information about fence and semaphore operation is described in
     by any element of the pname:pWaitSemaphores member of any element of
     pname:pBindInfo executes on pname:queue, there must: be no other queues
     waiting on the same semaphore
-ifndef::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
-  * [[VUID-vkQueueBindSparse-pWaitSemaphores-01117]]
-    All elements of the pname:pWaitSemaphores member of all elements of the
-    pname:pBindInfo parameter referring to a binary semaphore must: be
-    semaphores that are signaled, or have
-    <<synchronization-semaphores-signaling, semaphore signal operations>>
-    previously submitted for execution
-endif::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
-ifdef::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
   * [[VUID-vkQueueBindSparse-pWaitSemaphores-03245]]
     All elements of the pname:pWaitSemaphores member of all elements of
-    pname:pBindInfo created with a elink:VkSemaphoreType of
-    ename:VK_SEMAPHORE_TYPE_BINARY must: reference a semaphore signal
-    operation that has been submitted for execution and any
-    <<synchronization-semaphores-signaling, semaphore signal operations>> on
-    which it depends (if any) must: have also been submitted for execution
+    pname:pBindInfo referring to a semaphore
+ifdef::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
+    created with a elink:VkSemaphoreType of ename:VK_SEMAPHORE_TYPE_BINARY
 endif::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
+    must: reference a semaphore signal operation that has been submitted for
+    execution and any <<synchronization-semaphores-signaling, semaphore
+    signal operations>> on which it depends must: have also been submitted
+    for execution
 ****
 
 include::{generated}/validity/protos/vkQueueBindSparse.adoc[]

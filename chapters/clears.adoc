@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -7,7 +7,7 @@
 
 
 [[clears-outside]]
-== Clearing Images Outside A Render Pass Instance
+== Clearing Images Outside a Render Pass Instance
 
 Color and depth/stencil images can: be cleared outside a render pass
 instance using flink:vkCmdClearColorImage or
@@ -239,7 +239,7 @@ the purposes of memory barriers.
 
 
 [[clears-inside]]
-== Clearing Images Inside A Render Pass Instance
+== Clearing Images Inside a Render Pass Instance
 
 [open,refpage='vkCmdClearAttachments',desc='Clear regions within bound framebuffer attachments',type='protos']
 --
@@ -360,11 +360,18 @@ ifdef::VK_VERSION_1_1,VK_KHR_multiview[]
     If the render pass instance this is recorded in uses multiview, then
     pname:baseArrayLayer must: be zero and pname:layerCount must: be one
 endif::VK_VERSION_1_1,VK_KHR_multiview[]
+ifdef::VK_KHR_dynamic_rendering_local_read[]
+  * [[VUID-vkCmdClearAttachments-colorAttachment-09503]]
+    The pname:colorAttachment member of each element of pname:pAttachments
+    must: not identify a color attachment that is currently mapped to
+    ename:VK_ATTACHMENT_UNUSED in pname:commandBuffer via
+    slink:VkRenderingAttachmentLocationInfoKHR
+endif::VK_KHR_dynamic_rendering_local_read[]
 ifdef::VK_ANDROID_external_format_resolve[]
   * [[VUID-vkCmdClearAttachments-aspectMask-09298]]
     If the subpass this is recorded in performs an external format resolve,
     the pname:aspectMask member of any element of pname:pAttachments must:
-    not include `VK_IMAGE_ASPECT_PLANE__{ibit}__BIT_EXT` for any index _i_
+    not include `VK_IMAGE_ASPECT_PLANE__{ibit}__BIT` for any index _i_
 endif::VK_ANDROID_external_format_resolve[]
 ****
 
@@ -415,8 +422,6 @@ ifdef::VK_EXT_image_drm_format_modifier[]
     pname:aspectMask must: not include
     `VK_IMAGE_ASPECT_MEMORY_PLANE__{ibit}__BIT_EXT` for any index _i_
 endif::VK_EXT_image_drm_format_modifier[]
-  * [[VUID-VkClearAttachment-clearValue-00021]]
-    pname:clearValue must: be a valid sname:VkClearValue union
 ****
 
 include::{generated}/validity/structs/VkClearAttachment.adoc[]

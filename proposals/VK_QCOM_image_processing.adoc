@@ -1,4 +1,4 @@
-// Copyright 2021-2023 The Khronos Group Inc.
+// Copyright 2021-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -197,8 +197,8 @@ The following summarizes how the built-ins are exposed in GLSL:
     | Syntax                             | Description                                |
     +------------------------------------+--------------------------------------------+
     |   vec4 textureWeightedQCOM(        | weighted sample operation multiplies       |
-    |       sampler2D tex,               | a 2D kernel of filter weights with a corr- |
-    |       vec2      P,                 | esponding region of sampled texels and     |
+    |       sampler2D tex,               | a 2D kernel of filter weights with a       |
+    |       vec2      P,                 | corresponding region of sampled texels and |
     |       sampler2DArray weight)       | sums the results to produce the output     |
     |                                    | value.                                     |
     +------------------------------------+--------------------------------------------+
@@ -445,7 +445,7 @@ corresponds to one phase of the filter.  The view's
 `VkImageViewSampleWeightCreateInfoQCOM::numPhases`. The phases
 are stored as layers in the 2D array, in horizontal phase major
 order,  left-to-right and top-to-bottom. Expressed as a formula,
-the layer index for a each filter phase is computed as:
+the layer index for each filter phase is computed as:
 
 [source,c]
 ----
@@ -661,7 +661,7 @@ Formats supported by _weight image_ parameter to `OpImageSampleWeightedQCOM`
     VK_FORMAT_R16_SFLOAT
 ----
 
-Formats supported by _target image_ or _referenence image_ parameter to `OpImageBlockMatchSADQCOM` and `OpImageBlockMatchSSDQCOM`
+Formats supported by _target image_ or _reference image_ parameter to `OpImageBlockMatchSADQCOM` and `OpImageBlockMatchSSDQCOM`
 [source,c]
 ----
     VK_FORMAT_R8_UNORM

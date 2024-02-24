@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #
-# Copyright 2016-2023 The Khronos Group Inc.
+# Copyright 2016-2024 The Khronos Group Inc.
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -79,7 +79,7 @@ def printCopyrightSourceComments(fp):
 
     Writes an asciidoc comment block, which copyrights the source
     file."""
-    print('// Copyright 2014-2023 The Khronos Group Inc.', file=fp)
+    print('// Copyright 2014-2024 The Khronos Group Inc.', file=fp)
     print('//', file=fp)
     # This works around constraints of the 'reuse' tool
     print('// SPDX' + '-License-Identifier: CC-BY-4.0', file=fp)
@@ -446,8 +446,12 @@ def emitPage(baseDir, specDir, pi, file):
             logWarn('emitPage:', pageName, 'INCLUDE is None, no page generated')
             return
 
-        # Specification text
-        lines = remapIncludes(file[pi.begin:pi.include + 1], baseDir, specDir)
+        # Specification text from beginning to just before the parameter
+        # section. This covers the description, the prototype, the version
+        # note, and any additional version note text. If a parameter section
+        # is absent then go a line beyond the include.
+        remap_end = pi.include + 1 if pi.param is None else pi.param
+        lines = remapIncludes(file[pi.begin:remap_end], baseDir, specDir)
         specText = ''.join(lines)
 
         if pi.param is not None:

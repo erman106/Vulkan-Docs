@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
-== Indirect Commands Generation And Execution
+== Indirect Commands Generation and Execution
 
 [open,refpage='vkGetGeneratedCommandsMemoryRequirementsNV',desc='Retrieve the buffer allocation requirements for generated commands',type='protos']
 --
@@ -28,7 +28,7 @@ include::{generated}/api/protos/vkGetGeneratedCommandsMemoryRequirementsNV.adoc[
     feature must: be enabled
 ifdef::VK_NV_device_generated_commands_compute[]
   * [[VUID-vkGetGeneratedCommandsMemoryRequirementsNV-pInfo-09074]]
-    If pname:pInfo::pname:pipelineBindPoint is of type
+    If pname:pInfo->pipelineBindPoint is of type
     ename:VK_PIPELINE_BIND_POINT_COMPUTE, then the
     <<features-deviceGeneratedCompute,
     sname:VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV::pname:deviceGeneratedCompute>>
@@ -78,7 +78,7 @@ ifdef::VK_NV_device_generated_commands_compute[]
     ename:VK_PIPELINE_BIND_POINT_COMPUTE, and the
     pname:indirectCommandsLayout contains a
     ename:VK_INDIRECT_COMMANDS_TOKEN_TYPE_PIPELINE_NV token, then the
-    pname:pipeline must: be `NULL`
+    pname:pipeline must: be dlink:VK_NULL_HANDLE
 endif::VK_NV_device_generated_commands_compute[]
 ****
 
@@ -97,6 +97,7 @@ Commands>>, an application must: query the pipeline's device address.
 To query a compute pipeline's 64-bit device address, call:
 
 include::{generated}/api/protos/vkGetPipelineIndirectDeviceAddressNV.adoc[]
+
   * pname:device is the logical device on which the pipeline was created.
   * pname:pInfo is a pointer to a
     slink:VkPipelineIndirectDeviceAddressInfoNV structure specifying the
@@ -120,6 +121,7 @@ include::{generated}/validity/protos/vkGetPipelineIndirectDeviceAddressNV.adoc[]
 The sname:VkPipelineIndirectDeviceAddressInfoNV structure is defined as:
 
 include::{generated}/api/structs/VkPipelineIndirectDeviceAddressInfoNV.adoc[]
+
   * pname:sType is a elink:VkStructureType value identifying this structure.
   * pname:pNext is `NULL` or a pointer to a structure extending this
     structure.
@@ -161,7 +163,7 @@ include::{generated}/api/protos/vkGetPipelineIndirectMemoryRequirementsNV.adoc[]
     structure in which the requested pipeline's memory requirements are
     returned.
 
-If pname:pCreateInfo::pname:pNext chain includes a pointer to a
+If pname:pCreateInfo->pNext chain includes a pointer to a
 slink:VkComputePipelineIndirectBufferInfoNV structure, then the contents of
 that structure are ignored.
 
@@ -172,7 +174,7 @@ that structure are ignored.
     sname:VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV::pname:deviceGeneratedComputePipelines>>
     feature must: be enabled
   * [[VUID-vkGetPipelineIndirectMemoryRequirementsNV-pCreateInfo-09083]]
-    pname:pCreateInfo::pname:flags must: include
+    pname:pCreateInfo->flags must: include
     ename:VK_PIPELINE_CREATE_INDIRECT_BINDABLE_BIT_NV
 ****
 
@@ -249,6 +251,10 @@ include::{generated}/validity/protos/vkCmdExecuteGeneratedCommandsNV.adoc[]
 
 [open,refpage='VkGeneratedCommandsInfoNV',desc='Structure specifying parameters for the generation of commands',type='structs']
 --
+:refpage:
+
+The sname:VkGeneratedCommandsInfoNV is defined as:
+
 include::{generated}/api/structs/VkGeneratedCommandsInfoNV.adoc[]
 
   * pname:sType is a elink:VkStructureType value identifying this structure.
@@ -463,7 +469,7 @@ include::{generated}/validity/protos/vkCmdPreprocessGeneratedCommandsNV.adoc[]
 
 ifdef::VK_NV_device_generated_commands_compute[]
 The bound descriptor sets and push constants that will be used with indirect
-command generation for the compute piplines must: already be specified at
+command generation for the compute pipelines must: already be specified at
 the time of preprocessing commands with
 flink:vkCmdPreprocessGeneratedCommandsNV.
 They must: not change until the execution of indirect commands is submitted

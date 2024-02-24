@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -55,14 +55,14 @@ ifdef::VK_EXT_depth_clip_enable[]
     If the pipeline is not created with
     slink:VkPipelineRasterizationDepthClipStateCreateInfoEXT present then
     enabling depth clamp will also disable clipping primitives to the z
-    planes of the frustrum as described in <<vertexpostproc-clipping,
+    planes of the frustum as described in <<vertexpostproc-clipping,
     Primitive Clipping>>.
     Otherwise depth clipping is controlled by the state set in
     slink:VkPipelineRasterizationDepthClipStateCreateInfoEXT.
 endif::VK_EXT_depth_clip_enable[]
 ifndef::VK_EXT_depth_clip_enable[]
     Enabling depth clamp will also disable clipping primitives to the z
-    planes of the frustrum as described in <<vertexpostproc-clipping,
+    planes of the frustum as described in <<vertexpostproc-clipping,
     Primitive Clipping>>.
 endif::VK_EXT_depth_clip_enable[]
   * pname:rasterizerDiscardEnable controls whether primitives are discarded
@@ -98,16 +98,11 @@ endif::VK_AMD_rasterization_order[]
   * [[VUID-VkPipelineRasterizationStateCreateInfo-depthClampEnable-00782]]
     If the <<features-depthClamp, pname:depthClamp>> feature is not enabled,
     pname:depthClampEnable must: be ename:VK_FALSE
-ifndef::VK_NV_fill_rectangle[]
-  * [[VUID-VkPipelineRasterizationStateCreateInfo-polygonMode-01413]]
-    If the <<features-fillModeNonSolid, pname:fillModeNonSolid>> feature is
-    not enabled, pname:polygonMode must: be ename:VK_POLYGON_MODE_FILL
-endif::VK_NV_fill_rectangle[]
-ifdef::VK_NV_fill_rectangle[]
   * [[VUID-VkPipelineRasterizationStateCreateInfo-polygonMode-01507]]
     If the <<features-fillModeNonSolid, pname:fillModeNonSolid>> feature is
-    not enabled, pname:polygonMode must: be ename:VK_POLYGON_MODE_FILL or
-    ename:VK_POLYGON_MODE_FILL_RECTANGLE_NV
+    not enabled, pname:polygonMode must: be ename:VK_POLYGON_MODE_FILL
+ifdef::VK_NV_fill_rectangle[or ename:VK_POLYGON_MODE_FILL_RECTANGLE_NV]
+ifdef::VK_NV_fill_rectangle[]
   * [[VUID-VkPipelineRasterizationStateCreateInfo-polygonMode-01414]]
     If the `apiext:VK_NV_fill_rectangle` extension is not enabled,
     pname:polygonMode must: not be ename:VK_POLYGON_MODE_FILL_RECTANGLE_NV
@@ -440,28 +435,12 @@ Otherwise, this state is specified by the
 slink:VkPipelineRasterizationStateStreamCreateInfoEXT::pname:rasterizationStream
 value used to create the currently active pipeline.
 
+:refpage: vkCmdSetRasterizationStreamEXT
+:requiredfeature: extendedDynamicState3RasterizationStream
+
 .Valid Usage
 ****
-ifdef::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetRasterizationStreamEXT-None-08550]]
-    Either the <<features-extendedDynamicState3RasterizationStream,
-    pname:extendedDynamicState3RasterizationStream>> feature or the
-    <<features-shaderObject, pname:shaderObject>> feature or both must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-ifndef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetRasterizationStreamEXT-None-08551]]
-    The <<features-shaderObject, pname:shaderObject>> feature must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-endif::VK_EXT_shader_object[]
-ifndef::VK_EXT_shader_object[]
-  * [[VUID-vkCmdSetRasterizationStreamEXT-extendedDynamicState3RasterizationStream-07410]]
-    The <<features-extendedDynamicState3RasterizationStream,
-    pname:extendedDynamicState3RasterizationStream>> feature must: be
-    enabled
-endif::VK_EXT_shader_object[]
+include::{chapters}/commonvalidity/dynamic_state3_feature_common.adoc[]
   * [[VUID-vkCmdSetRasterizationStreamEXT-transformFeedback-07411]]
     The <<features-transformFeedback, pname:transformFeedback>> feature
     must: be enabled
@@ -649,28 +628,12 @@ Otherwise, this state is specified by the
 slink:VkPipelineMultisampleStateCreateInfo::pname:rasterizationSamples value
 used to create the currently active pipeline.
 
+:refpage: vkCmdSetRasterizationSamplesEXT
+:requiredfeature: extendedDynamicState3RasterizationSamples
+
 .Valid Usage
 ****
-ifdef::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetRasterizationSamplesEXT-None-08552]]
-    Either the <<features-extendedDynamicState3RasterizationSamples,
-    pname:extendedDynamicState3RasterizationSamples>> feature or the
-    <<features-shaderObject, pname:shaderObject>> feature or both must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-ifndef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetRasterizationSamplesEXT-None-08553]]
-    The <<features-shaderObject, pname:shaderObject>> feature must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-endif::VK_EXT_shader_object[]
-ifndef::VK_EXT_shader_object[]
-  * [[VUID-vkCmdSetRasterizationSamplesEXT-extendedDynamicState3RasterizationSamples-07414]]
-    The <<features-extendedDynamicState3RasterizationSamples,
-    pname:extendedDynamicState3RasterizationSamples>> feature must: be
-    enabled
-endif::VK_EXT_shader_object[]
+include::{chapters}/commonvalidity/dynamic_state3_feature_common.adoc[]
 ****
 
 include::{generated}/validity/protos/vkCmdSetRasterizationSamplesEXT.adoc[]
@@ -907,7 +870,8 @@ endif::VK_EXT_fragment_density_map[]
 .Valid Usage
 ****
   * [[VUID-VkSampleLocationsInfoEXT-sampleLocationsPerPixel-01526]]
-    pname:sampleLocationsPerPixel must: be a bit value that is set in
+    pname:sampleLocationsPerPixel must: be a valid
+    elink:VkSampleCountFlagBits value that is set in
     slink:VkPhysicalDeviceSampleLocationsPropertiesEXT::pname:sampleLocationSampleCounts
   * [[VUID-VkSampleLocationsInfoEXT-sampleLocationsCount-01527]]
     pname:sampleLocationsCount must: equal
@@ -969,28 +933,12 @@ Otherwise, this state is specified by the
 slink:VkPipelineSampleLocationsStateCreateInfoEXT::pname:sampleLocationsEnable
 value used to create the currently active pipeline.
 
+:refpage: vkCmdSetSampleLocationsEnableEXT
+:requiredfeature: extendedDynamicState3SampleLocationsEnable
+
 .Valid Usage
 ****
-ifdef::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetSampleLocationsEnableEXT-None-08554]]
-    Either the <<features-extendedDynamicState3SampleLocationsEnable,
-    pname:extendedDynamicState3SampleLocationsEnable>> feature or the
-    <<features-shaderObject, pname:shaderObject>> feature or both must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-ifndef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetSampleLocationsEnableEXT-None-08555]]
-    The <<features-shaderObject, pname:shaderObject>> feature must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-endif::VK_EXT_shader_object[]
-ifndef::VK_EXT_shader_object[]
-  * [[VUID-vkCmdSetSampleLocationsEnableEXT-extendedDynamicState3SampleLocationsEnable-07415]]
-    The <<features-extendedDynamicState3SampleLocationsEnable,
-    pname:extendedDynamicState3SampleLocationsEnable>> feature must: be
-    enabled
-endif::VK_EXT_shader_object[]
+include::{chapters}/commonvalidity/dynamic_state3_feature_common.adoc[]
 ****
 
 include::{generated}/validity/protos/vkCmdSetSampleLocationsEnableEXT.adoc[]
@@ -1489,8 +1437,14 @@ rate, reported via the <<interfaces-builtin-variables-primitiveshadingrate,
 code:ShadingRateKHR built-in>>.
 
 Implementations should: clamp the inputs to the combiner operations
-[eq]#A~xy~# and [eq]#B~xy~#, and must: clamp the result of the second
-combiner operation.
+[eq]#A~xy~# and [eq]#B~xy~#, and must:
+ifdef::VK_KHR_maintenance6[]
+do so if
+sname:VkPhysicalDeviceMaintenance6PropertiesKHR::pname:fragmentShadingRateClampCombinerInputs
+is set to ename:VK_TRUE.
+All implementations must:
+endif::VK_KHR_maintenance6[]
+clamp the result of the second combiner operation.
 
 A fragment shading rate [eq]#R~xy~# representing any of [eq]#A~xy~#,
 [eq]#B~xy~# or [eq]#C~xy~# is clamped as follows.
@@ -1958,28 +1912,12 @@ Otherwise, this state is specified by the
 slink:VkPipelineViewportShadingRateImageStateCreateInfoNV::pname:shadingRateImageEnable
 value used to create the currently active pipeline.
 
+:refpage: vkCmdSetShadingRateImageEnableNV
+:requiredfeature: extendedDynamicState3ShadingRateImageEnable
+
 .Valid Usage
 ****
-ifdef::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetShadingRateImageEnableNV-None-08556]]
-    Either the <<features-extendedDynamicState3ShadingRateImageEnable,
-    pname:extendedDynamicState3ShadingRateImageEnable>> feature or the
-    <<features-shaderObject, pname:shaderObject>> feature or both must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-ifndef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetShadingRateImageEnableNV-None-08557]]
-    The <<features-shaderObject, pname:shaderObject>> feature must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-endif::VK_EXT_shader_object[]
-ifndef::VK_EXT_shader_object[]
-  * [[VUID-vkCmdSetShadingRateImageEnableNV-extendedDynamicState3ShadingRateImageEnable-07416]]
-    The <<features-extendedDynamicState3ShadingRateImageEnable,
-    pname:extendedDynamicState3ShadingRateImageEnable>> feature must: be
-    enabled
-endif::VK_EXT_shader_object[]
+include::{chapters}/commonvalidity/dynamic_state3_feature_common.adoc[]
 ****
 
 include::{generated}/validity/protos/vkCmdSetShadingRateImageEnableNV.adoc[]
@@ -2687,21 +2625,27 @@ vertex for the point.
 [[primsrast-lines]]
 == Line Segments
 
-ifdef::VK_EXT_line_rasterization[]
-[open,refpage='VkPipelineRasterizationLineStateCreateInfoEXT',desc='Structure specifying parameters of a newly created pipeline line rasterization state',type='structs']
+ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
+[open,refpage='VkPipelineRasterizationLineStateCreateInfoKHR',desc='Structure specifying parameters of a newly created pipeline line rasterization state',type='structs',alias='VkPipelineRasterizationLineStateCreateInfoEXT']
 --
 Line segment rasterization options are controlled by the
-slink:VkPipelineRasterizationLineStateCreateInfoEXT structure.
+slink:VkPipelineRasterizationLineStateCreateInfoKHR structure.
 
-The sname:VkPipelineRasterizationLineStateCreateInfoEXT structure is defined
+The sname:VkPipelineRasterizationLineStateCreateInfoKHR structure is defined
 as:
 
+include::{generated}/api/structs/VkPipelineRasterizationLineStateCreateInfoKHR.adoc[]
+
+ifdef::VK_EXT_line_rasterization[]
+or the equivalent
+
 include::{generated}/api/structs/VkPipelineRasterizationLineStateCreateInfoEXT.adoc[]
+endif::VK_EXT_line_rasterization[]
 
   * pname:sType is a elink:VkStructureType value identifying this structure.
   * pname:pNext is `NULL` or a pointer to a structure extending this
     structure.
-  * pname:lineRasterizationMode is a elink:VkLineRasterizationModeEXT value
+  * pname:lineRasterizationMode is a elink:VkLineRasterizationModeKHR value
     selecting the style of line rasterization.
   * pname:stippledLineEnable enables <<primsrast-lines-stipple, stippled
     line rasterization>>.
@@ -2715,71 +2659,77 @@ pname:lineStippleFactor and pname:lineStipplePattern are ignored.
 
 .Valid Usage
 ****
-  * [[VUID-VkPipelineRasterizationLineStateCreateInfoEXT-lineRasterizationMode-02768]]
+  * [[VUID-VkPipelineRasterizationLineStateCreateInfoKHR-lineRasterizationMode-02768]]
     If pname:lineRasterizationMode is
-    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT, then the
+    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR, then the
     <<features-rectangularLines, pname:rectangularLines>> feature must: be
     enabled
-  * [[VUID-VkPipelineRasterizationLineStateCreateInfoEXT-lineRasterizationMode-02769]]
+  * [[VUID-VkPipelineRasterizationLineStateCreateInfoKHR-lineRasterizationMode-02769]]
     If pname:lineRasterizationMode is
-    ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT, then the
+    ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_KHR, then the
     <<features-bresenhamLines, pname:bresenhamLines>> feature must: be
     enabled
-  * [[VUID-VkPipelineRasterizationLineStateCreateInfoEXT-lineRasterizationMode-02770]]
+  * [[VUID-VkPipelineRasterizationLineStateCreateInfoKHR-lineRasterizationMode-02770]]
     If pname:lineRasterizationMode is
-    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_EXT, then the
+    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_KHR, then the
     <<features-smoothLines, pname:smoothLines>> feature must: be enabled
-  * [[VUID-VkPipelineRasterizationLineStateCreateInfoEXT-stippledLineEnable-02771]]
+  * [[VUID-VkPipelineRasterizationLineStateCreateInfoKHR-stippledLineEnable-02771]]
     If pname:stippledLineEnable is ename:VK_TRUE and
     pname:lineRasterizationMode is
-    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT, then the
+    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR, then the
     <<features-stippledRectangularLines, pname:stippledRectangularLines>>
     feature must: be enabled
-  * [[VUID-VkPipelineRasterizationLineStateCreateInfoEXT-stippledLineEnable-02772]]
+  * [[VUID-VkPipelineRasterizationLineStateCreateInfoKHR-stippledLineEnable-02772]]
     If pname:stippledLineEnable is ename:VK_TRUE and
     pname:lineRasterizationMode is
-    ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT, then the
+    ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_KHR, then the
     <<features-stippledBresenhamLines, pname:stippledBresenhamLines>>
     feature must: be enabled
-  * [[VUID-VkPipelineRasterizationLineStateCreateInfoEXT-stippledLineEnable-02773]]
+  * [[VUID-VkPipelineRasterizationLineStateCreateInfoKHR-stippledLineEnable-02773]]
     If pname:stippledLineEnable is ename:VK_TRUE and
     pname:lineRasterizationMode is
-    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_EXT, then the
+    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_KHR, then the
     <<features-stippledSmoothLines, pname:stippledSmoothLines>> feature
     must: be enabled
-  * [[VUID-VkPipelineRasterizationLineStateCreateInfoEXT-stippledLineEnable-02774]]
+  * [[VUID-VkPipelineRasterizationLineStateCreateInfoKHR-stippledLineEnable-02774]]
     If pname:stippledLineEnable is ename:VK_TRUE and
     pname:lineRasterizationMode is
-    ename:VK_LINE_RASTERIZATION_MODE_DEFAULT_EXT, then the
+    ename:VK_LINE_RASTERIZATION_MODE_DEFAULT_KHR, then the
     <<features-stippledRectangularLines, pname:stippledRectangularLines>>
     feature must: be enabled and
     slink:VkPhysicalDeviceLimits::pname:strictLines must: be ename:VK_TRUE
 ****
 
-include::{generated}/validity/structs/VkPipelineRasterizationLineStateCreateInfoEXT.adoc[]
+include::{generated}/validity/structs/VkPipelineRasterizationLineStateCreateInfoKHR.adoc[]
 --
 
-[open,refpage='VkLineRasterizationModeEXT',desc='Line rasterization modes',type='enums']
+[open,refpage='VkLineRasterizationModeKHR',desc='Line rasterization modes',type='enums',alias='VkLineRasterizationModeEXT']
 --
 Possible values of
-slink:VkPipelineRasterizationLineStateCreateInfoEXT::pname:lineRasterizationMode
+slink:VkPipelineRasterizationLineStateCreateInfoKHR::pname:lineRasterizationMode
 are:
 
-include::{generated}/api/enums/VkLineRasterizationModeEXT.adoc[]
+include::{generated}/api/enums/VkLineRasterizationModeKHR.adoc[]
 
-  * ename:VK_LINE_RASTERIZATION_MODE_DEFAULT_EXT is equivalent to
-    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT if
+ifdef::VK_EXT_line_rasterization[]
+or the equivalent
+
+include::{generated}/api/enums/VkLineRasterizationModeEXT.adoc[]
+endif::VK_EXT_line_rasterization[]
+
+  * ename:VK_LINE_RASTERIZATION_MODE_DEFAULT_KHR is equivalent to
+    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR if
     slink:VkPhysicalDeviceLimits::pname:strictLines is ename:VK_TRUE,
     otherwise lines are drawn as non-pname:strictLines parallelograms.
     Both of these modes are defined in <<primsrast-lines-basic,Basic Line
     Segment Rasterization>>.
-  * ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT specifies lines drawn
+  * ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR specifies lines drawn
     as if they were rectangles extruded from the line
-  * ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT specifies lines drawn by
+  * ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_KHR specifies lines drawn by
     determining which pixel diamonds the line intersects and exits, as
     defined in <<primsrast-lines-bresenham,Bresenham Line Segment
     Rasterization>>.
-  * ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_EXT specifies lines
+  * ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_KHR specifies lines
     drawn if they were rectangles extruded from the line, with alpha
     falloff, as defined in <<primsrast-lines-smooth,Smooth Lines>>.
 --
@@ -2810,44 +2760,28 @@ ename:VK_DYNAMIC_STATE_LINE_RASTERIZATION_MODE_EXT set in
 slink:VkPipelineDynamicStateCreateInfo::pname:pDynamicStates.
 endif::VK_EXT_extended_dynamic_state3[]
 Otherwise, this state is specified by the
-slink:VkPipelineRasterizationLineStateCreateInfoEXT::pname:lineRasterizationMode
+slink:VkPipelineRasterizationLineStateCreateInfoKHR::pname:lineRasterizationMode
 value used to create the currently active pipeline.
+
+:refpage: vkCmdSetLineRasterizationModeEXT
+:requiredfeature: extendedDynamicState3LineRasterizationMode
 
 .Valid Usage
 ****
-ifdef::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetLineRasterizationModeEXT-None-08558]]
-    Either the <<features-extendedDynamicState3LineRasterizationMode,
-    pname:extendedDynamicState3LineRasterizationMode>> feature or the
-    <<features-shaderObject, pname:shaderObject>> feature or both must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-ifndef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetLineRasterizationModeEXT-None-08559]]
-    The <<features-shaderObject, pname:shaderObject>> feature must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-endif::VK_EXT_shader_object[]
-ifndef::VK_EXT_shader_object[]
-  * [[VUID-vkCmdSetLineRasterizationModeEXT-extendedDynamicState3LineRasterizationMode-07417]]
-    The <<features-extendedDynamicState3LineRasterizationMode,
-    pname:extendedDynamicState3LineRasterizationMode>> feature must: be
-    enabled
-endif::VK_EXT_shader_object[]
+include::{chapters}/commonvalidity/dynamic_state3_feature_common.adoc[]
   * [[VUID-vkCmdSetLineRasterizationModeEXT-lineRasterizationMode-07418]]
     If pname:lineRasterizationMode is
-    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT, then the
+    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR, then the
     <<features-rectangularLines, pname:rectangularLines>> feature must: be
     enabled
   * [[VUID-vkCmdSetLineRasterizationModeEXT-lineRasterizationMode-07419]]
     If pname:lineRasterizationMode is
-    ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT, then the
+    ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_KHR, then the
     <<features-bresenhamLines, pname:bresenhamLines>> feature must: be
     enabled
   * [[VUID-vkCmdSetLineRasterizationModeEXT-lineRasterizationMode-07420]]
     If pname:lineRasterizationMode is
-    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_EXT, then the
+    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_KHR, then the
     <<features-smoothLines, pname:smoothLines>> feature must: be enabled
 ****
 
@@ -2877,30 +2811,15 @@ ename:VK_DYNAMIC_STATE_LINE_STIPPLE_ENABLE_EXT set in
 slink:VkPipelineDynamicStateCreateInfo::pname:pDynamicStates.
 endif::VK_EXT_extended_dynamic_state3[]
 Otherwise, this state is specified by the
-slink:VkPipelineRasterizationLineStateCreateInfoEXT::pname:stippledLineEnable
+slink:VkPipelineRasterizationLineStateCreateInfoKHR::pname:stippledLineEnable
 value used to create the currently active pipeline.
+
+:refpage: vkCmdSetLineStippleEnableEXT
+:requiredfeature: extendedDynamicState3LineStippleEnable
 
 .Valid Usage
 ****
-ifdef::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetLineStippleEnableEXT-None-08560]]
-    Either the <<features-extendedDynamicState3LineStippleEnable,
-    pname:extendedDynamicState3LineStippleEnable>> feature or the
-    <<features-shaderObject, pname:shaderObject>> feature or both must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-ifndef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetLineStippleEnableEXT-None-08561]]
-    The <<features-shaderObject, pname:shaderObject>> feature must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-endif::VK_EXT_shader_object[]
-ifndef::VK_EXT_shader_object[]
-  * [[VUID-vkCmdSetLineStippleEnableEXT-extendedDynamicState3LineStippleEnable-07421]]
-    The <<features-extendedDynamicState3LineStippleEnable,
-    pname:extendedDynamicState3LineStippleEnable>> feature must: be enabled
-endif::VK_EXT_shader_object[]
+include::{chapters}/commonvalidity/dynamic_state3_feature_common.adoc[]
 ****
 
 include::{generated}/validity/protos/vkCmdSetLineStippleEnableEXT.adoc[]
@@ -2908,7 +2827,7 @@ include::{generated}/validity/protos/vkCmdSetLineStippleEnableEXT.adoc[]
 
 endif::VK_EXT_extended_dynamic_state3,VK_EXT_shader_object[]
 
-endif::VK_EXT_line_rasterization[]
+endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 
 [open,refpage='vkCmdSetLineWidth',desc='Set line width dynamically for a command buffer',type='protos']
 --
@@ -2959,14 +2878,14 @@ endif::VK_EXT_fragment_density_map[]
 [[primsrast-lines-basic]]
 === Basic Line Segment Rasterization
 
-ifdef::VK_EXT_line_rasterization[]
+ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 If the pname:lineRasterizationMode member of
-slink:VkPipelineRasterizationLineStateCreateInfoEXT is
-ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT, rasterized
-endif::VK_EXT_line_rasterization[]
-ifndef::VK_EXT_line_rasterization[]
+slink:VkPipelineRasterizationLineStateCreateInfoKHR is
+ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR, rasterized
+endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
+ifndef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 Rasterized
-endif::VK_EXT_line_rasterization[]
+endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 line segments produce fragments which intersect a rectangle centered on the
 line segment.
 Two of the edges are parallel to the specified line segment; each is at a
@@ -3039,14 +2958,14 @@ Interpolation of fragment shader input values are determined by
 
 The above description documents the preferred method of line rasterization,
 and must: be used when
-ifdef::VK_EXT_line_rasterization[]
+ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 pname:lineRasterizationMode is
-ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT.
-endif::VK_EXT_line_rasterization[]
-ifndef::VK_EXT_line_rasterization[]
+ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR.
+endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
+ifndef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 the implementation advertises the pname:strictLines limit in
 slink:VkPhysicalDeviceLimits as ename:VK_TRUE.
-endif::VK_EXT_line_rasterization[]
+endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 
 ifndef::VK_KHR_maintenance5[]
 When
@@ -3055,10 +2974,14 @@ ifdef::VK_KHR_maintenance5[]
 By default, when
 endif::VK_KHR_maintenance5[]
 pname:strictLines is ename:VK_FALSE,
-ifdef::VK_EXT_line_rasterization[]
+ifdef::VK_IMG_relaxed_line_rasterization[]
+or the <<features-relaxedLineRasterization, pname:relaxedLineRasterization>>
+feature is enabled,
+endif::VK_IMG_relaxed_line_rasterization[]
+ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 and when the pname:lineRasterizationMode is
-ename:VK_LINE_RASTERIZATION_MODE_DEFAULT_EXT,
-endif::VK_EXT_line_rasterization[]
+ename:VK_LINE_RASTERIZATION_MODE_DEFAULT_KHR,
+endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 the edges of the lines are generated as a parallelogram surrounding the
 original line.
 The major axis is chosen by noting the axis in which there is the greatest
@@ -3083,8 +3006,19 @@ attributes.
 [[fig-non-strict-lines]]
 image::{images}/non_strict_lines.svg[align="center",title="Non strict lines",opts="{imageopts}"]
 
-Only when pname:strictLines is ename:VK_FALSE implementations may: deviate
-from the non-strict line algorithm described above in the following ways:
+ifndef::VK_IMG_relaxed_line_rasterization[Only when]
+ifdef::VK_IMG_relaxed_line_rasterization[When]
+pname:strictLines is ename:VK_FALSE
+ifdef::VK_IMG_relaxed_line_rasterization[]
+or when the <<features-relaxedLineRasterization,
+pname:relaxedLineRasterization>> feature is enabled,
+ifdef::VK_EXT_line_rasterization[]
+and pname:lineRasterizationMode is
+ename:VK_LINE_RASTERIZATION_MODE_DEFAULT_EXT
+endif::VK_EXT_line_rasterization[]
+endif::VK_IMG_relaxed_line_rasterization[]
+implementations may: deviate from the non-strict line algorithm described
+above in the following ways:
 
   * Implementations may: instead interpolate each fragment according to the
     formula in <<primsrast-lines-basic, Basic Line Segment Rasterization>>
@@ -3121,15 +3055,26 @@ endif::VK_KHR_maintenance5[]
 [[primsrast-lines-bresenham]]
 === Bresenham Line Segment Rasterization
 
-ifdef::VK_EXT_line_rasterization[]
+ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 If pname:lineRasterizationMode is
-ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT, then the following rules
+ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_KHR, then the following rules
 replace the line rasterization rules defined in <<primsrast-lines-basic,
 Basic Line Segment Rasterization>>.
-endif::VK_EXT_line_rasterization[]
+endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 
 Non-strict lines may: also follow these rasterization rules for
 non-antialiased lines.
+
+ifdef::VK_IMG_relaxed_line_rasterization[]
+If the <<features-relaxedLineRasterization, pname:relaxedLineRasterization>>
+feature is enabled,
+ifdef::VK_EXT_line_rasterization[]
+and pname:lineRasterizationMode is
+ename:VK_LINE_RASTERIZATION_MODE_DEFAULT_EXT
+endif::VK_EXT_line_rasterization[]
+implementations must: follow these rasterization rules for non-antialised
+lines of width 1.0.
+endif::VK_IMG_relaxed_line_rasterization[]
 
 Line segment rasterization begins by characterizing the segment as either
 _x-major_ or _y-major_.
@@ -3186,7 +3131,7 @@ subject to the following rules:
     deviate by more than one unit in either x or y framebuffer coordinates
     from a corresponding fragment produced by the diamond-exit rule.
   * The total number of fragments produced by the algorithm must: not differ
-    from that produced by the diamond-exit rule by no more than one.
+    from that produced by the diamond-exit rule by more than one.
   * For an x-major line, two fragments that lie in the same
     framebuffer-coordinate column must: not be produced (for a y-major line,
     two fragments that lie in the same framebuffer-coordinate row must: not
@@ -3244,12 +3189,12 @@ those pixels (unless masked out or killed).
 ====
 
 
-ifdef::VK_EXT_line_rasterization[]
+ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 [[primsrast-lines-stipple]]
 === Line Stipple
 
 If the pname:stippledLineEnable member of
-slink:VkPipelineRasterizationLineStateCreateInfoEXT is ename:VK_TRUE, then
+slink:VkPipelineRasterizationLineStateCreateInfoKHR is ename:VK_TRUE, then
 lines are rasterized with a _line stipple_ determined by
 pname:lineStippleFactor and pname:lineStipplePattern.
 pname:lineStipplePattern is an unsigned 16-bit integer that determines which
@@ -3276,12 +3221,12 @@ The bits of _p_ are numbered with 0 being the least significant and 15 being
 the most significant.
 
 The initial value of _s_ is zero.
-For ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT lines, _s_ is incremented
+For ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_KHR lines, _s_ is incremented
 after production of each fragment of a line segment (fragments are produced
 in order, beginning at the starting point and working towards the ending
 point).
-For ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT and
-ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_EXT lines, the
+For ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR and
+ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_KHR lines, the
 rectangular region is subdivided into adjacent unit-length rectangles, and s
 is incremented once for each rectangle.
 Rectangles with a value of _s_ such that the _b_'th bit of _p_ is zero are
@@ -3297,12 +3242,20 @@ every line segment in a group of independent segments.
 If the line segment has been clipped, then the value of _s_ at the beginning
 of the line segment is implementation-dependent.
 
-[open,refpage='vkCmdSetLineStippleEXT',desc='Set line stipple dynamically for a command buffer',type='protos']
+[open,refpage='vkCmdSetLineStippleKHR',desc='Set line stipple dynamically for a command buffer',type='protos',alias='vkCmdSetLineStippleEXT']
 --
 To <<pipelines-dynamic-state, dynamically set>> the line stipple state,
 call:
 
+ifdef::VK_KHR_line_rasterization[]
+include::{generated}/api/protos/vkCmdSetLineStippleKHR.adoc[]
+
+ifdef::VK_EXT_line_rasterization[or the equivalent command]
+endif::VK_KHR_line_rasterization[]
+
+ifdef::VK_EXT_line_rasterization[]
 include::{generated}/api/protos/vkCmdSetLineStippleEXT.adoc[]
+endif::VK_EXT_line_rasterization[]
 
   * pname:commandBuffer is the command buffer into which the command will be
     recorded.
@@ -3317,18 +3270,18 @@ when the graphics pipeline is created with
 ename:VK_DYNAMIC_STATE_LINE_STIPPLE_EXT set in
 slink:VkPipelineDynamicStateCreateInfo::pname:pDynamicStates.
 Otherwise, this state is specified by the
-slink:VkPipelineRasterizationLineStateCreateInfoEXT::pname:lineStippleFactor
+slink:VkPipelineRasterizationLineStateCreateInfoKHR::pname:lineStippleFactor
 and
-slink:VkPipelineRasterizationLineStateCreateInfoEXT::pname:lineStipplePattern
+slink:VkPipelineRasterizationLineStateCreateInfoKHR::pname:lineStipplePattern
 values used to create the currently active pipeline.
 
 .Valid Usage
 ****
-  * [[VUID-vkCmdSetLineStippleEXT-lineStippleFactor-02776]]
+  * [[VUID-vkCmdSetLineStippleKHR-lineStippleFactor-02776]]
     pname:lineStippleFactor must: be in the range [eq]#[1,256]#
 ****
 
-include::{generated}/validity/protos/vkCmdSetLineStippleEXT.adoc[]
+include::{generated}/validity/protos/vkCmdSetLineStippleKHR.adoc[]
 --
 
 
@@ -3336,10 +3289,10 @@ include::{generated}/validity/protos/vkCmdSetLineStippleEXT.adoc[]
 === Smooth Lines
 
 If the pname:lineRasterizationMode member of
-slink:VkPipelineRasterizationLineStateCreateInfoEXT is
-ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_EXT, then lines are
+slink:VkPipelineRasterizationLineStateCreateInfoKHR is
+ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_KHR, then lines are
 considered to be rectangles using the same geometry as for
-ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT lines.
+ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR lines.
 The rules for determining which pixels are covered are
 implementation-dependent, and may: include nearby pixels where no sample
 locations are covered or where the rectangle does not intersect the pixel at
@@ -3357,7 +3310,7 @@ The details of the rasterization rules and area calculation are left
 intentionally vague, to allow implementations to generate coverage and
 values that are aesthetically pleasing.
 ====
-endif::VK_EXT_line_rasterization[]
+endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 
 
 [[primsrast-polygons]]
@@ -3727,37 +3680,17 @@ Otherwise, this state is specified by the
 slink:VkPipelineRasterizationStateCreateInfo::pname:polygonMode value used
 to create the currently active pipeline.
 
+:refpage: vkCmdSetPolygonModeEXT
+:requiredfeature: extendedDynamicState3PolygonMode
+
 .Valid Usage
 ****
-ifdef::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetPolygonModeEXT-None-08566]]
-    Either the <<features-extendedDynamicState3PolygonMode,
-    pname:extendedDynamicState3PolygonMode>> feature or the
-    <<features-shaderObject, pname:shaderObject>> feature or both must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-ifndef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetPolygonModeEXT-None-08567]]
-    The <<features-shaderObject, pname:shaderObject>> feature must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-endif::VK_EXT_shader_object[]
-ifndef::VK_EXT_shader_object[]
-  * [[VUID-vkCmdSetPolygonModeEXT-extendedDynamicState3PolygonMode-07422]]
-    The <<features-extendedDynamicState3PolygonMode,
-    pname:extendedDynamicState3PolygonMode>> feature must: be enabled
-endif::VK_EXT_shader_object[]
-ifndef::VK_NV_fill_rectangle[]
-  * [[VUID-vkCmdSetPolygonModeEXT-fillModeNonSolid-07423]]
-    If the <<features-fillModeNonSolid, pname:fillModeNonSolid>> feature is
-    not enabled, pname:polygonMode must: be ename:VK_POLYGON_MODE_FILL
-endif::VK_NV_fill_rectangle[]
-ifdef::VK_NV_fill_rectangle[]
+include::{chapters}/commonvalidity/dynamic_state3_feature_common.adoc[]
   * [[VUID-vkCmdSetPolygonModeEXT-fillModeNonSolid-07424]]
     If the <<features-fillModeNonSolid, pname:fillModeNonSolid>> feature is
-    not enabled, pname:polygonMode must: be ename:VK_POLYGON_MODE_FILL or
-    ename:VK_POLYGON_MODE_FILL_RECTANGLE_NV
+    not enabled, pname:polygonMode must: be ename:VK_POLYGON_MODE_FILL
+ifdef::VK_NV_fill_rectangle[or ename:VK_POLYGON_MODE_FILL_RECTANGLE_NV]
+ifdef::VK_NV_fill_rectangle[]
   * [[VUID-vkCmdSetPolygonModeEXT-polygonMode-07425]]
     If the `apiext:VK_NV_fill_rectangle` extension is not enabled,
     pname:polygonMode must: not be ename:VK_POLYGON_MODE_FILL_RECTANGLE_NV
@@ -4241,29 +4174,12 @@ Otherwise, this state is specified by the
 slink:VkPipelineRasterizationConservativeStateCreateInfoEXT::pname:conservativeRasterizationMode
 value used to create the currently active pipeline.
 
+:refpage: vkCmdSetConservativeRasterizationModeEXT
+:requiredfeature: extendedDynamicState3ConservativeRasterizationMode
+
 .Valid Usage
 ****
-ifdef::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetConservativeRasterizationModeEXT-None-08570]]
-    Either the
-    <<features-extendedDynamicState3ConservativeRasterizationMode,
-    pname:extendedDynamicState3ConservativeRasterizationMode>> feature or
-    the <<features-shaderObject, pname:shaderObject>> feature or both must:
-    be enabled
-endif::VK_EXT_extended_dynamic_state3[]
-ifndef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetConservativeRasterizationModeEXT-None-08571]]
-    The <<features-shaderObject, pname:shaderObject>> feature must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-endif::VK_EXT_shader_object[]
-ifndef::VK_EXT_shader_object[]
-  * [[VUID-vkCmdSetConservativeRasterizationModeEXT-extendedDynamicState3ConservativeRasterizationMode-07426]]
-    The <<features-extendedDynamicState3ConservativeRasterizationMode,
-    pname:extendedDynamicState3ConservativeRasterizationMode>> feature must:
-    be enabled
-endif::VK_EXT_shader_object[]
+include::{chapters}/commonvalidity/dynamic_state3_feature_common.adoc[]
 ****
 
 include::{generated}/validity/protos/vkCmdSetConservativeRasterizationModeEXT.adoc[]
@@ -4296,29 +4212,12 @@ Otherwise, this state is specified by the
 slink:VkPipelineRasterizationConservativeStateCreateInfoEXT::pname:extraPrimitiveOverestimationSize
 value used to create the currently active pipeline.
 
+:refpage: vkCmdSetExtraPrimitiveOverestimationSizeEXT
+:requiredfeature: extendedDynamicState3ExtraPrimitiveOverestimationSize
+
 .Valid Usage
 ****
-ifdef::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetExtraPrimitiveOverestimationSizeEXT-None-08572]]
-    Either the
-    <<features-extendedDynamicState3ExtraPrimitiveOverestimationSize,
-    pname:extendedDynamicState3ExtraPrimitiveOverestimationSize>> feature or
-    the <<features-shaderObject, pname:shaderObject>> feature or both must:
-    be enabled
-endif::VK_EXT_extended_dynamic_state3[]
-ifndef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-vkCmdSetExtraPrimitiveOverestimationSizeEXT-None-08573]]
-    The <<features-shaderObject, pname:shaderObject>> feature must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state3[]
-endif::VK_EXT_shader_object[]
-ifndef::VK_EXT_shader_object[]
-  * [[VUID-vkCmdSetExtraPrimitiveOverestimationSizeEXT-extendedDynamicState3ExtraPrimitiveOverestimationSize-07427]]
-    The <<features-extendedDynamicState3ExtraPrimitiveOverestimationSize,
-    pname:extendedDynamicState3ExtraPrimitiveOverestimationSize>> feature
-    must: be enabled
-endif::VK_EXT_shader_object[]
+include::{chapters}/commonvalidity/dynamic_state3_feature_common.adoc[]
   * [[VUID-vkCmdSetExtraPrimitiveOverestimationSizeEXT-extraPrimitiveOverestimationSize-07428]]
     pname:extraPrimitiveOverestimationSize must: be in the range of `0.0` to
     sname:VkPhysicalDeviceConservativeRasterizationPropertiesEXT::pname:maxExtraPrimitiveOverestimationSize

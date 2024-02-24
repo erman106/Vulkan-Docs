@@ -1,10 +1,20 @@
-// Copyright 2014-2023 The Khronos Group Inc.
+// Copyright 2014-2024 The Khronos Group Inc.
 // SPDX-License-Identifier: CC-BY-4.0
 
 [appendix]
 [[revisions]]
 = Revision History
 
+* 2023-11-30 - Update introduction of the <<writing, Writing Style>> chapter
+  to recommend following existing language and API design patterms when
+  creating new specification language (internal issue 3707).
+* 2023-10-22 - Update <<extensions-naming-author-IDs, description of `EXT`
+  extensions>>, since some are now being ratified.
+* 2023-10-11 - Add rules for <<writing-titlecase, writing chapter and
+  section titles>>.
+* 2023-10-05 - Mention that <<extensions-reserving-bitmask-values, bit
+  position 31>> may not be used for enumerated type bitmasks, due to
+  portability concerns.
 * 2023-07-07 - Remove style guide requirement to
   <<sample-writing-explicit-vu, not use nested bullet points or other
   complex markup in a valid usage statement>>, which is now allowed due to

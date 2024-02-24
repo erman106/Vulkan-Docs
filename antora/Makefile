@@ -1,4 +1,4 @@
-# Copyright 2014-2023 The Khronos Group Inc.
+# Copyright 2014-2024 The Khronos Group Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 # Configure Vulkan spec Antora tree with generated files and transformed
@@ -45,7 +45,7 @@ spec_pages:
 	    ./config/copyright-ccby.adoc \
 	    ./config/copyright-spec.adoc \
 	    ./images/*.svg \
-	    `find ./gen ./chapters ./appendices -name '[A-Za-z]*.adoc'` \
+	    `find ./gen ./chapters ./appendices -name '[A-Za-z]*.adoc' | grep -v /vulkanscdeviations.adoc` \
 	    $(JSAPIMAP)
 
 # Rewrite proposals into the module directory, 'proposals' component

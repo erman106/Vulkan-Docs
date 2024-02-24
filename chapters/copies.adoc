@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -1172,10 +1172,10 @@ sname:VkCopyMemoryIndirectCommandNV is defined as:
 
 include::{generated}/api/structs/VkCopyMemoryIndirectCommandNV.adoc[]
 
-  * pname:srcAddress is the starting address of the source host or device
-    memory to copy from.
-  * pname:dstAddress is the starting address of the destination host or
-    device memory to copy to.
+  * pname:srcAddress is the starting address of the source device memory to
+    copy from.
+  * pname:dstAddress is the starting address of the destination device
+    memory to copy to.
   * pname:size is the size of the copy in bytes.
 
 .Valid Usage
@@ -1220,8 +1220,8 @@ Each region in pname:copyBufferAddress is copied from the source memory
 region to an image region in the destination image.
 If the destination image is of type ename:VK_IMAGE_TYPE_3D, the starting
 slice and number of slices to copy are specified in
-pname:pImageSubresources::pname:baseArrayLayer and
-pname:pImageSubresources::pname:layerCount respectively.
+pname:pImageSubresources->baseArrayLayer and
+pname:pImageSubresources->layerCount respectively.
 The copy must: be performed on a queue that supports indirect copy
 operations, see slink:VkPhysicalDeviceCopyMemoryIndirectPropertiesNV.
 
@@ -1262,13 +1262,6 @@ endif::VK_KHR_shared_presentable_image[]
     The specified pname:mipLevel of each region must: be less than the
     pname:mipLevels specified in slink:VkImageCreateInfo when pname:dstImage
     was created
-  * [[VUID-vkCmdCopyMemoryToImageIndirectNV-layerCount-09244]]
-    {empty}
-ifdef::VK_KHR_maintenance5[]
-    If the <<features-maintenance5, pname:maintenance5>> feature is not
-    enabled,
-endif::VK_KHR_maintenance5[]
-    pname:layerCount must: not be ename:VK_REMAINING_ARRAY_LAYERS
   * [[VUID-vkCmdCopyMemoryToImageIndirectNV-layerCount-08764]]
     If pname:layerCount is not ename:VK_REMAINING_ARRAY_LAYERS, the
     specified pname:baseArrayLayer {plus} pname:layerCount of each region
@@ -1311,8 +1304,8 @@ The sname:VkCopyMemoryToImageIndirectCommandNV is defined as:
 
 include::{generated}/api/structs/VkCopyMemoryToImageIndirectCommandNV.adoc[]
 
-  * pname:srcAddress is the starting address of the source host or device
-    memory to copy from.
+  * pname:srcAddress is the starting address of the source device memory to
+    copy from.
   * pname:bufferRowLength and pname:bufferImageHeight specify in texels a
     subregion of a larger two- or three-dimensional image in buffer memory,
     and control the addressing calculations.
@@ -1351,7 +1344,7 @@ endif::VK_NV_copy_memory_indirect[]
 
 
 [[copies-imagescaling]]
-== Image Copies with Scaling
+== Image Copies With Scaling
 
 [open,refpage='vkCmdBlitImage',desc='Copy regions of an image, potentially performing format conversion,',type='protos']
 --

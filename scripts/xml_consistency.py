@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Author(s):    Ryan Pavlik <ryan.pavlik@collabora.com>
+# Author(s):    Rylie Pavlik <rylie.pavlik@collabora.com>
 #
 # Purpose:      This script checks some "business logic" in the XML registry.
 
@@ -35,11 +35,13 @@ EXTENSION_NAME_VERSION_EXCEPTIONS = (
     'VK_EXT_shader_image_atomic_int64',
     'VK_KHR_video_decode_h264',
     'VK_KHR_video_decode_h265',
-    'VK_EXT_video_encode_h264',
-    'VK_EXT_video_encode_h265',
+    'VK_KHR_video_decode_av1',
+    'VK_KHR_video_encode_h264',
+    'VK_KHR_video_encode_h265',
     'VK_KHR_external_fence_win32',
     'VK_KHR_external_memory_win32',
     'VK_KHR_external_semaphore_win32',
+    'VK_KHR_index_type_uint8',
     'VK_KHR_shader_atomic_int64',
     'VK_KHR_shader_float16_int8',
     'VK_KHR_spirv_1_4',
@@ -92,6 +94,7 @@ CHECK_MEMBER_PNEXT_OPTIONAL_EXCEPTIONS = (
 CHECK_ARRAY_ENUMERATION_RETURN_CODE_EXCEPTIONS = (
     'vkGetDeviceFaultInfoEXT',
     'vkEnumerateDeviceLayerProperties',
+    'vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI',
 )
 
 # Exceptions to unknown structure type constants.
@@ -432,7 +435,7 @@ class Checker(XMLChecker):
 
         limittypeDiags = namedtuple('limittypeDiags', ['missing', 'invalid'])
         badFields = defaultdict(lambda : limittypeDiags(missing=[], invalid=[]))
-        validLimittypes = { 'min', 'max', 'pot', 'mul', 'bits', 'bitmask', 'range', 'struct', 'exact', 'noauto' }
+        validLimittypes = { 'min', 'max', 'not', 'pot', 'mul', 'bits', 'bitmask', 'range', 'struct', 'exact', 'noauto' }
         for member in info.getMembers():
             memberName = member.findtext('name')
             if memberName in ['sType', 'pNext']:

@@ -1,9 +1,7 @@
-// Copyright 2023 The Khronos Group Inc.
+// Copyright 2023-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
-
-ifdef::VK_NV_low_latency2[]
 
 [[low-latency2]]
 = Low Latency 2
@@ -26,6 +24,12 @@ If pname:pSleepModeInfo is `NULL`, fname:vkSetLatencySleepModeNV will
 disable low latency mode, low latency boost, and set the minimum present
 interval previously specified by slink:VkLatencySleepModeInfoNV to zero on
 pname:swapchain.
+As an exception to the normal rules for objects which are externally
+synchronized, the swapchain passed to fname:vkSetLatencySleepModeNV may: be
+simultaneously used by other threads in calls to functions other than
+flink:vkDestroySwapchainKHR.
+Access to the swapchain data associated with this extension must: be atomic
+within the implementation.
 
 include::{generated}/validity/protos/vkSetLatencySleepModeNV.adoc[]
 --
@@ -44,7 +48,7 @@ include::{generated}/api/structs/VkLatencySleepModeInfoNV.adoc[]
   * pname:lowLatencyBoost allows an application to hint to the GPU to
     increase performance to provide additional latency savings at a cost of
     increased power consumption.
-  * pname:minimumPresentIntervalUs is the microseconds between
+  * pname:minimumIntervalUs is the microseconds between
     flink:vkQueuePresentKHR calls for a given swapchain that
     flink:vkLatencySleepNV will enforce.
 
@@ -56,7 +60,7 @@ calls.
 include::{generated}/validity/structs/VkLatencySleepModeInfoNV.adoc[]
 --
 
-[open, refpage='vkLatencySleepNV',desc='Trigger low latency mode Sleep',type='protos']
+[open,refpage='vkLatencySleepNV',desc='Trigger low latency mode Sleep',type='protos']
 --
 To provide the synchronization primitive used to delay host CPU work for
 lower latency rendering, call:
@@ -71,7 +75,7 @@ include::{generated}/api/protos/vkLatencySleepNV.adoc[]
 
 fname:vkLatencySleepNV returns immediately.
 Applications should: use flink:vkWaitSemaphores with
-pname:pSleepInfo::pname:signalSemaphore to delay host CPU work.
+pname:pSleepInfo->signalSemaphore to delay host CPU work.
 CPU work refers to application work done before presenting which includes
 but is not limited to: input sampling, simulation, command buffer recording,
 command buffer submission, and present submission.
@@ -82,7 +86,7 @@ presents.
 include::{generated}/validity/protos/vkLatencySleepNV.adoc[]
 --
 
-[open, refpage='VkLatencySleepInfoNV',desc='Structure specifying the parameters of vkLatencySleepNV',type='structs']
+[open,refpage='VkLatencySleepInfoNV',desc='Structure specifying the parameters of vkLatencySleepNV',type='structs']
 --
 The sname:VkLatencySleepInfoNV structure is defined as:
 
@@ -105,7 +109,7 @@ include::{generated}/api/structs/VkLatencySleepInfoNV.adoc[]
 include::{generated}/validity/structs/VkLatencySleepInfoNV.adoc[]
 --
 
-[open, refpage='vkSetLatencyMarkerNV',desc='Pass in marker for timing info',type='protos']
+[open,refpage='vkSetLatencyMarkerNV',desc='Pass in marker for timing info',type='protos']
 --
 An application can: provide timestamps at various stages of its frame
 generation work by calling:
@@ -124,11 +128,17 @@ called to provide timestamps for the application's reference.
 These timestamps are returned with a call to flink:vkGetLatencyTimingsNV
 alongside driver provided timestamps at various points of interest with
 regards to latency within the application.
+As an exception to the normal rules for objects which are externally
+synchronized, the swapchain passed to fname:vkSetLatencyMarkerNV may: be
+simultaneously used by other threads in calls to functions other than
+flink:vkDestroySwapchainKHR.
+Access to the swapchain data associated with this extension must: be atomic
+within the implementation.
 
 include::{generated}/validity/protos/vkSetLatencyMarkerNV.adoc[]
 --
 
-[open, refpage='VkSetLatencyMarkerInfoNV',desc='Structure specifying the parameters of vkSetLatencyMarkerNV',type='structs']
+[open,refpage='VkSetLatencyMarkerInfoNV',desc='Structure specifying the parameters of vkSetLatencyMarkerNV',type='structs']
 --
 The sname:VkSetLatencyMarkerInfoNV structure is defined as:
 
@@ -177,7 +187,7 @@ flink:vkSetLatencyMarkerNV in the use cases described below:
     occurs.
 --
 
-[open, refpage='vkGetLatencyTimingsNV',desc='Get latency marker results',type='protos']
+[open,refpage='vkGetLatencyTimingsNV',desc='Get latency marker results',type='protos']
 --
 To get an array containing the newest collected latency data, call:
 
@@ -185,9 +195,6 @@ include::{generated}/api/protos/vkGetLatencyTimingsNV.adoc[]
 
   * pname:device is the device associated with pname:swapchain.
   * pname:swapchain is the swapchain to return data from.
-  * pname:pTimingCount is a pointer to an integer related to the number of
-    of previous frames of latency data available or queried, as described
-    below.
   * pname:pGetLatencyMarkerInfo is a pointer to a
     slink:VkGetLatencyMarkerInfoNV structure specifying the parameters for
     returning latency information.
@@ -196,17 +203,11 @@ The timings returned by fname:vkGetLatencyTimingsNV contain the timestamps
 requested from flink:vkSetLatencyMarkerNV and additional
 implementation-specific markers defined in
 slink:VkLatencyTimingsFrameReportNV.
-If pname:pTimings is `NULL`, then the maximum number of queryable frame data
-is returned in pname:pTimingCount.
-Otherwise, pname:pTimingCount must: point to a variable set by the user to
-the number of elements in the pname:pTimings array in
-pname:pGetLatencyMarkerInfo, and on return the variable is overwritten with
-the number of values actually written to pname:pTimings.
 
 include::{generated}/validity/protos/vkGetLatencyTimingsNV.adoc[]
 --
 
-[open, refpage='VkGetLatencyMarkerInfoNV',desc='Structure specifying the parameters of vkGetLatencyTimingsNV',type='structs']
+[open,refpage='VkGetLatencyMarkerInfoNV',desc='Structure specifying the parameters of vkGetLatencyTimingsNV',type='structs']
 --
 The sname:VkGetLatencyMarkerInfoNV structure is defined as:
 
@@ -215,9 +216,16 @@ include::{generated}/api/structs/VkGetLatencyMarkerInfoNV.adoc[]
   * pname:sType is a elink:VkStructureType value identifying this structure.
   * pname:pNext is either `NULL` or a pointer to a structure extending this
     structure.
+  * pname:timingCount is an integer related to the number of of previous
+    frames of latency data available or queried, as described below.
   * pname:pTimings is either `NULL` or a pointer to an array of
     slink:VkLatencyTimingsFrameReportNV structures.
 
+If pname:pTimings is `NULL` then the maximum number of queryable frame data
+is returned in pname:timingCount.
+Otherwise, pname:timingCount must: be set by the user to the number of
+elements in the pname:pTimings array, and on return the variable is
+overwritten with the number of values actually written to pname:pTimings.
 The elements of pname:pTimings are arranged in the order they were requested
 in, with the oldest data in the first entry.
 
@@ -286,7 +294,7 @@ include::{generated}/api/structs/VkLatencySubmissionPresentIdNV.adoc[]
 
 For any submission to be tracked with low latency mode pacing, it needs to
 be associated with other submissions in a given present.
-Applications :must include the VkLatencySubmissionPresentIdNV in the pNext
+Applications must: include the VkLatencySubmissionPresentIdNV in the pNext
 chain of flink:vkQueueSubmit to associate that submission with the
 pname:presentId present for low latency mode.
 
@@ -381,4 +389,3 @@ pname:pPresentModes.
 
 include::{generated}/validity/structs/VkLatencySurfaceCapabilitiesNV.adoc[]
 --
-endif::VK_NV_low_latency2[]

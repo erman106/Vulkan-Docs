@@ -1,4 +1,4 @@
-Copyright 2016-2023 The Khronos Group Inc.
+Copyright 2016-2024 The Khronos Group Inc.
 SPDX-License-Identifier: CC-BY-4.0
 
 Update Log for the Vulkan-Docs repository on GitHub. Updates are in reverse
@@ -11,6 +11,528 @@ public pull requests that have been accepted.
 
 "`VU`" as used below is an abbreviation for "`valid usage statement`", which
 appears frequently in the change log.
+
+-----------------------------------------------------
+
+Change log for February 16, 2024 Vulkan 1.3.278 spec update:
+
+Public Issues
+
+  * Restore orphaned vkQueuePresentKHR text to proper locations (public
+    issue 2008).
+  * Make ename:VK_ERROR_INCOMPATIBLE_SHADER_BINARY_EXT into a typo alias of
+    ename:VK_INCOMPATIBLE_SHADER_BINARY_EXT, since this is actually a
+    success code, not an error code (public issue 2295).
+
+Internal Issues
+
+  * Remove VK_INCOMPLETE success code in
+    vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI, and tag
+    pMaxWorkgroupSize as a pointer to a single returned structure, not an
+    array (internal issue 3715).
+  * Add missing `len` XML attributes for structure <member> tags which are
+    static arrays, but may not use the entire array (internal issue 3743).
+  * Fix VkPhysicalDeviceSurfaceInfo2KHR::surface VU 07919 and set
+    `noautovalidity` on corresponding XML member (internal MR 6429).
+  * Move sections in generated extension appendices down one heading level
+    in spec body (internal MR 6436).
+  * Remove `returnedonly` XML attribute from VkPhysicalDeviceSurfaceInfo2KHR
+    (internal MR 6436).
+  * Add `returnedonly` XML attribute to VkLatencyTimingsFrameReportNV
+    (internal MR 6463) and slink:VkPerformanceValueINTEL (internal MR 6461).
+  * Fix typo in vkCopyAccelerationStructureKHR VU 03728 (internal MR 6457).
+  * Remove invalid subpassLoadMS operation from description of
+    vkCmdSubpassShadingHUAWEI (internal MR 6454).
+  * Remove "`equal to`" clause from VU 09515 (internal MR 6458).
+  * Rearrange some function markup and add missing parameter descriptions
+    for vkCmdSetPerformanceStreamMarkerINTEL (internal issue 3785).
+  * Remove non-sensical VkGraphicsPipelineCreateInfo VUs 07717 and 07719
+    (internal MR 6468).
+  * Fix various 'a'/'an' typos (internal MR 6470).
+
+New Extensions
+
+  * VK_EXT_map_memory_placed
+  * VK_NV_shader_atomic_float16_vector
+
+-----------------------------------------------------
+
+Change log for February 1, 2024 Vulkan 1.3.277 spec update:
+
+Internal Issues
+
+  * Add bits to VkSubgroupFeatureFlagBits for VK_KHR_shader_subgroup_rotate
+    (internal issue 3773).
+  * Add missing `promotedto` XML attribute to VK_EXT_line_rasterization
+    (internal issue 3772).
+  * Fix VU missing shaderTileImageStencilReadAccess (internal issue 3778).
+  * Revert add VUs for VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT
+    (internal MR 6402).
+  * Add missing VkGraphicsPipelinCreateInfo multisample state VU (internal
+    MR 6408).
+  * Add VU for null pGeometries and ppGeometries (internal MR 6411).
+  * Fix typo in vkCmdWriteAccelerationStructuresPropertiesKHR VU (internal
+    MR 6417).
+  * Fix typos in some credits (internal MR 6423).
+  * Fix missing SPIR-V interface summary in some extension appendices
+    (internal MR 6425).
+  * Update VK_FORMAT_UNDEFINED for VK_ANDROID_external_format_resolve
+    (internal MR 6428)
+  * Fix vkGetDescriptorEXT VU for null pCombinedImageSampler (internal MR
+    6431).
+  * Remove redundant vkGetDescriptorEXT VU (internal MR 6434).
+
+New Extensions
+
+  * VK_KHR_video_decode_av1
+
+-----------------------------------------------------
+
+Change log for January 25, 2024 Vulkan 1.3.276 spec update:
+
+Github Issues
+
+  * Add missing VUs to structures taking elink:VkFormat parameters where
+    formats cannot be ename:VK_FORMAT_UNDEFINED (public issue 2165).
+  * Add EPUB generation target to the Makefile. NOTE: the `epub` target is
+    not supported by Khronos, but provided in case it is of use to people
+    building their own specification outputs. Please see
+    https://github.com/KhronosGroup/Vulkan-Docs/pull/2286 for more about
+    this (public PR 2286).
+
+Internal Issues
+
+  * Fix VU 06604 to allow omitting fragment shaders when creating a graphics
+    pipeline library (internal issue 3178).
+  * Clarify pname:maxCombinedClipAndCullDistances and related VUs (internal
+    issue 3325).
+  * Refactor apiext:VK_EXT_extended_dynamic_state3 and
+    apiext:VK_EXT_shader_object XML to include extension dependencies
+    (internal issue 3360).
+  * Add <<spirvenv-module-validation-standalone, Standalone SPIR-V
+    Validation>> VU banning code:PhysicalStorageBuffer pointers in shader
+    interfaces (internal issue 3677).
+  * Clarified image requirement for slink:VkSparseImageFormatProperties
+    (internal issue 3686).
+  * Add slink:VkQueryPoolCreateInfo VU requiring pname:pipelineStatistics
+    not be zero for that query type (internal issue 3722).
+  * Add slink:VkWriteDescriptorSet and flink:vkGetDescriptorEXT VUs banning
+    dlink:VK_NULL_HANDLE YCbCr descriptors (internal issue 3727).
+  * Clarify acceleration structure binding requirements in a NOTE for
+    flink:vkCreateAccelerationStructureKHR and new VUs for
+    flink:vkGetAccelerationStructureDeviceAddressKHR (internal issue 3735).
+  * Add `optional` attribute to shader parameter of flink:vkDestroyShaderEXT
+    (internal issue 3754).
+  * Add flink:vkSetEvent VU for pending command buffers (internal MR 6326).
+  * Allow pname:pMessage to be `NULL` in
+    slink:VkDebugUtilsMessengerCallbackDataEXT (internal MR 6331).
+  * Fix link to the H.265 specification (internal MR 6334).
+  * Remove redundant slink:VkDeferredOperationKHR check formerly in VUID
+    03677 (internal MR 6374).
+  * Add VU requiring pname:commandBuffer to not be protected for
+    flink:vkCmdBuildAccelerationStructuresKHR (internal MR 6375).
+  * Update `genvk.py` to not load generators when they are not available, as
+    may be the case in VulkanSC-Headers or downstream repositories (internal
+    MR 6384).
+  * Add `returnedonly` attributes to some Properties structs missing them
+    (internal MR 6392).
+  * Remove redundant slink:VkDebugUtilsMessengerCreateInfoEXT VU 01914
+    (internal MR 6404).
+  * Clarify the conditions under which <<shaders-helper-invocations, shader
+    helper invocations>> may become inactive (internal MR 6405).
+  * Fix typo in
+    slink:VkPipelineMultisampleStateCreateInfo::pname:sampleShadingEnable
+    member name (internal MR 6407).
+
+New Extensions
+
+  * Roadmap 2024 Extensions
+  ** VK_KHR_dynamic_rendering_local_read
+  ** VK_KHR_index_type_uint8 (promoted from EXT)
+  ** VK_KHR_line_rasterization (promoted from EXT)
+  ** VK_KHR_load_store_op_none (promoted from EXT)
+  ** VK_KHR_shader_expect_assume
+  ** VK_KHR_shader_float_controls2
+  ** VK_KHR_shader_maximal_reconvergence
+  ** VK_KHR_shader_quad_control
+  ** VK_KHR_shader_subgroup_rotate
+
+-----------------------------------------------------
+
+Change log for January 5, 2024 Vulkan 1.3.275 spec update:
+
+Github Issues
+
+  * Update `VK_EXT_image_compression_control` support query example (public
+    PR 2285).
+  * Fix markup issue in extension refpages (public issue 2288).
+
+Internal Issues
+
+  * Add requirements for WIN32 multithreading behavior and HWND handling to
+    flink:vkCreateWin32SurfaceKHR (internal issue 3402).
+  * Link to the appropriate etext:Vk*FlagBits type to improve "`must: be a
+    bit value`" terminology (internal issue 3728).
+  * Editorial and XML dependency updates for
+    apiext:VK_QCOM_render_pass_transform and
+    apiext:VK_QCOM_rotated_copy_commands (internal MR 6353).
+  * Add missing links to <<resources-image-views-identity-mappings,identity
+    swizzle>> in a few places where the term is used (internal MR 6354).
+  * Remove unreachable VU 07008 in flink:vkCmdEndQuery (internal MR 6356).
+  * Fix XML dependencies for apiext:VK_KHR_maintenance6 (internal MR 6361).
+  * Set XML `noautovalidity` attribute on all pipeline create flags
+    (internal MR 6364).
+  * Remove duplicate flink:vkCmdBindDescriptorSets VUID 06754 (internal MR
+    6364).
+  * Remove shader object VU 08401 which was inconsistent with specification
+    language (internal MR 6368).
+  * Editorial fix to use 'must:' normative term in VUs (internal MR 6370).
+  * Update buffer usage flag VUs to factor out common VUs to a new
+    commonvalidity file, and fix typo in
+    slink:VkDescriptorBufferBindingInfoEXT (internal MR 6371).
+  * Add flink:vkGetPrivateData VU requiring pname:objectHandle to be valid
+    (internal MR 6373).
+  * Remove redundant VkGraphicsPipelineCreateInfo VU 06680 and re-word VU
+    06679 to combine them (internal MR 6376).
+  * Fix field name typos for flink:vkGetDescriptorEXT VUs (internal MR
+    6378).
+  * Set `noautovalidity` XML attribute on some slink:VkCudaLaunchInfoNV
+    parameters (internal MR 6382).
+
+
+-----------------------------------------------------
+
+Change log for December 19, 2023 Vulkan 1.3.274 spec update:
+
+Github Issues
+
+  * Remove incorrect `optional` attribute on
+    slink:VkCudaLaunchInfoNV::pParams and pname:pExtras (public PR 2263).
+  * Require identity swizzle for attachments in slink:VkRenderingInfo
+    dynamic rendering VUs (public issue 2275).
+  * Make slink:VkRenderPassStripeBeginInfoARM::pname:pStripeInfos `const`
+    (public PR 2279).
+
+Internal Issues
+
+  * Add a <<introduction-ratified, Ratification>> section to the
+    introduction, to define "`ratified`" (as used in the extension appendix
+    metadata) in terms useful for developers (internal issues 3472, 3709).
+  * Allow fragment shader invocations to be merged for flat shaded
+    primitives in the <<fragops-shader, Fragment Shading>> section (internal
+    issue 3563).
+  * Add alignment VUs to flink:vkCmdDrawIndirectByteCountEXT (internal issue
+    3674).
+  * Fix etext:VK_*_CREATE_PROTECTED_BIT memory requirements reporting in the
+    <<resources-association, Resource Memory Association>> section (internal
+    issue 3694).
+  * Update common pipeline create info VUs for create flags (internal issue
+    3703).
+  * Fix slink:VkRenderingInfo dynamic rendering VUs for
+    slink:VkRenderingAttachmentInfo::pname:resolveImageView structures
+    (internal issue 3711).
+  * Minor changes to slink:VkGraphicsPipelinCreateInfo VUs to consistently
+    allow pname:pMultisampleState to be optional (internal MR 6312).
+  * Update flink:vkGetDescriptorEXT VUs for YCbCr
+    ename:VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER (internal MR 6318).
+  * Specify alignment requirement VUs for slink:VkSparseMemoryBind
+    pname:resourceOffset and pname:memoryOffset values (internal MR 6323).
+  * Clarify slink:VkDescriptorSetLayoutBinding::pname:stageFlags VU
+    (internal MR 6333).
+  * Fix some slink:VkGraphicsPipelineCreateInfo VUs to read properly without
+    some related extensions enabled in the build (internal MR 6335).
+  * Fix code:OutputTriangles -> code:OutputTrianglesNV in the description of
+    code:PrimitiveIndicesNV (internal MR 6338).
+  * Add capture replay VUs to slink:VkAccelerationStructureCreateInfoKHR to
+    ensure that the acceleration structure and buffer are identical and have
+    the same addresses (internal MR 6351).
+
+New Extensions
+
+  * VK_KHR_maintenance6
+  * Video Encode Extensions
+  ** VK_KHR_video_encode_queue (was provisional KHR)
+  ** VK_KHR_video_encode_h264 (promoted from provisional EXT)
+  ** VK_KHR_video_encode_h265 (promoted from provisional EXT)
+  ** VK_KHR_video_maintenance1
+  * VK_NV_per_stage_descriptor_set
+
+-----------------------------------------------------
+
+Change log for December 8, 2023 Vulkan 1.3.273 spec update:
+
+Github Issues
+
+  * Add missing `bitwidth` attribute for
+    elink:VkPhysicalDeviceSchedulingControlsFlagBitsARM (public issue 2277).
+
+Internal Issues
+
+  * Use the new <<glossary-pipeline-trace-ray, pipeline trace ray>> term to
+    refer to trace ray instructions, instead of the too-specific
+    code:OpTraceRayKHR (internal issue 3284).
+  * Improve description of <<pipelines-multiple, multiple pipeline
+    creation>>, refer to it from each ftext:vkCreate*Pipelines command, and
+    add style guide language to follow this pattern for future multiple
+    creation commands (internal issue 3707).
+  * Add common blit image and copy image VU that copying an image with the
+    same subresource must: be ename:VK_IMAGE_LAYOUT_GENERAL or
+    ename:VK_IMAGE_LAYOUT_SHARED_PRESENT_KHR (internal MR 6143).
+  * Markup improvements and correct use of normative must: for
+    flink:vkGetPhysicalDeviceOpticalFlowImageFormatsNV (internal MR 6315).
+  * Refer to "`shader calls`" in the <<memory-model, Memory Model>> chapter
+    refers to them as such, rather than "`invocation repacks`" (internal MR
+    6316).
+  * Make some flink:vkAcquireImageANDROID parameters `optional` in XML
+    (internal MR 6325).
+
+New Extensions
+
+  * apiext:VK_KHR_calibrated_timestamps
+  * apiext:VK_KHR_vertex_attribute_divisor
+
+-----------------------------------------------------
+
+Change log for December 1, 2023 Vulkan 1.3.272 spec update:
+
+Internal Issues
+
+  * Add common trace rays VU for dynamic stack size (internal issue 3687).
+  * Add shading rate function to apiext:VK_HUAWEI_cluster_culling_shader
+    (internal MR 6308).
+  * Consolidate WSI VUs (internal MR 6165).
+  * Relax VkImageCreateInfo VU 02397 to allow slink:VkExternalFormatANDROID
+    images to include input attachment images (internal MR 6196).
+  * Clarify description of promotion in the
+    <<extendingvulkan-extensions-extensiondependencies, Extension
+    Dependencies>> section, and of the XML `promotedto` attribute in the
+    registry schema document, to draw attention to allowed differences
+    between an extension and what it is promoted to (internal MR 6301).
+  * Remove duplicate common draw validity VU 07934 (internal MR 6303).
+  * Update VU for VkSubpassDescription2 to cover sample count constraints
+    for apiext:VK_NV_framebuffer_mixed_samples as well as
+    apiext:VK_AMD_mixed_attachment_samples (internal MR 6306).
+
+New Extensions
+
+  * apiext:VK_EXT_layer_settings
+  * apiext:VK_ARM_render_pass_striped
+
+-----------------------------------------------------
+
+Change log for November 17, 2023 Vulkan 1.3.271 spec update:
+
+Github Issues
+
+  * Add zero stride VU for flink:vkGetQueryPoolResults and
+    flink:vkCmdCopyQueryPoolResults (public issue 2265).
+  * Move pname:timingCount to flink:vkGetLatencyMarkerInfoNV for
+    apiext:VK_NV_low_latency2 (public issue 2269).
+
+Internal Issues
+
+  * Allow vkCmdBeginTransformFeedbackEXT to be called without an active
+    graphics pipeline bound when using shader objects (internal issue 2785).
+  * Autogenerate SPIR-V extension dependencies for extension appendices, and
+    remove explicit dependencies now (or already) generated by the scripts
+    (internal issue 3678).
+  * Consolidate synchronization VUs (internal MR 6164).
+  * Rewrite some spec language for apiext:VK_NV_cuda_kernel_launch to be
+    internally consistent and follow style guidelines (internal MR 6234).
+  * Fix names of apiext:VK_NV_cuda_kernnel_launch enums for use with
+    apiext:VK_EXT_debug_report (internal MR 6235).
+  * Fix common VUs for slink:VkDeviceImageSubresourceInfoKHR to insert
+    correct image parameter name (internal MR 6264).
+  * Document some missing apiext:VK_EXT_multi_draw interactions in the
+    extension appendix (internal MR 6276).
+  * Clarify descriptions of etext:*_MICROMAP_BIT_EXT pipeline flags
+    (internal MR 6277).
+  * Make pname:deviceRenderAreaCount VU language consistent (internal MR
+    6288).
+  * Make slink:VkCuModuleCreateInfoNVX::pname:dataSize `optional` in XML
+    (internal MR 6291).
+  * Add `not` XML `limittype` attribute value for features that are
+    supported when the capability value is false (internal MR 6292).
+  * Mark apiext:VK_EXT_nested_command_buffer as ratified (internal MR 6293).
+  * Add commonvalidity file for query result VUs (internal MR 6295).
+  * Autogenerate "`API Interactions`" section in extension appendices from
+    XML (internal MR 6297).
+
+
+-----------------------------------------------------
+
+Change log for November 9, 2023 Vulkan 1.3.270 spec update:
+
+Github Issues
+
+  * Remove redundant reference to ename:VK_PIPELINE_STAGE_2_HOST_BIT in
+    flink:vkCmdWaitEvents2 VU 03842 (public issue 1986).
+  * Fix typo in <<limits-computeCapabilityMajor>> description (as described
+    in public PR 2260).
+  * Add apiext:VK_KHR_timeline_semaphore dependency for
+    apiext:VK_NV_low_latency2 (public PR 2264).
+  * Restrict cooperative matrix support to compute stages and subgroup scope
+    in slink:VkPhysicalDeviceCooperativeMatrixPropertiesKHR and
+    slink:VkCooperativeMatrixPropertiesKHR (public SPIRV-Registry issue
+    210).
+  * Add additional Vulkan-Hpp headers to the trivial compile test used in CI
+    (public Vulkan-Hpp issue 1721).
+
+Internal Issues
+
+  * Update common draw VU 06179 to only apply when the
+    pname:dynamicRenderingUnusedAttachments feature is not enabled.
+    (internal issue 3645).
+  * Consolidate VUs in many files (internal MRs 6151, 6152, 6158, 6174).
+  * Add slink:VkDescriptorPoolCreateInfo VU requiring
+    slink:VkDescriptorPoolInlineUniformBlockCreateInfo in some situations
+    (internal MR 6186).
+  * Remove redundant apiext:VK_KHR_maintenance5 VUs constraining
+    pname:layerCount in flink:vkCmdCopyMemoryToImageIndirectNV and common
+    image copy / blit / resolve VUs (internal MR 6211).
+  * Clean up Issues section of apiext:VK_KHR_display appendix (internal MR
+    6219).
+  * Remove redundant flink:vkCmdBindPipeline VU 06653 (internal MR 6226).
+  * Update description of `EXT` extensions in style guide (internal MR
+    6236).
+  * Revert removal of flink:vkCmdSetLogicOpEnableEXT VU 07366 (internal MR
+    6240).
+  * Fix typo in <<primsrast-lines-basic, Basic Line Segment Rasterization>>
+    (internal MR 6244).
+  * Add missing `const` to
+    sname:VkDirectDriverLoadingListLUNARG::pname:pNext in `vk.xml` (internal
+    MR 6245).
+  * Add missing slink:VkDescriptorImageInfo VUs (internal MR 6248).
+  * Fix AMD/NV mixed-sample extension VUs that were mistakenly unified in
+    `renderpass.adoc` (internal MR 6249).
+  * Fix typos in apiext:VK_EXT_opacity_micromap appendix (internal MR 6251).
+  * Add guarantees for implementation synchronization in
+    flink:vkSetLatencyMarkerNV and flink:vkSetLatencySleepModeNV (internal
+    MR 6254).
+  * Add texel buffer limits for flink:vkGetDescriptorEXT (internal MR 6255).
+  * Remove redundant slink:VkDescriptorSetAllocateInfo VU 08010 (internal MR
+    6258).
+  * Clean up unreferenced capabilities blocks in
+    `profiles/VP_KHR_roadmap_2022.json` (internal MR 6261).
+  * Remove duplicate slink:VkGraphicsPipelineCreateInfo VU 09041 (internal
+    MR 6266).
+  * Clarify common acceleration structure build VUs for pname:firstVertex
+    and pname:primitiveCount (internal MR 6273).
+
+New Extensions
+
+  * apiext:VK_IMG_relaxed_line_rasterization
+
+-----------------------------------------------------
+
+Change log for October 20, 2023 Vulkan 1.3.269 spec update:
+
+Github Issues
+
+  * Add and correct a couple of `optional` attributes in the XML (public
+    pull request 2252).
+
+Internal Issues
+
+  * Add flink:vkGetQueryPoolResults and flink:vkCmdCopyQueryPoolResults VUs
+    requiring that queries be initialized (internal issue 3638).
+  * Harmonize shader object state VUs with spec language in common draw,
+    common draw vertex binding, slink:VkShaderCreateInfoEXT, and the
+    <<shaders-objects-state, Setting State>> section (internal MR 6128).
+  * Consolidate VUs in many files (internal MRs 6136, 6137, 6140, 6154,
+    6155, 6157).
+  * Fix common blit image, copy image, and resolve image VUs for
+    interactions with ename:VK_REMAINING_ARRAY_LAYERS when built without
+    apiext:VK_KHR_maintenance5 (internal MR 6204).
+  * Remove slink:VkClearAttachment VU 00021 for "`validating`" a union type
+    (internal MR 6222).
+  * Disallow image creation with
+    ename:VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT and any
+    etext:VK_IMAGE_CREATE_SPARSE_*_BIT flags (internal MR 6223).
+  * Combine slink:VkGraphicsPipelineCreateInfo VUs 06575 and 06603 (internal
+    MR 6225).
+  * Markup fixes for apiext:VK_NV_low_latency2 (internal MR 6228).
+  * Add a VU for the
+    slink:VkDecompressMemoryRegionNV::pname:decompressedSize limit, and fix
+    language describing parameters in slink:VkCopyMemoryIndirectCommandNV
+    (internal MR 6230).
+
+New Extensions
+
+  * apiext:VK_ARM_scheduling_controls
+  * apiext:VK_NV_cuda_kernel_launch
+
+-----------------------------------------------------
+
+Change log for October 13, 2023 Vulkan 1.3.268 spec update:
+
+Github Issues
+
+  * Restrict flink:vkCmdSetEvent2 ptext:*stageMask parameters to not include
+    ename:VK_PIPELINE_STAGE_2_HOST_BIT (public issue 1996).
+  * Fix <<formats-non-packed, byte mapping table>> for
+    ename:VK_FORMAT_A8_UNORM_KHR (public issue 2234).
+  * Assign VUIDs to new VUs that were overlooked in the previous spec update
+    (public issue 2244).
+  * Add a spec build test and refactor Makefile to allow using a different
+    repository root directory path, for use with the tests (public PR 2248).
+
+Internal Issues
+
+  * Add VUs to slink:VkCopyMemoryToImageInfoEXT and
+    slink:VkCopyImageToMemoryInfoEXT requiring zero row-length /
+    image-height when doing a host copy with
+    ename:VK_HOST_IMAGE_COPY_MEMCPY_EXT (internal issue 3619).
+  * Clarify that fragment shading rate attachments cannot be cleared in VU
+    for slink:VkRenderPassCreateInfo2 and language for
+    slink:VkAttachmentDescription2KHR (internal issue 3634).
+  * Add VUs to slink:VkSparseImageMemoryBind requiring a non-zero extent
+    (internal issue 3635).
+  * Consolidate VUs in many files (internal MRs 6138, 6141. 6142, 6147,
+    6149, 6153, 6161, 6162, 6167, 6170, 6194, and 6197).
+  * Use title case consistently for chapter and section titles, and add it
+    to the style guide (internal MR 6201).
+
+-----------------------------------------------------
+
+Change log for October 6, 2023 Vulkan 1.3.267 spec update:
+
+Internal Issues
+
+  * Detect old wording of boilerplate pname:pNext description in CI
+    (internal issue 2186).
+  * Clarify ename:VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT with regard
+    to queue submission (internal issue 3627).
+  * Update apiext:VK_NV_low_latency2 pname:pInfo pointers to be `const`
+    (internal issue 3637).
+  * Add slink:VkDescriptorSetLayoutBindingFlagsCreateInfo and
+    slink:VkDescriptorSetAllocateInfo VUs for
+    ename:VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT (internal MR
+    6127).
+  * Consolidate VUs in `access_mask_2_common.adoc` (internal MR 6166).
+  * Fix
+    slink:VkGraphicsPipelineCreateInfo::pname:pColorBlendState->attachmentCount
+    VU to apply only when the blend state is not dynamic (internal MR 6171).
+  * Add missing object types to the <<debugging-object-types, VkObjectType
+    and Vulkan Handle Relationship>> table (internal MR 6175).
+  * Fix typo ("`Non-private`" -> "`Private`") in the description of
+    <<memory-model-non-private, private memory operations obeying program
+    order>> (internal MR 6176).
+  * Add reflow test for list continuation in VUs (internal MR 6177).
+  * Correct type of flink:vkQueueNotifyOutOfBandNV::pname:pQueueTypeInfo
+    (internal MR 6179).
+  * Add XML `len` attribute for slink:VkFrameBoundaryEXT::pname:pTag order>>
+    (internal MR 6180).
+  * Consolidate VUs for apiext:VK_ANDROID_external_format_resolve (internal
+    MR 6183).
+  * Upstream Vulkan SC 1.0.13 changes to this repository (internal vulkansc
+    issue 179).
+
+New Extensions
+
+  * apiext:VK_EXT_nested_command_buffer
+  * apiext:VK_NV_extended_sparse_address_space
+
 
 -----------------------------------------------------
 
@@ -112,7 +634,7 @@ Github Issues
     specifications (public issue 2193).
   * Explicitly state that VkDeviceOrHostAddressConstKHR is also ignored
     (public PR 2205).
-  * Fix parameter typo "`cordinates`" and correct markup (public PR 2206).
+  * Fix parameter typo "`coordinates`" and correct markup (public PR 2206).
   * Cleanup slink:VkGraphicspipelineCreateInfo VUs for code:PointSize in the
     context of apiext:VK_KHR_maintenance5 (public Vulkan-ValidationLayers
     issue 6382).
@@ -3273,7 +3795,7 @@ Internal Issues:
     VU 06271 (internal issue 2917).
   * Use etext:VK_VERSION_m_n instead of etext:VK_API_VERSION_m_n in
     `<spirvcapability>` and `<spirvextension>` XML tags for consistency with
-    other version / extension reqiurements. Note that there is a possibility
+    other version / extension requirements. Note that there is a possibility
     of this change affecting downstream consumers of the XML (internal issue
     2896).
   * Add refpage cross-reference from slink:VkSwapchainKHR to

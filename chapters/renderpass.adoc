@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -44,6 +44,10 @@ suspended earlier in <<synchronization-submission-order, submission order>>.
     be enabled
   * [[VUID-vkCmdBeginRendering-commandBuffer-06068]]
     If pname:commandBuffer is a secondary command buffer,
+ifdef::VK_EXT_nested_command_buffer[]
+    and the <<features-nestedCommandBuffer, pname:nestedCommandBuffer>>
+    feature is not enabled,
+endif::VK_EXT_nested_command_buffer[]
     pname:pRenderingInfo->flags must: not include
     ename:VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT
 ****
@@ -124,14 +128,31 @@ writes to the corresponding location by a fragment are discarded.
   * [[VUID-VkRenderingInfo-viewMask-06069]]
     If pname:viewMask is `0`, pname:layerCount must: not be `0`
   * [[VUID-VkRenderingInfo-multisampledRenderToSingleSampled-06857]]
-    If none of the `apiext:VK_AMD_mixed_attachment_samples` extension, the
-    `apiext:VK_NV_framebuffer_mixed_samples` extension, or the
-    <<features-multisampledRenderToSingleSampled,
-    pname:multisampledRenderToSingleSampled>> feature are enabled,
     pname:imageView members of pname:pDepthAttachment,
     pname:pStencilAttachment, and elements of pname:pColorAttachments that
     are not dlink:VK_NULL_HANDLE must: have been created with the same
     pname:sampleCount
+ifdef::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples,VK_EXT_multisampled_render_to_single_sampled[]
+    , if none of the following are enabled:
+ifdef::VK_AMD_mixed_attachment_samples[]
+  ** The `apiext:VK_AMD_mixed_attachment_samples` extension
+endif::VK_AMD_mixed_attachment_samples[]
+ifdef::VK_NV_framebuffer_mixed_samples[]
+  ** The `apiext:VK_NV_framebuffer_mixed_samples` extension
+endif::VK_NV_framebuffer_mixed_samples[]
+ifdef::VK_EXT_multisampled_render_to_single_sampled[]
+  ** The <<features-multisampledRenderToSingleSampled,
+    pname:multisampledRenderToSingleSampled>> feature,
+endif::VK_EXT_multisampled_render_to_single_sampled[]
+endif::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples,VK_EXT_multisampled_render_to_single_sampled[]
+  * [[VUID-VkRenderingInfo-imageView-09429]]
+    pname:imageView members of elements of pname:pColorAttachments that are
+    not dlink:VK_NULL_HANDLE must: have been created with the same
+    pname:sampleCount
+ifdef::VK_EXT_multisampled_render_to_single_sampled[]
+    , if the <<features-multisampledRenderToSingleSampled,
+    pname:multisampledRenderToSingleSampled>> feature is not enabled
+endif::VK_EXT_multisampled_render_to_single_sampled[]
   * [[VUID-VkRenderingInfo-None-08994]]
 ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
     If slink:VkDeviceGroupRenderPassBeginInfo::pname:deviceRenderAreaCount
@@ -163,73 +184,61 @@ ifdef::VK_EXT_multisampled_render_to_single_sampled[]
     ename:VK_IMAGE_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT in
     their slink:VkImageCreateInfo::pname:flags
 endif::VK_EXT_multisampled_render_to_single_sampled[]
-ifndef::VK_VERSION_1_1,VK_KHR_device_group[]
-  * [[VUID-VkRenderingInfo-renderArea-06071]]
+  * [[VUID-VkRenderingInfo-pNext-06077]]
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
+    If the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0,
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
     pname:renderArea.offset.x must: be greater than or equal to 0
-  * [[VUID-VkRenderingInfo-renderArea-06072]]
+  * [[VUID-VkRenderingInfo-pNext-06078]]
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
+    If the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0,
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
     pname:renderArea.offset.y must: be greater than or equal to 0
-  * [[VUID-VkRenderingInfo-renderArea-06073]]
-    The sum of pname:renderArea.offset.x and pname:renderArea.extent.width
-    must: be less than or equal to <<limits-maxFramebufferWidth,
-    pname:maxFramebufferWidth>>
-  * [[VUID-VkRenderingInfo-renderArea-06074]]
-    The sum of pname:renderArea.offset.y and pname:renderArea.extent.height
-    must: be less than or equal to <<limits-maxFramebufferHeight,
-    pname:maxFramebufferHeight>>
-  * [[VUID-VkRenderingInfo-imageView-06075]]
-    The width of the pname:imageView member of any element of
+  * [[VUID-VkRenderingInfo-pNext-07815]]
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
+    If the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0,
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
+    the sum of pname:renderArea.extent.width and pname:renderArea.offset.x
+    must: be less than or equal to
+    <<limits-maxFramebufferWidth,pname:maxFramebufferWidth>>
+  * [[VUID-VkRenderingInfo-pNext-07816]]
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
+    If the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0,
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
+    the sum of pname:renderArea.extent.height and pname:renderArea.offset.y
+    must: be less than or equal to
+    <<limits-maxFramebufferWidth,pname:maxFramebufferHeight>>
+  * [[VUID-VkRenderingInfo-pNext-06079]]
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
+    If the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0,
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
+    the width of the pname:imageView member of any element of
     pname:pColorAttachments, pname:pDepthAttachment, or
     pname:pStencilAttachment that is not dlink:VK_NULL_HANDLE must: be
     greater than or equal to [eq]#pname:renderArea.offset.x {plus}
     pname:renderArea.extent.width#
-  * [[VUID-VkRenderingInfo-imageView-06076]]
-    The height of the pname:imageView member of any element of
+  * [[VUID-VkRenderingInfo-pNext-06080]]
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
+    If the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0,
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
+    the height of the pname:imageView member of any element of
     pname:pColorAttachments, pname:pDepthAttachment, or
     pname:pStencilAttachment that is not dlink:VK_NULL_HANDLE must: be
     greater than or equal to [eq]#pname:renderArea.offset.y {plus}
     pname:renderArea.extent.height#
-endif::VK_VERSION_1_1,VK_KHR_device_group[]
 ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
-  * [[VUID-VkRenderingInfo-pNext-06077]]
-    If the pname:pNext chain does not contain
-    slink:VkDeviceGroupRenderPassBeginInfo or its
-    pname:deviceRenderAreaCount member is equal to 0,
-    pname:renderArea.offset.x must: be greater than or equal to 0
-  * [[VUID-VkRenderingInfo-pNext-06078]]
-    If the pname:pNext chain does not contain
-    slink:VkDeviceGroupRenderPassBeginInfo or its
-    pname:deviceRenderAreaCount member is equal to 0,
-    pname:renderArea.offset.y must: be greater than or equal to 0
-  * [[VUID-VkRenderingInfo-pNext-07815]]
-    If the pname:pNext chain does not contain
-    slink:VkDeviceGroupRenderPassBeginInfo or its
-    pname:deviceRenderAreaCount member is equal to 0, the sum of
-    pname:renderArea.extent.width and pname:renderArea.offset.x must: be
-    less than or equal to
-    <<limits-maxFramebufferWidth,pname:maxFramebufferWidth>>
-  * [[VUID-VkRenderingInfo-pNext-07816]]
-    If the pname:pNext chain does not contain
-    slink:VkDeviceGroupRenderPassBeginInfo or its
-    pname:deviceRenderAreaCount member is equal to 0, the sum of
-    pname:renderArea.extent.height and pname:renderArea.offset.y must: be
-    less than or equal to
-    <<limits-maxFramebufferWidth,pname:maxFramebufferHeight>>
-  * [[VUID-VkRenderingInfo-pNext-06079]]
-    If the pname:pNext chain does not contain
-    slink:VkDeviceGroupRenderPassBeginInfo or its
-    pname:deviceRenderAreaCount member is equal to 0, the width of the
-    pname:imageView member of any element of pname:pColorAttachments,
-    pname:pDepthAttachment, or pname:pStencilAttachment that is not
-    dlink:VK_NULL_HANDLE must: be greater than or equal to
-    [eq]#pname:renderArea.offset.x {plus} pname:renderArea.extent.width#
-  * [[VUID-VkRenderingInfo-pNext-06080]]
-    If the pname:pNext chain does not contain
-    slink:VkDeviceGroupRenderPassBeginInfo or its
-    pname:deviceRenderAreaCount member is equal to 0, the height of the
-    pname:imageView member of any element of pname:pColorAttachments,
-    pname:pDepthAttachment, or pname:pStencilAttachment that is not
-    dlink:VK_NULL_HANDLE must: be greater than or equal to
-    [eq]#pname:renderArea.offset.y {plus} pname:renderArea.extent.height#
   * [[VUID-VkRenderingInfo-pNext-06083]]
     If the pname:pNext chain contains
     slink:VkDeviceGroupRenderPassBeginInfo, the width of the pname:imageView
@@ -262,6 +271,17 @@ endif::VK_VERSION_1_1,VK_KHR_device_group[]
     of an element of pname:pColorAttachments is not dlink:VK_NULL_HANDLE,
     that pname:imageView must: have been created with
     ename:VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
+  * [[VUID-VkRenderingInfo-colorAttachmentCount-09476]]
+    If pname:colorAttachmentCount is not `0` and there is an element of
+    pname:pColorAttachments with
+ifdef::VK_ANDROID_external_format_resolve[]
+    either its pname:resolveMode member set to
+    ename:VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_ANDROID, or
+endif::VK_ANDROID_external_format_resolve[]
+    its pname:imageView member not dlink:VK_NULL_HANDLE, and its
+    pname:resolveMode member not set to ename:VK_RESOLVE_MODE_NONE, the
+    pname:resolveImageView member of that element of pname:pColorAttachments
+    must: have been created with ename:VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
   * [[VUID-VkRenderingInfo-pDepthAttachment-06547]]
     If pname:pDepthAttachment is not `NULL` and
     pname:pDepthAttachment->imageView is not dlink:VK_NULL_HANDLE,
@@ -271,6 +291,11 @@ endif::VK_VERSION_1_1,VK_KHR_device_group[]
     If pname:pDepthAttachment is not `NULL` and
     pname:pDepthAttachment->imageView is not dlink:VK_NULL_HANDLE,
     pname:pDepthAttachment->imageView must: have been created with
+    ename:VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
+  * [[VUID-VkRenderingInfo-pDepthAttachment-09477]]
+    If pname:pDepthAttachment is not `NULL` and
+    pname:pDepthAttachment->resolveMode is not ename:VK_RESOLVE_MODE_NONE,
+    pname:pDepthAttachment->resolveImageView must: have been created with
     ename:VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
   * [[VUID-VkRenderingInfo-pStencilAttachment-06548]]
     If pname:pStencilAttachment is not `NULL` and
@@ -282,6 +307,11 @@ endif::VK_VERSION_1_1,VK_KHR_device_group[]
     pname:pStencilAttachment->imageView is not dlink:VK_NULL_HANDLE,
     pname:pStencilAttachment->imageView must: have been created with a
     stencil usage including
+    ename:VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
+  * [[VUID-VkRenderingInfo-pStencilAttachment-09478]]
+    If pname:pStencilAttachment is not `NULL` and
+    pname:pStencilAttachment->resolveMode is not ename:VK_RESOLVE_MODE_NONE,
+    pname:pStencilAttachment->resolveImageView must: have been created with
     ename:VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
   * [[VUID-VkRenderingInfo-colorAttachmentCount-06090]]
     If pname:colorAttachmentCount is not `0` and the pname:imageView member
@@ -444,29 +474,31 @@ ifdef::VK_VERSION_1_1,VK_KHR_multiview[]
     in the pname:pNext chain is not dlink:VK_NULL_HANDLE, and pname:viewMask
     is `0`, pname:imageView must: have a pname:layerCount equal to `1`
 endif::VK_VERSION_1_1,VK_KHR_multiview[]
-ifndef::VK_VERSION_1_1,VK_KHR_device_group[]
-  * [[VUID-VkRenderingInfo-imageView-06110]]
-    If the pname:imageView member of a
+  * [[VUID-VkRenderingInfo-pNext-06112]]
+    If
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
+    the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0 and
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
+    the pname:imageView member of a
     slink:VkRenderingFragmentDensityMapAttachmentInfoEXT structure included
     in the pname:pNext chain is not dlink:VK_NULL_HANDLE, pname:imageView
     must: have a width greater than or equal to
     latexmath:[\left\lceil{\frac{renderArea_{x}+renderArea_{width}}{maxFragmentDensityTexelSize_{width}}}\right\rceil]
-  * [[VUID-VkRenderingInfo-imageView-06111]]
-    If the pname:imageView member of a
+  * [[VUID-VkRenderingInfo-pNext-06114]]
+    If
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
+    the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0 and
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
+    the pname:imageView member of a
     slink:VkRenderingFragmentDensityMapAttachmentInfoEXT structure included
     in the pname:pNext chain is not dlink:VK_NULL_HANDLE, pname:imageView
     must: have a height greater than or equal to
     latexmath:[\left\lceil{\frac{renderArea_{y}+renderArea_{height}}{maxFragmentDensityTexelSize_{height}}}\right\rceil]
-endif::VK_VERSION_1_1,VK_KHR_device_group[]
 ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
-  * [[VUID-VkRenderingInfo-pNext-06112]]
-    If the pname:pNext chain does not contain
-    slink:VkDeviceGroupRenderPassBeginInfo or its
-    pname:deviceRenderAreaCount member is equal to 0 and the pname:imageView
-    member of a slink:VkRenderingFragmentDensityMapAttachmentInfoEXT
-    structure included in the pname:pNext chain is not dlink:VK_NULL_HANDLE,
-    pname:imageView must: have a width greater than or equal to
-    latexmath:[\left\lceil{\frac{renderArea_{x}+renderArea_{width}}{maxFragmentDensityTexelSize_{width}}}\right\rceil]
   * [[VUID-VkRenderingInfo-pNext-06113]]
     If the pname:pNext chain contains a
     slink:VkDeviceGroupRenderPassBeginInfo structure, its
@@ -476,14 +508,6 @@ ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
     pname:imageView must: have a width greater than or equal to
     latexmath:[\left\lceil{\frac{pDeviceRenderAreas_{x}+pDeviceRenderAreas_{width}}{maxFragmentDensityTexelSize_{width}}}\right\rceil]
     for each element of pname:pDeviceRenderAreas
-  * [[VUID-VkRenderingInfo-pNext-06114]]
-    If the pname:pNext chain does not contain
-    slink:VkDeviceGroupRenderPassBeginInfo or its
-    pname:deviceRenderAreaCount member is equal to 0 and the pname:imageView
-    member of a slink:VkRenderingFragmentDensityMapAttachmentInfoEXT
-    structure included in the pname:pNext chain is not dlink:VK_NULL_HANDLE,
-    pname:imageView must: have a height greater than or equal to
-    latexmath:[\left\lceil{\frac{renderArea_{y}+renderArea_{height}}{maxFragmentDensityTexelSize_{height}}}\right\rceil]
   * [[VUID-VkRenderingInfo-pNext-06115]]
     If the pname:pNext chain contains a
     slink:VkDeviceGroupRenderPassBeginInfo structure, its
@@ -503,29 +527,31 @@ endif::VK_VERSION_1_1,VK_KHR_device_group[]
     pname:pColorAttachments
 endif::VK_EXT_fragment_density_map[]
 ifdef::VK_KHR_fragment_shading_rate[]
-ifndef::VK_VERSION_1_1,VK_KHR_device_group[]
-  * [[VUID-VkRenderingInfo-imageView-06117]]
-    If the pname:imageView member of a
+  * [[VUID-VkRenderingInfo-pNext-06119]]
+    If
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
+    the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0 and
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
+    the pname:imageView member of a
     slink:VkRenderingFragmentShadingRateAttachmentInfoKHR structure included
     in the pname:pNext chain is not dlink:VK_NULL_HANDLE, pname:imageView
     must: have a width greater than or equal to
     latexmath:[\left\lceil{\frac{renderArea_{x}+renderArea_{width}}{shadingRateAttachmentTexelSize_{width}}}\right\rceil]
-  * [[VUID-VkRenderingInfo-imageView-06118]]
-    If the pname:imageView member of a
+  * [[VUID-VkRenderingInfo-pNext-06121]]
+    If
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
+    the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0 and
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
+    the pname:imageView member of a
     slink:VkRenderingFragmentShadingRateAttachmentInfoKHR structure included
     in the pname:pNext chain is not dlink:VK_NULL_HANDLE, pname:imageView
     must: have a height greater than or equal to
     latexmath:[\left\lceil{\frac{renderArea_{y}+renderArea_{height}}{shadingRateAttachmentTexelSize_{height}}}\right\rceil]
-endif::VK_VERSION_1_1,VK_KHR_device_group[]
 ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
-  * [[VUID-VkRenderingInfo-pNext-06119]]
-    If the pname:pNext chain does not contain
-    slink:VkDeviceGroupRenderPassBeginInfo or its
-    pname:deviceRenderAreaCount member is equal to 0 and the pname:imageView
-    member of a slink:VkRenderingFragmentShadingRateAttachmentInfoKHR
-    structure included in the pname:pNext chain is not dlink:VK_NULL_HANDLE,
-    pname:imageView must: have a width greater than or equal to
-    latexmath:[\left\lceil{\frac{renderArea_{x}+renderArea_{width}}{shadingRateAttachmentTexelSize_{width}}}\right\rceil]
   * [[VUID-VkRenderingInfo-pNext-06120]]
     If the pname:pNext chain contains a
     slink:VkDeviceGroupRenderPassBeginInfo structure, its
@@ -535,14 +561,6 @@ ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
     pname:imageView must: have a width greater than or equal to
     latexmath:[\left\lceil{\frac{pDeviceRenderAreas_{x}+pDeviceRenderAreas_{width}}{shadingRateAttachmentTexelSize_{width}}}\right\rceil]
     for each element of pname:pDeviceRenderAreas
-  * [[VUID-VkRenderingInfo-pNext-06121]]
-    If the pname:pNext chain does not contain
-    slink:VkDeviceGroupRenderPassBeginInfo or its
-    pname:deviceRenderAreaCount member is equal to 0 and the pname:imageView
-    member of a slink:VkRenderingFragmentShadingRateAttachmentInfoKHR
-    structure included in the pname:pNext chain is not dlink:VK_NULL_HANDLE,
-    pname:imageView must: have a height greater than or equal to
-    latexmath:[\left\lceil{\frac{renderArea_{y}+renderArea_{height}}{shadingRateAttachmentTexelSize_{height}}}\right\rceil]
   * [[VUID-VkRenderingInfo-pNext-06122]]
     If the pname:pNext chain contains a
     slink:VkDeviceGroupRenderPassBeginInfo structure, its
@@ -612,6 +630,12 @@ endif::VK_QCOM_multiview_per_view_render_areas[]
     Valid attachments specified by this structure must: not be bound to
     memory locations that are bound to any other valid attachments specified
     by this structure
+ifdef::VK_EXT_nested_command_buffer[]
+  * [[VUID-VkRenderingInfo-flags-09381]]
+    If pname:flags includes ename:VK_RENDERING_CONTENTS_INLINE_BIT_EXT then
+    the <<features-nestedCommandBuffer, pname:nestedCommandBuffer>> feature
+    must: be enabled
+endif::VK_EXT_nested_command_buffer[]
 ifdef::VK_ANDROID_external_format_resolve[]
   * [[VUID-VkRenderingInfo-pDepthAttachment-09318]]
     pname:pDepthAttachment->resolveMode must: not be
@@ -638,6 +662,68 @@ ifdef::VK_KHR_fragment_shading_rate[]
     must: be dlink:VK_NULL_HANDLE
 endif::VK_KHR_fragment_shading_rate[]
 endif::VK_ANDROID_external_format_resolve[]
+ifdef::VK_ARM_render_pass_striped[]
+  * [[VUID-VkRenderingInfo-pNext-09535]]
+    If the pname:pNext chain contains a slink:VkRenderPassStripeBeginInfoARM
+    structure, the union of stripe areas defined by the elements of
+    slink:VkRenderPassStripeInfoARM::pname:pStripeInfos must: cover the
+    pname:renderArea
+endif::VK_ARM_render_pass_striped[]
+  * [[VUID-VkRenderingInfo-colorAttachmentCount-09479]]
+    If pname:colorAttachmentCount is not `0` and the pname:imageView member
+    of an element of pname:pColorAttachments is not dlink:VK_NULL_HANDLE,
+    that pname:imageView must: have been created with the
+    <<resources-image-views-identity-mappings,identity swizzle>>
+  * [[VUID-VkRenderingInfo-colorAttachmentCount-09480]]
+    If pname:colorAttachmentCount is not `0`, and there is an element of
+    pname:pColorAttachments with
+ifdef::VK_ANDROID_external_format_resolve[]
+    either its pname:resolveMode member set to
+    ename:VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_ANDROID, or
+endif::VK_ANDROID_external_format_resolve[]
+    its pname:imageView member not set to dlink:VK_NULL_HANDLE and its
+    pname:resolveMode member not set to ename:VK_RESOLVE_MODE_NONE, the
+    pname:resolveImageView member of that element of pname:pColorAttachments
+    must: have been created with the
+    <<resources-image-views-identity-mappings,identity swizzle>>
+  * [[VUID-VkRenderingInfo-pDepthAttachment-09481]]
+    If pname:pDepthAttachment is not `NULL` and
+    pname:pDepthAttachment->imageView is not dlink:VK_NULL_HANDLE,
+    pname:pDepthAttachment->imageView must: have been created with the
+    <<resources-image-views-identity-mappings,identity swizzle>>
+  * [[VUID-VkRenderingInfo-pDepthAttachment-09482]]
+    If pname:pDepthAttachment is not `NULL`,
+    pname:pDepthAttachment->imageView is not dlink:VK_NULL_HANDLE, and
+    pname:pDepthAttachment->resolveMode is not ename:VK_RESOLVE_MODE_NONE,
+    pname:pDepthAttachment->resolveImageView must: have been created with
+    the <<resources-image-views-identity-mappings,identity swizzle>>
+  * [[VUID-VkRenderingInfo-pStencilAttachment-09483]]
+    If pname:pStencilAttachment is not `NULL` and
+    pname:pStencilAttachment->imageView is not dlink:VK_NULL_HANDLE,
+    pname:pStencilAttachment->imageView must: have been created with the
+    <<resources-image-views-identity-mappings,identity swizzle>>
+  * [[VUID-VkRenderingInfo-pStencilAttachment-09484]]
+    If pname:pStencilAttachment is not `NULL`,
+    pname:pStencilAttachment->imageView is not dlink:VK_NULL_HANDLE, and
+    pname:pStencilAttachment->resolveMode is not ename:VK_RESOLVE_MODE_NONE,
+    pname:pStencilAttachment->resolveImageView must: have been created with
+    the <<resources-image-views-identity-mappings,identity swizzle>>
+ifdef::VK_KHR_fragment_shading_rate[]
+  * [[VUID-VkRenderingInfo-imageView-09485]]
+    If the pname:imageView member of a
+    slink:VkRenderingFragmentShadingRateAttachmentInfoKHR structure included
+    in the pname:pNext chain is not dlink:VK_NULL_HANDLE, it must: have been
+    created with the <<resources-image-views-identity-mappings,identity
+    swizzle>>
+endif::VK_KHR_fragment_shading_rate[]
+ifdef::VK_EXT_fragment_density_map[]
+  * [[VUID-VkRenderingInfo-imageView-09486]]
+    If the pname:imageView member of a
+    slink:VkRenderingFragmentDensityMapAttachmentInfoEXT structure included
+    in the pname:pNext chain is not dlink:VK_NULL_HANDLE, it must: have been
+    created with the <<resources-image-views-identity-mappings,identity
+    swizzle>>
+endif::VK_EXT_fragment_density_map[]
 ****
 
 include::{generated}/validity/structs/VkRenderingInfo.adoc[]
@@ -659,6 +745,11 @@ endif::VK_KHR_dynamic_rendering[]
   * ename:VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT specifies that
     draw calls for the render pass instance will be recorded in secondary
     command buffers.
+ifdef::VK_EXT_nested_command_buffer[]
+    If the <<features-nestedCommandBuffer, pname:nestedCommandBuffer>>
+    feature is enabled, the draw calls can: come from both inline and
+    flink:vkCmdExecuteCommands.
+endif::VK_EXT_nested_command_buffer[]
   * ename:VK_RENDERING_RESUMING_BIT specifies that the render pass instance
     is resuming an earlier suspended render pass instance.
   * ename:VK_RENDERING_SUSPENDING_BIT specifies that the render pass
@@ -668,6 +759,15 @@ ifdef::VK_EXT_legacy_dithering[]
     <<interfaces-legacy-dithering, Legacy Dithering>> is enabled for the
     render pass instance.
 endif::VK_EXT_legacy_dithering[]
+ifdef::VK_EXT_nested_command_buffer[]
+  * ename:VK_RENDERING_CONTENTS_INLINE_BIT_EXT specifies that draw calls for
+    the render pass instance can: be recorded inline within the current
+    command buffer.
+    When the <<features-nestedCommandBuffer, pname:nestedCommandBuffer>>
+    feature is enabled this can: be combined with the
+    ename:VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT bit to allow
+    draw calls to be recorded both inline and in secondary command buffers.
+endif::VK_EXT_nested_command_buffer[]
 
 [[renderpass-suspension]]
 The contents of pname:pRenderingInfo must: match between suspended render
@@ -800,32 +900,29 @@ endif::VK_ANDROID_external_format_resolve[]
     If pname:imageView is not dlink:VK_NULL_HANDLE and has an integer color
     format, pname:resolveMode must: be ename:VK_RESOLVE_MODE_NONE or
     ename:VK_RESOLVE_MODE_SAMPLE_ZERO_BIT
-ifndef::VK_EXT_multisampled_render_to_single_sampled[]
-  * [[VUID-VkRenderingAttachmentInfo-imageView-06132]]
-    If pname:imageView is not dlink:VK_NULL_HANDLE and pname:resolveMode is
-    not ename:VK_RESOLVE_MODE_NONE, pname:imageView must: not have a sample
-    count of ename:VK_SAMPLE_COUNT_1_BIT
-  * [[VUID-VkRenderingAttachmentInfo-imageView-06860]]
-    If pname:imageView is not dlink:VK_NULL_HANDLE and pname:resolveMode is
-    not ename:VK_RESOLVE_MODE_NONE, pname:resolveImageView must: not be
-    dlink:VK_NULL_HANDLE
+  * [[VUID-VkRenderingAttachmentInfo-imageView-06861]]
+    pname:imageView must: not have a sample count of
+    ename:VK_SAMPLE_COUNT_1_BIT if all of the following hold:
+  ** pname:imageView is not dlink:VK_NULL_HANDLE
+  ** pname:resolveMode is not ename:VK_RESOLVE_MODE_NONE
+ifdef::VK_EXT_multisampled_render_to_single_sampled[]
+  ** the pname:pNext chain of slink:VkRenderingInfo does not include a
+     slink:VkMultisampledRenderToSingleSampledInfoEXT structure with the
+     pname:multisampledRenderToSingleSampledEnable field equal to
+     ename:VK_TRUE
+endif::VK_EXT_multisampled_render_to_single_sampled[]
+  * [[VUID-VkRenderingAttachmentInfo-imageView-06862]]
+    pname:resolveImageView must: not be dlink:VK_NULL_HANDLE if all of the
+    following hold:
+  ** pname:imageView is not dlink:VK_NULL_HANDLE
+  ** pname:resolveMode is not ename:VK_RESOLVE_MODE_NONE
+ifdef::VK_EXT_multisampled_render_to_single_sampled[]
+  ** the pname:pNext chain of slink:VkRenderingInfo does not include a
+     slink:VkMultisampledRenderToSingleSampledInfoEXT structure with the
+     pname:multisampledRenderToSingleSampledEnable field equal to
+     ename:VK_TRUE
 endif::VK_EXT_multisampled_render_to_single_sampled[]
 ifdef::VK_EXT_multisampled_render_to_single_sampled[]
-  * [[VUID-VkRenderingAttachmentInfo-imageView-06861]]
-    If pname:imageView is not dlink:VK_NULL_HANDLE, pname:resolveMode is not
-    ename:VK_RESOLVE_MODE_NONE, and the pname:pNext chain of
-    slink:VkRenderingInfo does not includes a
-    slink:VkMultisampledRenderToSingleSampledInfoEXT structure with the
-    pname:multisampledRenderToSingleSampledEnable field equal to
-    ename:VK_TRUE, pname:imageView must: not have a sample count of
-    ename:VK_SAMPLE_COUNT_1_BIT
-  * [[VUID-VkRenderingAttachmentInfo-imageView-06862]]
-    If pname:imageView is not dlink:VK_NULL_HANDLE, pname:resolveMode is not
-    ename:VK_RESOLVE_MODE_NONE, and the pname:pNext chain of
-    slink:VkRenderingInfo does not includes a
-    slink:VkMultisampledRenderToSingleSampledInfoEXT structure with the
-    pname:multisampledRenderToSingleSampledEnable field equal to
-    ename:VK_TRUE, pname:resolveImageView must: not be dlink:VK_NULL_HANDLE
   * [[VUID-VkRenderingAttachmentInfo-imageView-06863]]
     If pname:imageView is not dlink:VK_NULL_HANDLE, pname:resolveMode is not
     ename:VK_RESOLVE_MODE_NONE, the pname:pNext chain of
@@ -1080,20 +1177,17 @@ is treated as dlink:VK_NULL_HANDLE.
   * [[VUID-VkRenderingFragmentDensityMapAttachmentInfoEXT-imageView-06159]]
     If pname:imageView is not dlink:VK_NULL_HANDLE, it must: not have been
     created with ename:VK_IMAGE_CREATE_SUBSAMPLED_BIT_EXT
-ifndef::VK_VERSION_1_1,VK_KHR_multiview[]
-  * [[VUID-VkRenderingFragmentDensityMapAttachmentInfoEXT-imageView-06160]]
-    If pname:imageView is not dlink:VK_NULL_HANDLE, it must: have a
-    pname:layerCount equal to `1`
-endif::VK_VERSION_1_1,VK_KHR_multiview[]
-ifdef::VK_VERSION_1_1,VK_KHR_multiview[]
-ifndef::VKSC_VERSION_1_0[]
   * [[VUID-VkRenderingFragmentDensityMapAttachmentInfoEXT-apiVersion-07908]]
-    If apiext:VK_KHR_multiview is not enabled,
+    If
+ifndef::VKSC_VERSION_1_0[]
+ifdef::VK_VERSION_1_1,VK_KHR_multiview[]
+    apiext:VK_KHR_multiview is not enabled,
     slink:VkPhysicalDeviceProperties::pname:apiVersion is less than Vulkan
-    1.1, and pname:imageView is not dlink:VK_NULL_HANDLE, it must: have a
-    pname:layerCount equal to `1`
-endif::VKSC_VERSION_1_0[]
+    1.1, and
 endif::VK_VERSION_1_1,VK_KHR_multiview[]
+endif::VKSC_VERSION_1_0[]
+    pname:imageView is not dlink:VK_NULL_HANDLE, it must: have a
+    pname:layerCount equal to `1`
 ****
 
 include::{generated}/validity/structs/VkRenderingFragmentDensityMapAttachmentInfoEXT.adoc[]
@@ -1157,6 +1251,84 @@ include::{generated}/api/structs/VkRenderingAreaInfoKHR.adoc[]
 include::{generated}/validity/structs/VkRenderingAreaInfoKHR.adoc[]
 --
 endif::VK_KHR_maintenance5[]
+
+ifdef::VK_ARM_render_pass_striped[]
+[open,refpage='VkRenderPassStripeBeginInfoARM',desc='Structure specifying striped rendering information',type='structs']
+--
+The sname:VkRenderPassStripeBeginInfoARM structure is defined as:
+
+include::{generated}/api/structs/VkRenderPassStripeBeginInfoARM.adoc[]
+
+  * pname:sType is a elink:VkStructureType value identifying this structure.
+  * pname:pNext is `NULL` or a pointer to a structure extending this
+    structure.
+  * pname:stripeInfoCount is the number of stripes in this render pass
+    instance
+  * pname:pStripeInfos is a pointer to an array of pname:stripeInfoCount
+    slink:VkRenderPassStripeInfoARM structures describing the stripes used
+    by the render pass instance.
+
+This structure can be included in the pname:pNext chain of
+slink:VkRenderPassBeginInfo
+ifdef::VK_VERSION_1_3,VK_KHR_dynamic_rendering[]
+or slink:VkRenderingInfo
+endif::VK_VERSION_1_3,VK_KHR_dynamic_rendering[]
+to define how the render pass instance is split into stripes.
+
+.Valid Usage
+****
+  * [[VUID-VkRenderPassStripeBeginInfoARM-stripeInfoCount-09450]]
+    pname:stripeInfoCount must: be less than or equal to
+    sname:VkPhysicalDeviceRenderPassStripedPropertiesARM::pname:maxRenderPassStripes
+  * [[VUID-VkRenderPassStripeBeginInfoARM-stripeArea-09451]]
+    The pname:stripeArea defined by each element of pname:pStripeInfos must:
+    not overlap the pname:stripeArea of any other element
+****
+
+include::{generated}/validity/structs/VkRenderPassStripeBeginInfoARM.adoc[]
+--
+
+[open,refpage='VkRenderPassStripeInfoARM',desc='Structure specifying per rendering stripe information',type='structs']
+--
+The sname:VkRenderPassStripeInfoARM structure is defined as:
+
+include::{generated}/api/structs/VkRenderPassStripeInfoARM.adoc[]
+
+  * pname:sType is a elink:VkStructureType value identifying this structure.
+  * pname:pNext is `NULL` or a pointer to a structure extending this
+    structure.
+  * pname:stripeArea is the stripe area, and is described in more detail
+    below.
+
+pname:stripeArea is the render area that is affected by this stripe of the
+render pass instance.
+It must: be a subregion of the pname:renderArea of the render pass instance.
+
+.Valid Usage
+****
+  * [[VUID-VkRenderPassStripeInfoARM-stripeArea-09452]]
+    pname:stripeArea.offset.x must: be a multiple of
+    slink:VkPhysicalDeviceRenderPassStripedPropertiesARM::pname:renderPassStripeGranularity.width
+  * [[VUID-VkRenderPassStripeInfoARM-stripeArea-09453]]
+    pname:stripeArea.extent.width must: be a multiple of
+    slink:VkPhysicalDeviceRenderPassStripedPropertiesARM::pname:renderPassStripeGranularity.width,
+    or the sum of pname:stripeArea.offset.x and
+    pname:stripeArea.extent.width must: be equal to the
+    pname:renderArea.extent.width of the render pass instance
+  * [[VUID-VkRenderPassStripeInfoARM-stripeArea-09454]]
+    pname:stripeArea.offset.y must: be a multiple of
+    slink:VkPhysicalDeviceRenderPassStripedPropertiesARM::pname:renderPassStripeGranularity.height
+  * [[VUID-VkRenderPassStripeInfoARM-stripeArea-09455]]
+    pname:stripeArea.extent.height must: be a multiple of
+    slink:VkPhysicalDeviceRenderPassStripedPropertiesARM::pname:renderPassStripeGranularity.height,
+    or the sum of pname:stripeArea.offset.y and
+    pname:stripeArea.extent.height must: be equal to the
+    pname:renderArea.extent.height of the render pass instance
+****
+
+include::{generated}/validity/structs/VkRenderPassStripeInfoARM.adoc[]
+--
+endif::VK_ARM_render_pass_striped[]
 
 [open,refpage='vkCmdEndRendering',desc='End a dynamic render pass instance',type='protos',alias='vkCmdEndRenderingKHR']
 --
@@ -2294,13 +2466,9 @@ attachment.
 .Valid Usage
 ****
 include::{chapters}/commonvalidity/subpass_description_common.adoc[]
-ifndef::VK_HUAWEI_subpass_shading[]
-  * [[VUID-VkSubpassDescription-pipelineBindPoint-00844]]
-    pname:pipelineBindPoint must: be ename:VK_PIPELINE_BIND_POINT_GRAPHICS
-endif::VK_HUAWEI_subpass_shading[]
-ifdef::VK_HUAWEI_subpass_shading[]
   * [[VUID-VkSubpassDescription-pipelineBindPoint-04952]]
     pname:pipelineBindPoint must: be ename:VK_PIPELINE_BIND_POINT_GRAPHICS
+ifdef::VK_HUAWEI_subpass_shading[]
     or ename:VK_PIPELINE_BIND_POINT_SUBPASS_SHADING_HUAWEI
 endif::VK_HUAWEI_subpass_shading[]
   * [[VUID-VkSubpassDescription-colorAttachmentCount-00845]]
@@ -2327,10 +2495,8 @@ endif::VK_HUAWEI_subpass_shading[]
     If pname:pResolveAttachments is not `NULL`, each resolve attachment that
     is not ename:VK_ATTACHMENT_UNUSED must: have the same elink:VkFormat as
     its corresponding color attachment
-  * [[VUID-VkSubpassDescription-pColorAttachments-06868]]
-    If neither the `apiext:VK_AMD_mixed_attachment_samples` extension nor
-    the `apiext:VK_NV_framebuffer_mixed_samples` extension is enabled, all
-    attachments in pname:pColorAttachments that are not
+  * [[VUID-VkSubpassDescription-pColorAttachments-09430]]
+    All attachments in pname:pColorAttachments that are not
     ename:VK_ATTACHMENT_UNUSED must: have the same sample count
   * [[VUID-VkSubpassDescription-pInputAttachments-02647]]
     All attachments in pname:pInputAttachments that are not
@@ -2377,20 +2543,35 @@ ifdef::VK_NV_linear_color_attachment[]
     features>> must: contain
     ename:VK_FORMAT_FEATURE_2_LINEAR_COLOR_ATTACHMENT_BIT_NV
 endif::VK_NV_linear_color_attachment[]
+ifdef::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
+  * [[VUID-VkSubpassDescription-None-09431]]
+    If either of the following is enabled:
 ifdef::VK_AMD_mixed_attachment_samples[]
-  * [[VUID-VkSubpassDescription-pColorAttachments-01506]]
-    If the `apiext:VK_AMD_mixed_attachment_samples` extension is enabled,
-    all attachments in pname:pColorAttachments that are not
-    ename:VK_ATTACHMENT_UNUSED must: have a sample count that is smaller
-    than or equal to the sample count of pname:pDepthStencilAttachment if it
-    is not ename:VK_ATTACHMENT_UNUSED
+  ** The `apiext:VK_AMD_mixed_attachment_samples` extension
 endif::VK_AMD_mixed_attachment_samples[]
+ifdef::VK_NV_framebuffer_mixed_samples[]
+  ** The `apiext:VK_NV_framebuffer_mixed_samples` extension
+endif::VK_NV_framebuffer_mixed_samples[]
+
++
+all attachments in pname:pColorAttachments that are not
+ename:VK_ATTACHMENT_UNUSED must: have a sample count that is smaller than or
+equal to the sample count of pname:pDepthStencilAttachment if it is not
+ename:VK_ATTACHMENT_UNUSED
+endif::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
   * [[VUID-VkSubpassDescription-pDepthStencilAttachment-01418]]
-    If neither the `apiext:VK_AMD_mixed_attachment_samples` nor the
-    `apiext:VK_NV_framebuffer_mixed_samples` extensions are enabled, and if
-    pname:pDepthStencilAttachment is not ename:VK_ATTACHMENT_UNUSED and any
-    attachments in pname:pColorAttachments are not
+    If pname:pDepthStencilAttachment is not ename:VK_ATTACHMENT_UNUSED and
+    any attachments in pname:pColorAttachments are not
     ename:VK_ATTACHMENT_UNUSED, they must: have the same sample count
+ifdef::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
+    , if none of the following are enabled:
+ifdef::VK_AMD_mixed_attachment_samples[]
+  ** The `apiext:VK_AMD_mixed_attachment_samples` extension
+endif::VK_AMD_mixed_attachment_samples[]
+ifdef::VK_NV_framebuffer_mixed_samples[]
+  ** The `apiext:VK_NV_framebuffer_mixed_samples` extension
+endif::VK_NV_framebuffer_mixed_samples[]
+endif::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
   * [[VUID-VkSubpassDescription-attachment-00853]]
     Each element of pname:pPreserveAttachments must: not be
     ename:VK_ATTACHMENT_UNUSED
@@ -2424,7 +2605,7 @@ ifdef::VK_QCOM_render_pass_transform[]
     pname:pInputAttachments must: be ename:VK_ATTACHMENT_UNUSED
 endif::VK_QCOM_render_pass_transform[]
   * [[VUID-VkSubpassDescription-pDepthStencilAttachment-04438]]
-    pname:pDepthStencilAttachment and pname:pColorAttachments must not
+    pname:pDepthStencilAttachment and pname:pColorAttachments must: not
     contain references to the same attachment
 ifdef::VKSC_VERSION_1_0[]
   * [[VUID-VkSubpassDescription-inputAttachmentCount-05053]]
@@ -3227,6 +3408,10 @@ ifdef::VK_KHR_fragment_shading_rate[]
     If any element of pname:pAttachments is used as a fragment shading rate
     attachment in any subpass, it must: not be used as any other attachment
     in the render pass
+  * [[VUID-VkRenderPassCreateInfo2-pAttachments-09387]]
+    If any element of pname:pAttachments is used as a fragment shading rate
+    attachment, the pname:loadOp for that attachment must: not be
+    ename:VK_ATTACHMENT_LOAD_OP_CLEAR
 ifdef::VK_QCOM_render_pass_transform[]
   * [[VUID-VkRenderPassCreateInfo2-flags-04521]]
     If pname:flags includes ename:VK_RENDER_PASS_CREATE_TRANSFORM_BIT_QCOM,
@@ -3395,24 +3580,31 @@ in the pname:pNext chain.
 
 endif::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
 
+ifdef::VK_KHR_fragment_shading_rate[]
+pname:loadOp and pname:storeOp are ignored for fragment shading rate
+attachments.
+No access to the shading rate attachment is performed in pname:loadOp and
+pname:storeOp.
+Instead, access to
+ename:VK_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR is performed
+as fragments are rasterized.
+endif::VK_KHR_fragment_shading_rate[]
+
 .Valid Usage
 ****
 include::{chapters}/commonvalidity/attachment_description_common.adoc[]
-ifndef::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
-  * [[VUID-VkAttachmentDescription2-format-06703]]
-    If pname:format includes a stencil component and pname:stencilLoadOp is
-    ename:VK_ATTACHMENT_LOAD_OP_LOAD, then pname:initialLayout must: not be
-    ename:VK_IMAGE_LAYOUT_UNDEFINED
-endif::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
-ifdef::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
   * [[VUID-VkAttachmentDescription2-pNext-06704]]
-    If the pname:pNext chain does not include a
-    slink:VkAttachmentDescriptionStencilLayout structure, pname:format
-    includes a stencil component, and pname:stencilLoadOp is
+    If
+ifdef::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
+    the pname:pNext chain does not include a
+    slink:VkAttachmentDescriptionStencilLayout structure,
+endif::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
+    pname:format includes a stencil component, and pname:stencilLoadOp is
     ename:VK_ATTACHMENT_LOAD_OP_LOAD, then pname:initialLayout must: not be
     ename:VK_IMAGE_LAYOUT_UNDEFINED
+ifdef::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
   * [[VUID-VkAttachmentDescription2-pNext-06705]]
-    If the pname:pNext chain does includes a
+    If the pname:pNext chain includes a
     slink:VkAttachmentDescriptionStencilLayout structure, pname:format
     includes a stencil component, and pname:stencilLoadOp is
     ename:VK_ATTACHMENT_LOAD_OP_LOAD, then
@@ -3443,14 +3635,13 @@ ifdef::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
     ename:VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL or
     ename:VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL
 endif::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
-ifndef::VK_ANDROID_external_format_resolve[]
   * [[VUID-VkAttachmentDescription2-format-09332]]
-    pname:format must: not be VK_FORMAT_UNDEFINED
-endif::VK_ANDROID_external_format_resolve[]
 ifdef::VK_ANDROID_external_format_resolve[]
-  * [[VUID-VkAttachmentDescription2-externalFormatResolve-09333]]
     If <<features-externalFormatResolve,pname:externalFormatResolve>> is not
-    enabled, pname:format must: not be ename:VK_FORMAT_UNDEFINED
+    enabled,
+endif::VK_ANDROID_external_format_resolve[]
+    pname:format must: not be ename:VK_FORMAT_UNDEFINED
+ifdef::VK_ANDROID_external_format_resolve[]
   * [[VUID-VkAttachmentDescription2-format-09334]]
     If pname:format is ename:VK_FORMAT_UNDEFINED, there must: be a
     slink:VkExternalFormatANDROID structure in the pname:pNext chain with a
@@ -3626,7 +3817,7 @@ VkSamplerYcbcrConversionCreateInfo createInfo = {
         .a = VK_COMPONENT_SWIZZLE_IDENTITY},
     .xChromaOffset = properties.chromaOffsetX,
     .yChromaOffset = properties.chromaOffsetY,
-    .chromaFilter = ename:VK_FILTER_NEAREST,
+    .chromaFilter = VK_FILTER_NEAREST,
     .forceExplicitReconstruction = ... };
 ----
 
@@ -3651,13 +3842,9 @@ ifdef::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
     ename:VK_IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL or
     ename:VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL
 endif::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
-ifndef::VK_HUAWEI_subpass_shading[]
-  * [[VUID-VkSubpassDescription2-pipelineBindPoint-03062]]
-    pname:pipelineBindPoint must: be ename:VK_PIPELINE_BIND_POINT_GRAPHICS
-endif::VK_HUAWEI_subpass_shading[]
-ifdef::VK_HUAWEI_subpass_shading[]
   * [[VUID-VkSubpassDescription2-pipelineBindPoint-04953]]
     pname:pipelineBindPoint must: be ename:VK_PIPELINE_BIND_POINT_GRAPHICS
+ifdef::VK_HUAWEI_subpass_shading[]
     or ename:VK_PIPELINE_BIND_POINT_SUBPASS_SHADING_HUAWEI
 endif::VK_HUAWEI_subpass_shading[]
   * [[VUID-VkSubpassDescription2-colorAttachmentCount-03063]]
@@ -3720,45 +3907,29 @@ ifdef::VK_ANDROID_external_format_resolve[]
 endif::VK_ANDROID_external_format_resolve[]
 ifdef::VK_EXT_multisampled_render_to_single_sampled[]
   * [[VUID-VkSubpassDescription2-multisampledRenderToSingleSampled-06869]]
-    If none of the `apiext:VK_AMD_mixed_attachment_samples` extension, the
-    `apiext:VK_NV_framebuffer_mixed_samples` extension, or the
-    <<features-multisampledRenderToSingleSampled,
-    pname:multisampledRenderToSingleSampled>> feature are enabled, all
+    If the <<features-multisampledRenderToSingleSampled,
+    pname:multisampledRenderToSingleSampled>> feature is not enabled, all
     attachments in pname:pColorAttachments that are not
     ename:VK_ATTACHMENT_UNUSED must: have the same sample count
 endif::VK_EXT_multisampled_render_to_single_sampled[]
-ifndef::VK_ANDROID_external_format_resolve[]
   * [[VUID-VkSubpassDescription2-pInputAttachments-02897]]
     All attachments in pname:pInputAttachments that are not
-    ename:VK_ATTACHMENT_UNUSED must: have image formats whose
-    <<potential-format-features, potential format features>> contain at
-    least ename:VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT or
-    ename:VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
-endif::VK_ANDROID_external_format_resolve[]
+    ename:VK_ATTACHMENT_UNUSED
 ifdef::VK_ANDROID_external_format_resolve[]
-  * [[VUID-VkSubpassDescription2-externalFormatResolve-09340]]
-    If the <<features-externalFormatResolve, pname:externalFormatResolve>>
-    feature is not enabled, all attachments in pname:pInputAttachments that
-    are not ename:VK_ATTACHMENT_UNUSED must: have image formats whose
-    <<potential-format-features, potential format features>> contain at
-    least ename:VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT or
-    ename:VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
-  * [[VUID-VkSubpassDescription2-nullColorAttachmentWithExternalFormatResolve-09341]]
-    If the <<limits-nullColorAttachmentWithExternalFormatResolve,
-    pname:nullColorAttachmentWithExternalFormatResolve>> property is
-    ename:VK_FALSE, all attachments in pname:pInputAttachments that are not
-    ename:VK_ATTACHMENT_UNUSED must: have image formats whose
-    <<potential-format-features, potential format features>> contain at
-    least ename:VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT or
-    ename:VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
-  * [[VUID-VkSubpassDescription2-pInputAttachments-09342]]
-    All attachments in pname:pInputAttachments that are not
-    ename:VK_ATTACHMENT_UNUSED and do not have a non-zero value of
-    slink:VkExternalFormatANDROID::pname:externalFormat must: have image
-    formats whose <<potential-format-features, potential format features>>
-    contain at least ename:VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT or
-    ename:VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
+    and any of the following is true:
+  ** the <<features-externalFormatResolve, pname:externalFormatResolve>>
+     feature is not enabled
+  ** the <<limits-nullColorAttachmentWithExternalFormatResolve,
+     pname:nullColorAttachmentWithExternalFormatResolve>> property is
+     ename:VK_FALSE
+  ** does not have a non-zero value of
+     slink:VkExternalFormatANDROID::pname:externalFormat
 endif::VK_ANDROID_external_format_resolve[]
+
++
+must: have image formats whose <<potential-format-features, potential format
+    features>> contain at least ename:VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT
+    or ename:VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
   * [[VUID-VkSubpassDescription2-pColorAttachments-02898]]
     All attachments in pname:pColorAttachments that are not
     ename:VK_ATTACHMENT_UNUSED must: have image formats whose
@@ -3808,14 +3979,22 @@ ifdef::VK_NV_linear_color_attachment[]
     features>> must: contain
     ename:VK_FORMAT_FEATURE_2_LINEAR_COLOR_ATTACHMENT_BIT_NV
 endif::VK_NV_linear_color_attachment[]
+ifdef::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
+  * [[VUID-VkSubpassDescription2-None-09456]]
+    If either of the following is enabled:
 ifdef::VK_AMD_mixed_attachment_samples[]
-  * [[VUID-VkSubpassDescription2-pColorAttachments-03070]]
-    If the `apiext:VK_AMD_mixed_attachment_samples` extension is enabled,
-    all attachments in pname:pColorAttachments that are not
-    ename:VK_ATTACHMENT_UNUSED must: have a sample count that is smaller
-    than or equal to the sample count of pname:pDepthStencilAttachment if it
-    is not ename:VK_ATTACHMENT_UNUSED
+  ** The `apiext:VK_AMD_mixed_attachment_samples` extension
 endif::VK_AMD_mixed_attachment_samples[]
+ifdef::VK_NV_framebuffer_mixed_samples[]
+  ** The `apiext:VK_NV_framebuffer_mixed_samples` extension
+endif::VK_NV_framebuffer_mixed_samples[]
+
++
+all attachments in pname:pColorAttachments that are not
+ename:VK_ATTACHMENT_UNUSED must: have a sample count that is smaller than or
+equal to the sample count of pname:pDepthStencilAttachment if it is not
+ename:VK_ATTACHMENT_UNUSED
+endif::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
 ifdef::VK_EXT_multisampled_render_to_single_sampled[]
   * [[VUID-VkSubpassDescription2-pNext-06870]]
     If the pname:pNext chain includes a
@@ -3838,12 +4017,22 @@ ifdef::VK_EXT_multisampled_render_to_single_sampled[]
     value ename:VK_ATTACHMENT_UNUSED
 endif::VK_EXT_multisampled_render_to_single_sampled[]
   * [[VUID-VkSubpassDescription2-multisampledRenderToSingleSampled-06872]]
-    If none of the `apiext:VK_AMD_mixed_attachment_samples` extension, the
-    `apiext:VK_NV_framebuffer_mixed_samples` extension, or the
-    <<features-multisampledRenderToSingleSampled,
-    pname:multisampledRenderToSingleSampled>> feature are enabled, all
-    attachments in pname:pDepthStencilAttachment or pname:pColorAttachments
-    that are not ename:VK_ATTACHMENT_UNUSED must: have the same sample count
+    All attachments in pname:pDepthStencilAttachment or
+    pname:pColorAttachments that are not ename:VK_ATTACHMENT_UNUSED must:
+    have the same sample count
+ifdef::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples,VK_EXT_multisampled_render_to_single_sampled[]
+    , if none of the following are enabled:
+ifdef::VK_AMD_mixed_attachment_samples[]
+  ** The `apiext:VK_AMD_mixed_attachment_samples` extension
+endif::VK_AMD_mixed_attachment_samples[]
+ifdef::VK_NV_framebuffer_mixed_samples[]
+  ** The `apiext:VK_NV_framebuffer_mixed_samples` extension
+endif::VK_NV_framebuffer_mixed_samples[]
+ifdef::VK_EXT_multisampled_render_to_single_sampled[]
+  ** The <<features-multisampledRenderToSingleSampled,
+    pname:multisampledRenderToSingleSampled>> feature,
+endif::VK_EXT_multisampled_render_to_single_sampled[]
+endif::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples,VK_EXT_multisampled_render_to_single_sampled[]
   * [[VUID-VkSubpassDescription2-attachment-03073]]
     Each element of pname:pPreserveAttachments must: not be
     ename:VK_ATTACHMENT_UNUSED
@@ -3924,7 +4113,7 @@ ifdef::VK_KHR_fragment_shading_rate[]
     format of ename:VK_FORMAT_UNDEFINED,
     slink:VkFragmentShadingRateAttachmentInfoKHR::pname:pFragmentShadingRateAttachment
     must: either be `NULL` or a slink:VkAttachmentReference2 structure with
-    a pname:attachment value of ename:VK_ATTACHMENT_UNUSED
+    an pname:attachment value of ename:VK_ATTACHMENT_UNUSED
 endif::VK_KHR_fragment_shading_rate[]
   * [[VUID-VkSubpassDescription2-externalFormatResolve-09348]]
     If <<features-externalFormatResolve,pname:externalFormatResolve>> is
@@ -3932,8 +4121,8 @@ endif::VK_KHR_fragment_shading_rate[]
     pname:pResolveAttachments is not ename:VK_ATTACHMENT_UNUSED and has a
     format of ename:VK_FORMAT_UNDEFINED, elements of pname:pInputAttachments
     referencing either a color attachment or resolve attachment used in this
-    subpass must: not include `VK_IMAGE_ASPECT_PLANE__{ibit}__BIT_EXT` for
-    any index _i_ in its pname:aspectMask
+    subpass must: not include `VK_IMAGE_ASPECT_PLANE__{ibit}__BIT` for any
+    index _i_ in its pname:aspectMask
 endif::VK_ANDROID_external_format_resolve[]
 ****
 
@@ -4624,8 +4813,8 @@ slink:VkPhysicalDeviceFeatures::pname:variableMultisampleRate is
 ename:VK_FALSE, then all pipelines to be bound with the subpass must: have
 the same value for
 slink:VkPipelineMultisampleStateCreateInfo::pname:rasterizationSamples.
-In all such cases, pname:rasterizationSamples must: be a bit value that is
-set in
+In all such cases, pname:rasterizationSamples must: be a valid
+elink:VkSampleCountFlagBits value that is set in
 slink:VkPhysicalDeviceLimits::pname:framebufferNoAttachmentsSampleCounts.
 
 .Valid Usage
@@ -4727,24 +4916,14 @@ ifdef::VK_VERSION_1_1,VK_KHR_multiview[]
     in any of those view masks
 endif::VK_VERSION_1_1,VK_KHR_multiview[]
 ifdef::VK_EXT_fragment_density_map[]
-ifndef::VK_VERSION_1_1,VK_KHR_multiview[]
-  * [[VUID-VkFramebufferCreateInfo-pAttachments-02744]]
+  * [[VUID-VkFramebufferCreateInfo-renderPass-02746]]
     Each element of pname:pAttachments that is referenced by
     pname:fragmentDensityMapAttachment must: have a pname:layerCount equal
     to `1`
-endif::VK_VERSION_1_1,VK_KHR_multiview[]
 ifdef::VK_VERSION_1_1,VK_KHR_multiview[]
-  * [[VUID-VkFramebufferCreateInfo-renderPass-02746]]
-    If pname:renderPass was specified with non-zero view masks, each element
-    of pname:pAttachments that is referenced by
-    pname:fragmentDensityMapAttachment must: have a pname:layerCount equal
-    to `1` or greater than the index of the most significant bit set in any
-    of those view masks
-  * [[VUID-VkFramebufferCreateInfo-renderPass-02747]]
-    If pname:renderPass was specified with all view masks equal to zero,
-    each element of pname:pAttachments that is referenced by
-    pname:fragmentDensityMapAttachment must: have a pname:layerCount equal
-    to `1`
+    or if pname:renderPass was specified with non-zero view masks, greater
+    than the index of the most significant bit set in any of those view
+    masks
 endif::VK_VERSION_1_1,VK_KHR_multiview[]
   * [[VUID-VkFramebufferCreateInfo-pAttachments-02555]]
     If pname:flags does not include
@@ -4938,25 +5117,19 @@ ifdef::VK_VERSION_1_1,VK_KHR_multiview[]
     attachment in pname:renderPass must: be greater than the maximum bit
     index set in the view mask in the subpasses in which it is used in
     pname:renderPass
-  * [[VUID-VkFramebufferCreateInfo-renderPass-04546]]
-    If multiview is not enabled for pname:renderPass and pname:flags
-    includes ename:VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT, the pname:layerCount
-    member of any element of the pname:pAttachmentImageInfos member of a
-    slink:VkFramebufferAttachmentsCreateInfo structure included in the
-    pname:pNext chain used as an input, color, resolve, or depth/stencil
-    attachment in pname:renderPass must: be greater than or equal to
-    pname:layers
 endif::VK_VERSION_1_1,VK_KHR_multiview[]
-ifndef::VK_VERSION_1_1,VK_KHR_multiview[]
-  * [[VUID-VkFramebufferCreateInfo-flags-04547]]
-    If pname:flags includes ename:VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT, the
+  * [[VUID-VkFramebufferCreateInfo-renderPass-04546]]
+    If
+ifdef::VK_VERSION_1_1,VK_KHR_multiview[]
+    multiview is not enabled for pname:renderPass and
+endif::VK_VERSION_1_1,VK_KHR_multiview[]
+    pname:flags includes ename:VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT, the
     pname:layerCount member of any element of the
     pname:pAttachmentImageInfos member of a
     slink:VkFramebufferAttachmentsCreateInfo structure included in the
     pname:pNext chain used as an input, color, resolve, or depth/stencil
-    attachment in pname:pRenderPass must: be greater than or equal to
+    attachment in pname:renderPass must: be greater than or equal to
     pname:layers
-endif::VK_VERSION_1_1,VK_KHR_multiview[]
   * [[VUID-VkFramebufferCreateInfo-flags-03201]]
     If pname:flags includes ename:VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT, the
     pname:usage member of any element of the pname:pAttachmentImageInfos
@@ -5047,10 +5220,13 @@ ifdef::VK_EXT_multisampled_render_to_single_sampled[]
     slink:VkMultisampledRenderToSingleSampledInfoEXT::pname:rasterizationSamples
 endif::VK_EXT_multisampled_render_to_single_sampled[]
 ifdef::VK_ANDROID_external_format_resolve[]
-ifndef::VK_VERSION_1_2,VK_KHR_imageless_framebuffer[]
   * [[VUID-VkFramebufferCreateInfo-nullColorAttachmentWithExternalFormatResolve-09349]]
     If the <<limits-nullColorAttachmentWithExternalFormatResolve,
     pname:nullColorAttachmentWithExternalFormatResolve>> is ename:VK_FALSE,
+ifdef::VK_VERSION_1_2,VK_KHR_imageless_framebuffer[]
+    and pname:flags does not include
+    ename:VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT,
+endif::VK_VERSION_1_2,VK_KHR_imageless_framebuffer[]
     the format of the color attachment for each subpass in pname:renderPass
     that includes an external format image as a resolve attachment must:
     have a format equal to the value of
@@ -5060,36 +5236,17 @@ ifndef::VK_VERSION_1_2,VK_KHR_imageless_framebuffer[]
     hardware buffer that was used to create the image view use as its
     resolve attachment
   * [[VUID-VkFramebufferCreateInfo-pAttachments-09350]]
-    Each element of pname:pAttachments with a format of
-    ename:VK_FORMAT_UNDEFINED must: have been created with a
+    If
+ifdef::VK_VERSION_1_2,VK_KHR_imageless_framebuffer[]
+    pname:flags does not include ename:VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT,
+    then if
+endif::VK_VERSION_1_2,VK_KHR_imageless_framebuffer[]
+    an element of pname:pAttachments has a format of
+    ename:VK_FORMAT_UNDEFINED, it must: have been created with a
     slink:VkExternalFormatANDROID::pname:externalFormat value identical to
     that provided in the slink:VkExternalFormatANDROID::pname:externalFormat
     specified by the corresponding slink:VkAttachmentDescription2 in
     pname:renderPass
-endif::VK_VERSION_1_2,VK_KHR_imageless_framebuffer[]
-ifdef::VK_VERSION_1_2,VK_KHR_imageless_framebuffer[]
-  * [[VUID-VkFramebufferCreateInfo-flags-09351]]
-    If pname:flags does not include
-    ename:VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT and the
-    <<limits-nullColorAttachmentWithExternalFormatResolve,
-    pname:nullColorAttachmentWithExternalFormatResolve>> is ename:VK_FALSE,
-    the format of the color attachment for each subpass in pname:renderPass
-    that includes an external format image as a resolve attachment must:
-    have a format equal to the value of
-    slink:VkAndroidHardwareBufferFormatResolvePropertiesANDROID::pname:colorAttachmentFormat
-    as returned by a call to
-    flink:vkGetAndroidHardwareBufferPropertiesANDROID for the Android
-    hardware buffer that was used to create the image view used as its
-    resolve attachment
-  * [[VUID-VkFramebufferCreateInfo-flags-09352]]
-    If pname:flags does not include
-    ename:VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT, each element of
-    pname:pAttachments with a format of ename:VK_FORMAT_UNDEFINED must: have
-    been created with a slink:VkExternalFormatANDROID::pname:externalFormat
-    value identical to that provided in the
-    slink:VkExternalFormatANDROID::pname:externalFormat specified by the
-    corresponding slink:VkAttachmentDescription2 in pname:renderPass
-endif::VK_VERSION_1_2,VK_KHR_imageless_framebuffer[]
 endif::VK_ANDROID_external_format_resolve[]
 ****
 
@@ -5134,7 +5291,6 @@ or the equivalent
 include::{generated}/api/structs/VkFramebufferAttachmentImageInfoKHR.adoc[]
 endif::VK_KHR_imageless_framebuffer[]
 
-
   * pname:sType is a elink:VkStructureType value identifying this structure.
   * pname:pNext is `NULL` or a pointer to a structure extending this
     structure.
@@ -5162,6 +5318,17 @@ Images that can: be used with the framebuffer when beginning a render pass,
 as specified by slink:VkRenderPassAttachmentBeginInfo, must: be created with
 parameters that are identical to those specified here.
 
+.Valid Usage
+****
+  * [[VUID-VkFramebufferAttachmentImageInfo-viewFormatCount-09536]]
+    If pname:viewFormatCount is not 0,
+ifdef::VK_ANDROID_external_format_resolve[]
+    and the render pass is not being used with an external format resolve
+    attachment,
+endif::VK_ANDROID_external_format_resolve[]
+    each element of pname:pViewFormats must: not be
+    ename:VK_FORMAT_UNDEFINED
+****
 
 include::{generated}/validity/structs/VkFramebufferAttachmentImageInfo.adoc[]
 --
@@ -5249,9 +5416,9 @@ that attachment or an alias.
 Because load operations always happen first, external synchronization with
 attachment access only needs to synchronize the load operations with
 previous commands; not the operations within the render pass instance.
-ifdef::VK_EXT_load_store_op_none[]
-This does not apply when using ename:VK_ATTACHMENT_LOAD_OP_NONE_EXT.
-endif::VK_EXT_load_store_op_none[]
+ifdef::VK_KHR_load_store_op_none,VK_EXT_load_store_op_none[]
+This does not apply when using ename:VK_ATTACHMENT_LOAD_OP_NONE_KHR.
+endif::VK_KHR_load_store_op_none,VK_EXT_load_store_op_none[]
 ====
 
 Load operations only update values within the defined render area for the
@@ -5302,11 +5469,11 @@ include::{generated}/api/enums/VkAttachmentLoadOp.adoc[]
     ename:VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT.
     For attachments with a color format, this uses the access type
     ename:VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT.
-ifdef::VK_EXT_load_store_op_none[]
-  * ename:VK_ATTACHMENT_LOAD_OP_NONE_EXT specifies that the previous
+ifdef::VK_KHR_load_store_op_none,VK_EXT_load_store_op_none[]
+  * ename:VK_ATTACHMENT_LOAD_OP_NONE_KHR specifies that the previous
     contents of the image will be undefined: inside the render pass.
     No access type is used as the image is not accessed.
-endif::VK_EXT_load_store_op_none[]
+endif::VK_KHR_load_store_op_none,VK_EXT_load_store_op_none[]
 --
 
 [[renderpass-precision]]
@@ -5346,9 +5513,9 @@ Because store operations always happen after other accesses in a render pass
 instance, external synchronization with attachment access in an earlier
 render pass only needs to synchronize with the store operations; not the
 operations within the render pass instance.
-ifdef::VK_VERSION_1_3,VK_EXT_load_store_op_none,VK_KHR_dynamic_rendering,VK_QCOM_render_pass_store_ops[]
+ifdef::VK_VERSION_1_3,VK_KHR_load_store_op_none,VK_EXT_load_store_op_none,VK_KHR_dynamic_rendering,VK_QCOM_render_pass_store_ops[]
 This does not apply when using ename:VK_ATTACHMENT_STORE_OP_NONE.
-endif::VK_VERSION_1_3,VK_EXT_load_store_op_none,VK_KHR_dynamic_rendering,VK_QCOM_render_pass_store_ops[]
+endif::VK_VERSION_1_3,VK_KHR_load_store_op_none,VK_EXT_load_store_op_none,VK_KHR_dynamic_rendering,VK_QCOM_render_pass_store_ops[]
 ====
 
 
@@ -5395,14 +5562,14 @@ include::{generated}/api/enums/VkAttachmentStoreOp.adoc[]
     ename:VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT.
     For attachments with a color format, this uses the access type
     ename:VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT.
-ifdef::VK_VERSION_1_3,VK_EXT_load_store_op_none,VK_KHR_dynamic_rendering,VK_QCOM_render_pass_store_ops[]
+ifdef::VK_VERSION_1_3,VK_KHR_load_store_op_none,VK_EXT_load_store_op_none,VK_KHR_dynamic_rendering,VK_QCOM_render_pass_store_ops[]
   * ename:VK_ATTACHMENT_STORE_OP_NONE specifies the contents within the
     render area are not accessed by the store operation as long as no values
     are written to the attachment during the render pass.
     If values are written during the render pass, this behaves identically
     to ename:VK_ATTACHMENT_STORE_OP_DONT_CARE and with matching access
     semantics.
-endif::VK_VERSION_1_3,VK_EXT_load_store_op_none,VK_KHR_dynamic_rendering,VK_QCOM_render_pass_store_ops[]
+endif::VK_VERSION_1_3,VK_KHR_load_store_op_none,VK_EXT_load_store_op_none,VK_KHR_dynamic_rendering,VK_QCOM_render_pass_store_ops[]
 
 [NOTE]
 .Note
@@ -5587,42 +5754,23 @@ record the commands for the first subpass of that render pass.
     specified in the pname:framebuffer member of pname:pRenderPassBegin
     must: have been created with a pname:usage value including
     ename:VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
-// The VU below comes in an alternate version when the extension is
-// enabled.
-ifndef::VK_VERSION_1_1,VK_KHR_maintenance2[]
-  * [[VUID-vkCmdBeginRenderPass-initialLayout-00896]]
-    If any of the pname:initialLayout or pname:finalLayout member of the
-    sname:VkAttachmentDescription structures or the pname:layout member of
-    the sname:VkAttachmentReference structures specified when creating the
-    render pass specified in the pname:renderPass member of
-    pname:pRenderPassBegin is
-    ename:VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, or
-    ename:VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL then the
-    corresponding attachment image view of the framebuffer specified in the
-    pname:framebuffer member of pname:pRenderPassBegin must: have been
-    created with a pname:usage value including
-    ename:VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
-endif::VK_VERSION_1_1,VK_KHR_maintenance2[]
-// The nested ifdefs are there in anticipation of the hoped-for day when the
-// VU extractor and validation layers can handle VU with imbedded
-// conditionals. They are commented out until then.
-ifdef::VK_VERSION_1_1,VK_KHR_maintenance2[]
   * [[VUID-vkCmdBeginRenderPass-initialLayout-01758]]
     If any of the pname:initialLayout or pname:finalLayout member of the
     sname:VkAttachmentDescription structures or the pname:layout member of
     the sname:VkAttachmentReference structures specified when creating the
     render pass specified in the pname:renderPass member of
     pname:pRenderPassBegin is
-// ifdef::VK_VERSION_1_1,VK_KHR_maintenance2[]
+ifdef::VK_VERSION_1_1,VK_KHR_maintenance2[]
     ename:VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL,
     ename:VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL,
-// endif::VK_VERSION_1_1,VK_KHR_maintenance2[]
+endif::VK_VERSION_1_1,VK_KHR_maintenance2[]
     ename:VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, or
     ename:VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL then the
     corresponding attachment image view of the framebuffer specified in the
     pname:framebuffer member of pname:pRenderPassBegin must: have been
     created with a pname:usage value including
     ename:VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
+ifdef::VK_VERSION_1_1,VK_KHR_maintenance2[]
 ifdef::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
   * [[VUID-vkCmdBeginRenderPass-initialLayout-02842]]
     If any of the pname:initialLayout or pname:finalLayout member of the
@@ -5744,6 +5892,21 @@ ifdef::VK_EXT_attachment_feedback_loop_layout[]
     created with a pname:usage value the
     ename:VK_IMAGE_USAGE_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT usage bit
 endif::VK_EXT_attachment_feedback_loop_layout[]
+ifdef::VK_KHR_dynamic_rendering_local_read[]
+  * [[VUID-vkCmdBeginRenderPass-initialLayout-09537]]
+    If any of the pname:initialLayout or pname:finalLayout member of the
+    sname:VkAttachmentDescription structures or the pname:layout member of
+    the sname:VkAttachmentReference structures specified when creating the
+    render pass specified in the pname:renderPass member of
+    pname:pRenderPassBegin is ename:VK_IMAGE_LAYOUT_RENDERING_LOCAL_READ_KHR
+    then the corresponding attachment image view of the framebuffer
+    specified in the pname:framebuffer member of pname:pRenderPassBegin
+    must: have been created with a pname:usage value including either
+    ename:VK_IMAGE_USAGE_STORAGE_BIT, or both
+    ename:VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT and either of
+    ename:VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT or
+    ename:VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
+endif::VK_KHR_dynamic_rendering_local_read[]
 ****
 
 include::{generated}/validity/protos/vkCmdBeginRenderPass.adoc[]
@@ -5926,6 +6089,21 @@ ifdef::VK_EXT_attachment_feedback_loop_layout[]
     created with a pname:usage value the
     ename:VK_IMAGE_USAGE_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT usage bit
 endif::VK_EXT_attachment_feedback_loop_layout[]
+ifdef::VK_KHR_dynamic_rendering_local_read[]
+  * [[VUID-vkCmdBeginRenderPass2-initialLayout-09538]]
+    If any of the pname:initialLayout or pname:finalLayout member of the
+    sname:VkAttachmentDescription structures or the pname:layout member of
+    the sname:VkAttachmentReference structures specified when creating the
+    render pass specified in the pname:renderPass member of
+    pname:pRenderPassBegin is ename:VK_IMAGE_LAYOUT_RENDERING_LOCAL_READ_KHR
+    then the corresponding attachment image view of the framebuffer
+    specified in the pname:framebuffer member of pname:pRenderPassBegin
+    must: have been created with a pname:usage value including either
+    ename:VK_IMAGE_USAGE_STORAGE_BIT, or both
+    ename:VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT and either of
+    ename:VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT or
+    ename:VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT
+endif::VK_KHR_dynamic_rendering_local_read[]
 ****
 
 include::{generated}/validity/protos/vkCmdBeginRenderPass2.adoc[]
@@ -6025,59 +6203,53 @@ pass.
     structure specified when creating pname:framebuffer
   * [[VUID-VkRenderPassBeginInfo-None-08996]]
 ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
-    If slink:VkDeviceGroupRenderPassBeginInfo::pname:deviceRenderAreaCount
-    is 0,
+    If the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0,
 endif::VK_VERSION_1_1,VK_KHR_device_group[]
     pname:renderArea.extent.width must: be greater than 0
   * [[VUID-VkRenderPassBeginInfo-None-08997]]
 ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
-    If slink:VkDeviceGroupRenderPassBeginInfo::pname:deviceRenderAreaCount
-    is 0,
+    If the pname:pNext chain does not contain
+    slink:VkDeviceGroupRenderPassBeginInfo or its
+    pname:deviceRenderAreaCount member is equal to 0,
 endif::VK_VERSION_1_1,VK_KHR_device_group[]
     pname:renderArea.extent.height must: be greater than 0
-ifndef::VK_VERSION_1_1,VK_KHR_device_group[]
-  * [[VUID-VkRenderPassBeginInfo-renderArea-02846]]
-    pname:renderArea.offset.x must: be greater than or equal to 0
-  * [[VUID-VkRenderPassBeginInfo-renderArea-02847]]
-    pname:renderArea.offset.y must: be greater than or equal to 0
-  * [[VUID-VkRenderPassBeginInfo-renderArea-02848]]
-    [eq]#pname:renderArea.offset.x {plus} pname:renderArea.extent.width#
-    must: be less than or equal to
-    slink:VkFramebufferCreateInfo::pname:width the pname:framebuffer was
-    created with
-  * [[VUID-VkRenderPassBeginInfo-renderArea-02849]]
-    [eq]#pname:renderArea.offset.y {plus} pname:renderArea.extent.height#
-    must: be less than or equal to
-    slink:VkFramebufferCreateInfo::pname:height the pname:framebuffer was
-    created with
-endif::VK_VERSION_1_1,VK_KHR_device_group[]
-ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
   * [[VUID-VkRenderPassBeginInfo-pNext-02850]]
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
     If the pname:pNext chain does not contain
     slink:VkDeviceGroupRenderPassBeginInfo or its
     pname:deviceRenderAreaCount member is equal to 0,
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
     pname:renderArea.offset.x must: be greater than or equal to 0
   * [[VUID-VkRenderPassBeginInfo-pNext-02851]]
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
     If the pname:pNext chain does not contain
     slink:VkDeviceGroupRenderPassBeginInfo or its
     pname:deviceRenderAreaCount member is equal to 0,
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
     pname:renderArea.offset.y must: be greater than or equal to 0
   * [[VUID-VkRenderPassBeginInfo-pNext-02852]]
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
     If the pname:pNext chain does not contain
     slink:VkDeviceGroupRenderPassBeginInfo or its
     pname:deviceRenderAreaCount member is equal to 0,
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
     [eq]#pname:renderArea.offset.x {plus} pname:renderArea.extent.width#
     must: be less than or equal to
     slink:VkFramebufferCreateInfo::pname:width the pname:framebuffer was
     created with
   * [[VUID-VkRenderPassBeginInfo-pNext-02853]]
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
     If the pname:pNext chain does not contain
     slink:VkDeviceGroupRenderPassBeginInfo or its
     pname:deviceRenderAreaCount member is equal to 0,
+endif::VK_VERSION_1_1,VK_KHR_device_group[]
     [eq]#pname:renderArea.offset.y {plus} pname:renderArea.extent.height#
     must: be less than or equal to
     slink:VkFramebufferCreateInfo::pname:height the pname:framebuffer was
     created with
+ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
   * [[VUID-VkRenderPassBeginInfo-pNext-02856]]
     If the pname:pNext chain contains
     slink:VkDeviceGroupRenderPassBeginInfo, [eq]#pname:offset.x {plus}
@@ -6264,7 +6436,13 @@ ifdef::VK_QCOM_multiview_per_view_render_areas[]
     must: specify a render area that includes the union of all per view
     render areas.
 endif::VK_QCOM_multiview_per_view_render_areas[]
-
+ifdef::VK_ARM_render_pass_striped[]
+  * [[VUID-VkRenderPassBeginInfo-pNext-09539]]
+    If the pname:pNext chain contains a slink:VkRenderPassStripeBeginInfoARM
+    structure, the union of stripe areas defined by the elements of
+    slink:VkRenderPassStripeInfoARM::pname:pStripeInfos must: cover the
+    pname:renderArea
+endif::VK_ARM_render_pass_striped[]
 ****
 
 include::{generated}/validity/structs/VkRenderPassBeginInfo.adoc[]
@@ -6444,7 +6622,19 @@ endif::VK_KHR_create_renderpass2[]
   * pname:contents is a elink:VkSubpassContents value specifying how the
     commands in the next subpass will be provided.
 
+ifdef::VK_EXT_nested_command_buffer[]
+.Valid Usage
+****
+  * [[VUID-VkSubpassBeginInfo-contents-09382]]
+    If pname:contents is
+    ename:VK_SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT, then
+    <<features-nestedCommandBuffer, pname:nestedCommandBuffer>> must: be
+    enabled
+****
+endif::VK_EXT_nested_command_buffer[]
+
 include::{generated}/validity/structs/VkSubpassBeginInfo.adoc[]
+
 --
 endif::VK_VERSION_1_2,VK_KHR_create_renderpass2[]
 
@@ -6463,6 +6653,12 @@ include::{generated}/api/enums/VkSubpassContents.adoc[]
     from the primary command buffer, and flink:vkCmdExecuteCommands is the
     only valid command in the command buffer until flink:vkCmdNextSubpass or
     flink:vkCmdEndRenderPass.
+ifdef::VK_EXT_nested_command_buffer[]
+  * ename:VK_SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT
+    specifies that the contents of the subpass can: be recorded both inline
+    and in secondary command buffers executed from this command buffer with
+    flink:vkCmdExecuteCommands.
+endif::VK_EXT_nested_command_buffer[]
 --
 
 ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
@@ -6585,7 +6781,7 @@ endif::VK_KHR_imageless_framebuffer[]
     Each element of pname:pAttachments must: only specify a single mip level
   * [[VUID-VkRenderPassAttachmentBeginInfo-pAttachments-03219]]
     Each element of pname:pAttachments must: have been created with the
-    identity swizzle
+    <<resources-image-views-identity-mappings,identity swizzle>>
   * [[VUID-VkRenderPassAttachmentBeginInfo-pAttachments-04114]]
     Each element of pname:pAttachments must: have been created with
     slink:VkImageViewCreateInfo::pname:viewType not equal to
@@ -6609,7 +6805,7 @@ ifdef::VK_QCOM_multiview_per_view_render_areas[]
 [open,refpage='VkMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM',desc='Set the multiview per view render areas for a render pass instance',type='structs']
 --
 If a render pass instance enables multiview and if the
-<features-multiview-per-view-render-areas,pname:multiviewPerViewRenderAreas>>
+<<features-multiview-per-view-render-areas,pname:multiviewPerViewRenderAreas>>
 feature is enabled, the
 sname:VkMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM structure can: be
 included in the pname:pNext chain of slink:VkRenderPassBeginInfo
@@ -7023,7 +7219,7 @@ This section indicates a number of the more common cases as guidelines to
 help avoid them.
 
 
-=== Sampling from a read-only attachment
+=== Sampling From a Read-only Attachment
 
 Vulkan includes read-only layouts for depth/stencil images, that allow the
 images to be both read during a render pass for the purposes of
@@ -7046,15 +7242,15 @@ In practice, many applications have shipped reading samples outside of the
 covered fragment without any observable issue, but there is no guarantee
 that this will always work, and it is not advisable to rely on this in new
 or re-worked code bases.
-ifdef::VK_VERSION_1_3,VK_EXT_load_store_op_none,VK_QCOM_render_pass_store_ops,VK_KHR_dynamic_rendering[]
+ifdef::VK_VERSION_1_3,VK_KHR_load_store_op_none,VK_EXT_load_store_op_none,VK_QCOM_render_pass_store_ops,VK_KHR_dynamic_rendering[]
 As ename:VK_ATTACHMENT_STORE_OP_NONE is guaranteed to perform no writes,
 applications wishing to read an image as both an attachment and a
 non-attachment should make use of this store operation, coupled with a load
 operation that also performs no writes.
-endif::VK_VERSION_1_3,VK_EXT_load_store_op_none,VK_QCOM_render_pass_store_ops,VK_KHR_dynamic_rendering[]
+endif::VK_VERSION_1_3,VK_KHR_load_store_op_none,VK_EXT_load_store_op_none,VK_QCOM_render_pass_store_ops,VK_KHR_dynamic_rendering[]
 
 
-=== Non-overlapping access between resources
+=== Non-overlapping Access Between Resources
 
 When relying on non-overlapping accesses between attachments and other
 resources, it is important to note that <<renderpass-load-operations, load>>
@@ -7074,7 +7270,7 @@ introducing a data race.
 endif::VK_EXT_attachment_feedback_loop_layout[]
 
 
-=== Depth/stencil and input attachments
+=== Depth/Stencil and Input Attachments
 
 When rendering to only the depth OR stencil aspect of an image, an input
 attachment accessing the other aspect will

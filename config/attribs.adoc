@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -19,6 +19,7 @@
 :sym1: ✓
 :sym2: †
 :sym3: ‡
+:sym4: §
 :reg: ®
 :trade: ™
 :harr: ↔

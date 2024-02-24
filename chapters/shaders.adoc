@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
@@ -99,10 +99,6 @@ is not dlink:VK_NULL_HANDLE.
   * [[VUID-vkCreateShadersEXT-None-08400]]
     The <<features-shaderObject, pname:shaderObject>> feature must: be
     enabled
-  * [[VUID-vkCreateShadersEXT-pCreateInfos-08401]]
-    If pname:createInfoCount is 1, there must: be no element of
-    pname:pCreateInfos whose pname:flags member includes
-    ename:VK_SHADER_CREATE_LINK_STAGE_BIT_EXT
   * [[VUID-vkCreateShadersEXT-pCreateInfos-08402]]
     If the pname:flags member of any element of pname:pCreateInfos includes
     ename:VK_SHADER_CREATE_LINK_STAGE_BIT_EXT, the pname:flags member of all
@@ -283,6 +279,16 @@ ifdef::VK_EXT_fragment_density_map[]
     ename:VK_SHADER_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT
 endif::VK_EXT_fragment_density_map[]
 ifdef::VK_VERSION_1_1,VK_EXT_subgroup_size_control[]
+  * [[VUID-VkShaderCreateInfoEXT-flags-09404]]
+    If pname:flags includes
+    ename:VK_SHADER_CREATE_ALLOW_VARYING_SUBGROUP_SIZE_BIT_EXT, the
+    <<features-subgroupSizeControl, pname:subgroupSizeControl>> feature
+    must: be enabled
+  * [[VUID-VkShaderCreateInfoEXT-flags-09405]]
+    If pname:flags includes
+    ename:VK_SHADER_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT, the
+    <<features-computeFullSubgroups, pname:computeFullSubgroups>> feature
+    must: be enabled
   * [[VUID-VkShaderCreateInfoEXT-flags-08992]]
     If pname:flags includes
     ename:VK_SHADER_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT, pname:stage must:
@@ -410,10 +416,12 @@ endif::VK_NV_mesh_shader,VK_EXT_mesh_shader[]
     sname:VkPhysicalDeviceLimits::pname:maxCullDistances
   * [[VUID-VkShaderCreateInfoEXT-pCode-08450]]
     If pname:codeType is ename:VK_SHADER_CODE_TYPE_SPIRV_EXT, and the
-    identified entry point includes any variables in its interface that are
-    declared with the code:ClipDistance or code:CullDistance code:BuiltIn
-    decoration, those variables must: not have array sizes which sum to more
-    than sname:VkPhysicalDeviceLimits::pname:maxCombinedClipAndCullDistances
+    identified entry point includes variables in its interface that are
+    declared with the code:ClipDistance code:BuiltIn decoration and
+    variables in its interface that are declared with the code:CullDistance
+    code:BuiltIn decoration, those variables must: not have array sizes
+    which sum to more than
+    sname:VkPhysicalDeviceLimits::pname:maxCombinedClipAndCullDistances
   * [[VUID-VkShaderCreateInfoEXT-pCode-08451]]
     If pname:codeType is ename:VK_SHADER_CODE_TYPE_SPIRV_EXT, and the
     identified entry point includes any variable in its interface that is
@@ -709,11 +717,12 @@ code created on a device with a different or unknown pname:shaderBinaryUUID
 and/or higher pname:shaderBinaryVersion.
 In this case, the implementation may: use any unspecified means of its
 choosing to determine whether the provided binary shader code is usable.
-If it is, the flink:vkCreateShadersEXT call must: return ename:VK_SUCCESS,
-and the created shader object is guaranteed to be valid.
-Otherwise, in the absence of some other error, the flink:vkCreateShadersEXT
-call must: return ename:VK_ERROR_INCOMPATIBLE_SHADER_BINARY_EXT to indicate
-that the provided binary shader code is not compatible with the device.
+If it is, flink:vkCreateShadersEXT must: return ename:VK_SUCCESS, and the
+created shader object is guaranteed to be valid.
+Otherwise, in the absence of some error, flink:vkCreateShadersEXT must:
+return ename:VK_INCOMPATIBLE_SHADER_BINARY_EXT to indicate that the provided
+binary shader code is not compatible with the device.
+
 
 [[shaders-objects-binding]]
 === Binding Shader Objects
@@ -758,7 +767,7 @@ unbound).
   * [[VUID-vkCmdBindShadersEXT-pStages-08464]]
     pname:pStages must: not contain ename:VK_SHADER_STAGE_ALL_GRAPHICS or
     ename:VK_SHADER_STAGE_ALL
-ifdef::VK_KHR_ray_tracing_pipeline[]
+ifdef::VK_KHR_ray_tracing_pipeline,VK_NV_ray_tracing[]
   * [[VUID-vkCmdBindShadersEXT-pStages-08465]]
     pname:pStages must: not contain ename:VK_SHADER_STAGE_RAYGEN_BIT_KHR,
     ename:VK_SHADER_STAGE_ANY_HIT_BIT_KHR,
@@ -766,18 +775,7 @@ ifdef::VK_KHR_ray_tracing_pipeline[]
     ename:VK_SHADER_STAGE_MISS_BIT_KHR,
     ename:VK_SHADER_STAGE_INTERSECTION_BIT_KHR, or
     ename:VK_SHADER_STAGE_CALLABLE_BIT_KHR
-endif::VK_KHR_ray_tracing_pipeline[]
-ifndef::VK_KHR_ray_tracing_pipeline[]
-ifdef::VK_NV_ray_tracing[]
-  * [[VUID-vkCmdBindShadersEXT-pStages-08466]]
-    pname:pStages must: not contain ename:VK_SHADER_STAGE_RAYGEN_BIT_NV,
-    ename:VK_SHADER_STAGE_ANY_HIT_BIT_NV,
-    ename:VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV,
-    ename:VK_SHADER_STAGE_MISS_BIT_NV,
-    ename:VK_SHADER_STAGE_INTERSECTION_BIT_NV, or
-    ename:VK_SHADER_STAGE_CALLABLE_BIT_NV
-endif::VK_NV_ray_tracing[]
-endif::VK_KHR_ray_tracing_pipeline[]
+endif::VK_KHR_ray_tracing_pipeline,VK_NV_ray_tracing[]
 ifdef::VK_HUAWEI_subpass_shading[]
   * [[VUID-vkCmdBindShadersEXT-pStages-08467]]
     pname:pStages must: not contain
@@ -903,10 +901,7 @@ endif::VK_EXT_mesh_shader,VK_NV_mesh_shader[]
     ename:VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT or
     ename:VK_SHADER_STAGE_GEOMETRY_BIT stage
   * flink:vkCmdSetCullMode
-  * flink:vkCmdSetFrontFace, if pname:cullMode is not
-    ename:VK_CULL_MODE_NONE, or if pname:stencilTestEnable is ename:VK_TRUE,
-    or if the fragment shader uses a variable decorated with
-    code:FrontFacing
+  * flink:vkCmdSetFrontFace
   * flink:vkCmdSetDepthTestEnable
   * flink:vkCmdSetDepthWriteEnable
   * flink:vkCmdSetDepthCompareOp, if pname:depthTestEnable is ename:VK_TRUE
@@ -915,9 +910,13 @@ endif::VK_EXT_mesh_shader,VK_NV_mesh_shader[]
   * flink:vkCmdSetDepthBounds, if pname:depthBoundsTestEnable is
     ename:VK_TRUE
   * flink:vkCmdSetDepthBiasEnable
-  * flink:vkCmdSetDepthBias
-ifdef::VK_EXT_depth_bias_control[or flink:vkCmdSetDepthBias2EXT]
-    , if pname:depthBiasEnable is ename:VK_TRUE
+ifdef::VK_EXT_depth_bias_control[]
+  * flink:vkCmdSetDepthBias or flink:vkCmdSetDepthBias2EXT,
+endif::VK_EXT_depth_bias_control[]
+ifndef::VK_EXT_depth_bias_control[]
+  * flink:vkCmdSetDepthBias,
+endif::VK_EXT_depth_bias_control[]
+    if pname:depthBiasEnable is ename:VK_TRUE
   * flink:vkCmdSetDepthClampEnableEXT, if the <<features-depthClamp,
     depthClamp>> feature is enabled on the device
   * flink:vkCmdSetStencilTestEnable
@@ -1025,10 +1024,11 @@ have been called in the command buffer prior to drawing:
   * flink:vkCmdSetProvokingVertexModeEXT
 endif::VK_EXT_provoking_vertex[]
 
-ifdef::VK_EXT_line_rasterization[]
-If the `apiext:VK_EXT_line_rasterization` extension is enabled on the
-device, and pname:rasterizerDiscardEnable is ename:VK_FALSE, and if
-pname:polygonMode is ename:VK_POLYGON_MODE_LINE or a shader is bound to the
+ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
+If the `apiext:VK_KHR_line_rasterization` or
+`apiext:VK_EXT_line_rasterization` extension is enabled on the device, and
+pname:rasterizerDiscardEnable is ename:VK_FALSE, and if pname:polygonMode is
+ename:VK_POLYGON_MODE_LINE or a shader is bound to the
 ename:VK_SHADER_STAGE_VERTEX_BIT stage and pname:primitiveTopology is a line
 topology or a shader which outputs line primitives is bound to the
 ename:VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT or
@@ -1037,9 +1037,9 @@ been called in the command buffer prior to drawing:
 
   * flink:vkCmdSetLineRasterizationModeEXT
   * flink:vkCmdSetLineStippleEnableEXT
-  * flink:vkCmdSetLineStippleEXT, if pname:stippledLineEnable is
+  * flink:vkCmdSetLineStippleKHR, if pname:stippledLineEnable is
     ename:VK_TRUE
-endif::VK_EXT_line_rasterization[]
+endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 
 ifdef::VK_EXT_depth_clip_control[]
 If the <<features-depthClipControl, pname:depthClipControl>> feature is
@@ -1051,7 +1051,7 @@ endif::VK_EXT_depth_clip_control[]
 
 ifdef::VK_EXT_color_write_enable[]
 If the <<features-colorWriteEnable, pname:colorWriteEnable>> feature is
-enabled on the device, a shader is bound to the
+enabled on the device, and a shader is bound to the
 ename:VK_SHADER_STAGE_FRAGMENT_BIT stage, and pname:rasterizerDiscardEnable
 is ename:VK_FALSE, the following command must: have been called in the
 command buffer prior to drawing:
@@ -1062,14 +1062,12 @@ endif::VK_EXT_color_write_enable[]
 
 ifdef::VK_EXT_attachment_feedback_loop_dynamic_state[]
 If the <<features-attachmentFeedbackLoopDynamicState,
-attachmentFeedbackLoopDynamicState>> feature is enabled on the device, a
+attachmentFeedbackLoopDynamicState>> feature is enabled on the device, and a
 shader is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT stage, and
 pname:rasterizerDiscardEnable is ename:VK_FALSE, the following command must:
 have been called in the command buffer prior to drawing:
 
-  * flink:vkCmdSetAttachmentFeedbackLoopEnableEXT, for each image aspect
-    corresponding to an attachment type used by the render pass instance
-    which can: use feedback loops
+  * flink:vkCmdSetAttachmentFeedbackLoopEnableEXT
 endif::VK_EXT_attachment_feedback_loop_dynamic_state[]
 
 ifdef::VK_NV_clip_space_w_scaling[]
@@ -1159,7 +1157,7 @@ bound, but all required state must: be set prior to issuing drawing
 commands.
 
 [[shaders-objects-pipeline-interaction]]
-=== Interaction with Pipelines
+=== Interaction With Pipelines
 
 Calling flink:vkCmdBindShadersEXT causes the pipeline bind points
 <<shaders-binding,corresponding to each stage>> in pname:pStages to be
@@ -1297,16 +1295,12 @@ endif::VK_EXT_graphics_pipeline_libraries,VK_KHR_maintenance5[]
 
 .Valid Usage
 ****
-ifdef::VK_EXT_validation_cache[]
   * [[VUID-vkCreateShaderModule-pCreateInfo-06904]]
     If pname:pCreateInfo is not `NULL`, pname:pCreateInfo->pNext must: be
-    `NULL` or a pointer to a
-    slink:VkShaderModuleValidationCacheCreateInfoEXT structure
-endif::VK_EXT_validation_cache[]
-ifndef::VK_EXT_validation_cache[]
-  * [[VUID-vkCreateShaderModule-pCreateInfo-06905]]
-    If pname:pCreateInfo is not `NULL`, pname:pCreateInfo->pNext must: be
     `NULL`
+ifdef::VK_EXT_validation_cache[]
+    or a pointer to a slink:VkShaderModuleValidationCacheCreateInfoEXT
+    structure
 endif::VK_EXT_validation_cache[]
 ****
 
@@ -1334,13 +1328,14 @@ include::{generated}/api/structs/VkShaderModuleCreateInfo.adoc[]
 
 .Valid Usage
 ****
-ifndef::VK_NV_glsl_shader[]
 :prefixCondition:
-include::{chapters}/commonvalidity/shader_create_spv_common.adoc[]
-endif::VK_NV_glsl_shader[]
 ifdef::VK_NV_glsl_shader[]
 :prefixCondition: If pCode is a pointer to SPIR-V code,
+endif::VK_NV_glsl_shader[]
+
 include::{chapters}/commonvalidity/shader_create_spv_common.adoc[]
+
+ifdef::VK_NV_glsl_shader[]
   * [[VUID-VkShaderModuleCreateInfo-pCode-07912]]
     If the apiext:VK_NV_glsl_shader extension is not enabled, pname:pCode
     must: be a pointer to SPIR-V code
@@ -2005,27 +2000,12 @@ Otherwise, this state is specified by the
 slink:VkPipelineTessellationStateCreateInfo::pname:patchControlPoints value
 used to create the currently active pipeline.
 
+:refpage: vkCmdSetPatchControlPointsEXT
+:requiredfeature: extendedDynamicState2PatchControlPoints
+
 .Valid Usage
 ****
-ifdef::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state2[]
-  * [[VUID-vkCmdSetPatchControlPointsEXT-None-08574]]
-    Either the <<features-extendedDynamicState2PatchControlPoints,
-    pname:extendedDynamicState2PatchControlPoints>> feature or the
-    <<features-shaderObject, pname:shaderObject>> feature or both must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state2[]
-ifndef::VK_EXT_extended_dynamic_state2[]
-  * [[VUID-vkCmdSetPatchControlPointsEXT-None-08575]]
-    The <<features-shaderObject, pname:shaderObject>> feature must: be
-    enabled
-endif::VK_EXT_extended_dynamic_state2[]
-endif::VK_EXT_shader_object[]
-ifndef::VK_EXT_shader_object[]
-  * [[VUID-vkCmdSetPatchControlPointsEXT-None-04873]]
-    The <<features-extendedDynamicState2PatchControlPoints,
-    pname:extendedDynamicState2PatchControlPoints>> feature must: be enabled
-endif::VK_EXT_shader_object[]
+include::{chapters}/commonvalidity/dynamic_state2_optional_feature_common.adoc[]
   * [[VUID-vkCmdSetPatchControlPointsEXT-patchControlPoints-04874]]
     pname:patchControlPoints must: be greater than zero and less than or
     equal to sname:VkPhysicalDeviceLimits::pname:maxTessellationPatchSize
@@ -2154,8 +2134,9 @@ ifdef::VK_NV_ray_tracing,VK_KHR_ray_tracing_pipeline[]
 == Ray Generation Shaders
 
 A ray generation shader is similar to a compute shader.
-Its main purpose is to execute ray tracing queries using code:OpTraceRayKHR
-instructions and process the results.
+Its main purpose is to execute ray tracing queries using
+<<glossary-pipeline-trace-ray, pipeline trace ray>> instructions (such as
+code:OpTraceRayKHR) and process the results.
 
 
 [[shaders-ray-generation-execution]]
@@ -2235,7 +2216,8 @@ point during traversal, unless the ray is forcibly terminated.
 Closest hit shaders have read-only access to the attributes generated by the
 corresponding intersection shader, and can: read or modify the ray payload.
 They also have access to a number of system-generated values.
-Closest hit shaders can: call code:OpTraceRayKHR to recursively trace rays.
+Closest hit shaders can: call <<glossary-pipeline-trace-ray, pipeline trace
+ray>> instructions to recursively trace rays.
 
 
 [[shaders-closest-hit-execution]]
@@ -2249,8 +2231,9 @@ intersection has been found and accepted.
 == Miss Shaders
 
 Miss shaders can: access the ray payload and can: trace new rays through the
-code:OpTraceRayKHR instruction, but cannot: access attributes since they are
-not associated with an intersection.
+<<glossary-pipeline-trace-ray, pipeline trace ray>> instructions, but
+cannot: access attributes since they are not associated with an
+intersection.
 
 
 [[shaders-miss-execution]]
@@ -2277,7 +2260,7 @@ endif::VK_NV_ray_tracing,VK_KHR_ray_tracing_pipeline[]
 
 
 [[shaders-interpolation-decorations]]
-== Interpolation decorations
+== Interpolation Decorations
 
 Variables in the code:Input storage class in a fragment shader's interface
 are interpolated from the values specified by the primitive being
@@ -2951,6 +2934,18 @@ size groups of invocations and the cluster size must: be known at pipeline
 creation time.
 The operations supported are add, mul, min, max, and, or, xor.
 
+[[shaders-group-operations-rotate]]
+=== Rotate Group Operations
+
+The rotate group operations allow invocations to read values from other
+invocations within the group relative to the current invocation and modulo
+the size of the group.
+Clustered rotate group operations perform the same operation within
+individual partitions of a group.
+
+The partitions for clustered rotate group operations are consecutive
+power-of-two size groups of invocations and the cluster size must: be known
+at pipeline creation time.
 
 [[shaders-quad-operations]]
 == Quad Group Operations
@@ -2962,8 +2957,9 @@ Whilst these instructions do include a code:Scope parameter, this scope is
 always overridden; only the <<shaders-scope-quad, quad scope instance>> is
 included in its execution scope.
 
-Fragment shaders that statically execute quad group operations must: launch
-sufficient invocations to ensure their correct operation; additional
+Fragment shaders that statically execute either
+code:OpGroupNonUniformQuadBroadcast or code:OpGroupNonUniformQuadSwap must:
+launch sufficient invocations to ensure their correct operation; additional
 <<shaders-helper-invocations, helper invocations>> are launched for
 framebuffer locations not covered by rasterized fragments if necessary.
 
@@ -2985,22 +2981,36 @@ Derivative operations calculate the partial derivative for an expression
 
 Derivative operations operate on a set of invocations known as a _derivative
 group_ as defined in the <<spirv-spec,SPIR-V specification>>.
-A derivative group is equivalent to
+
+A derivative group in a fragment shader is equivalent to the
+ifdef::VK_KHR_shader_quad_control[]
+<<shaders-scope-quad, quad scope instance>> if the code:QuadDerivativesKHR
+execution mode is specified, otherwise it is equivalent to the
+endif::VK_KHR_shader_quad_control[]
+<<shaders-scope-primitive, primitive scope instance>>.
 ifdef::VK_NV_compute_shader_derivatives[]
-the <<shaders-scope-quad, quad scope instance>> for a compute shader
-invocation, or
+A derivative group in a compute shader is equivalent to the
+<<shaders-scope-quad, quad scope instance>>.
 endif::VK_NV_compute_shader_derivatives[]
-the <<shaders-scope-primitive, primitive scope instance>> for a fragment
-shader invocation.
 
 Derivatives are calculated assuming that [eq]#P# is piecewise linear and
 continuous within the derivative group.
-All dynamic instances of explicit derivative instructions (code:OpDPdx*,
-code:OpDPdy*, and code:OpFwidth*) must: be executed in control flow that is
-uniform within a derivative group.
-For other derivative operations, results are undefined: if a dynamic
-instance is executed in control flow that is not uniform within the
-derivative group.
+
+The following control-flow restrictions apply to derivative operations:
+
+ifdef::VK_KHR_shader_quad_control[]
+  * If the code:QuadDerivativesKHR execution mode is specified, dynamic
+    instances of any derivative operations must: be executed in control flow
+    that is uniform within the current <<shaders-scope-quad, quad scope
+    instance>>.
+  * If the code:QuadDerivativesKHR execution mode is not specified:
+endif::VK_KHR_shader_quad_control[]
+  ** dynamic instances of explicit derivative instructions (code:OpDPdx*,
+     code:OpDPdy*, and code:OpFwidth*) must: be executed in control flow
+     that is uniform within a derivative group.
+  ** dynamic instances of implicit derivative operations can: be executed in
+     control flow that is not uniform within the derivative group, but
+     results are undefined:.
 
 Fragment shaders that statically execute derivative operations must: launch
 sufficient invocations to ensure their correct operation; additional
@@ -3110,18 +3120,24 @@ behave more like code:Private variables for the duration of the shader
 invocation.
 ====
 
-For <<shaders-group-operations, group operations>> other than
-<<shaders-derivative-operations, derivative>>
 ifdef::VK_VERSION_1_1[]
-and <<shaders-quad-operations, quad group>>
+ifdef::VK_KHR_shader_maximal_reconvergence[]
+If the code:MaximallyReconvergesKHR execution mode is applied to the entry
+point, helper invocations must: remain active for all instructions for the
+lifetime of the quad scope instance they are a part of.
+If the code:MaximallyReconvergesKHR execution mode is not applied to the
+entry point, helper
+endif::VK_KHR_shader_maximal_reconvergence[]
+ifndef::VK_KHR_shader_maximal_reconvergence[]
+Helper
+endif::VK_KHR_shader_maximal_reconvergence[]
+invocations may: be considered inactive for <<shaders-group-operations,
+group operations>> other than <<shaders-derivative-operations, derivative>>
+and <<shaders-quad-operations, quad group>> operations.
+All invocations in a quad scope instance may: become permanently inactive at
+any point once the only remaining invocations in that quad scope instance
+are helper invocations.
 endif::VK_VERSION_1_1[]
-operations, helper invocations may: be treated as inactive even if they
-would be considered otherwise active.
-
-ifdef::VK_VERSION_1_3,VK_EXT_shader_demote_to_helper_invocation[]
-Helper invocations may: become permanently inactive if all invocations in a
-quad scope instance become helper invocations.
-endif::VK_VERSION_1_3,VK_EXT_shader_demote_to_helper_invocation[]
 
 
 ifdef::VK_NV_cooperative_matrix,VK_KHR_cooperative_matrix[]
@@ -3271,6 +3287,8 @@ flink:vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR.
 
 At least one entry in the list must: have power of two values for all of
 pname:MSize, pname:KSize, and pname:NSize.
+
+pname:scope must: be ename:VK_SCOPE_SUBGROUP_KHR.
 
 include::{generated}/validity/structs/VkCooperativeMatrixPropertiesKHR.adoc[]
 --
@@ -3627,3 +3645,7 @@ include::{generated}/api/protos/vkDestroyValidationCacheEXT.adoc[]
 include::{generated}/validity/protos/vkDestroyValidationCacheEXT.adoc[]
 --
 endif::VK_EXT_validation_cache[]
+
+ifdef::VK_NV_cuda_kernel_launch[]
+include::{chapters}/VK_NV_cuda_kernel_launch/module.adoc[]
+endif::VK_NV_cuda_kernel_launch[]
