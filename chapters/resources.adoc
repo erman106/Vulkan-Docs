@@ -2052,11 +2052,19 @@ ifdef::VK_VERSION_1_1,VK_KHR_sampler_ycbcr_conversion[]
     include ename:VK_IMAGE_CREATE_ALIAS_BIT, pname:flags must: not contain
     ename:VK_IMAGE_CREATE_DISJOINT_BIT
   * [[VUID-VkImageCreateInfo-format-04712]]
-    If pname:format has a code:_422 or code:_420 suffix, pname:width must:
-    be a multiple of 2
+    If pname:format has a code:_422 or code:_420 suffix, pname:extent.width
+    must: be a multiple of 2
   * [[VUID-VkImageCreateInfo-format-04713]]
-    If pname:format has a code:_420 suffix, pname:height must: be a multiple
-    of 2
+    If pname:format has a code:_420 suffix, pname:extent.height must: be a
+    multiple of 2
+ifdef::VK_IMG_format_pvrtc[]
+  * [[VUID-VkImageCreateInfo-format-09583]]
+    If pname:format is one of the etext:VK_FORMAT_PVTRC1_*_IMG formats,
+    pname:extent.width must: be a power of 2
+  * [[VUID-VkImageCreateInfo-format-09584]]
+    If pname:format is one of the etext:VK_FORMAT_PVTRC1_*_IMG formats,
+    pname:extent.height must: be a power of 2
+endif::VK_IMG_format_pvrtc[]
 endif::VK_VERSION_1_1,VK_KHR_sampler_ycbcr_conversion[]
 ifdef::VK_EXT_image_drm_format_modifier[]
   * [[VUID-VkImageCreateInfo-tiling-02261]]
@@ -5542,7 +5550,9 @@ ifdef::VK_QCOM_image_processing[]
     must: be less than or equal to <<limits-weightfilter-maxdimension,
     sname:VkPhysicalDeviceImageProcessingPropertiesQCOM::pname:maxWeightFilterDimension.height>>
 endif::VK_QCOM_image_processing[]
-
+  * [[VUID-VkImageViewCreateInfo-subresourceRange-09594]]
+    pname:subresourceRange.aspectMask must: be valid for the pname:format
+    the pname:image was created with
 ****
 
 include::{generated}/validity/structs/VkImageViewCreateInfo.adoc[]
@@ -9736,9 +9746,9 @@ instance or API, applications must:
   . Ensure the release operation has completed using semaphores or fences.
   . Acquire exclusive ownership in the destination instance or API
 
-Unlike queue ownership transfers, the destination instance or API is not
-specified explicitly when releasing ownership, nor is the source instance or
-API specified when acquiring ownership.
+Unlike queue family ownership transfers, the destination instance or API is
+not specified explicitly when releasing ownership, nor is the source
+instance or API specified when acquiring ownership.
 Instead, the image or memory barrier's pname:dstQueueFamilyIndex or
 pname:srcQueueFamilyIndex parameters are set to the reserved queue family
 index ename:VK_QUEUE_FAMILY_EXTERNAL

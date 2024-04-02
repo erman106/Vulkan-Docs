@@ -6,7 +6,7 @@
 == AV1 Decode Operations
 
 Video decode operations using an <<decode-av1-profile,AV1 decode profile>>
-can: be used to decode elementary video stream sequences compliant to the
+can: be used to decode elementary video stream sequences compliant with the
 <<aomedia-av1,AV1 Specification>>.
 
 [NOTE]
@@ -378,7 +378,7 @@ pname:pStdPictureInfo are interpreted as follows:
     code:StdVideoAV1Segmentation structure pointed to by code:pSegmentation
     is interpreted as follows:
   ** the elements of code:FeatureEnabled are bitmasks where bit index
-     [eq]#i# of element [eq]#j# corresponds to `FeatureEnabled[i][j]` as
+     [eq]#j# of element [eq]#i# corresponds to `FeatureEnabled[i][j]` as
      defined in section 6.8.13 of the <<aomedia-av1,AV1 Specification>>;
   ** code:FeatureData is interpreted as defined in section 6.8.13 of the
      <<aomedia-av1,AV1 Specification>>;
@@ -406,8 +406,13 @@ pname:pStdPictureInfo are interpreted as follows:
   ** all other members of code:StdVideoAV1CDEF are interpreted as defined in
      section 6.10.14 of the <<aomedia-av1,AV1 Specification>>;
   * the code:StdVideoAV1LoopRestoration structure pointed to by
-    code:pLoopRestoration is interpreted as defined in section 6.10.15 of
-    the <<aomedia-av1,AV1 Specification>>;
+    code:pLoopRestoration is interpreted as follows:
+  ** code:LoopRestorationSize[code:plane] is interpreted as
+     [eq]#log2(code:size) - 5#, where code:size is the value of
+     code:LoopRestorationSize[code:plane] as defined in section 6.10.15 of
+     the <<aomedia-av1,AV1 Specification>>.
+  ** all other members of code:StdVideoAV1LoopRestoration are defined as in
+    section 6.10.15 of the <<aomedia-av1,AV1 Specification>>;
   * the members of the code:StdVideoAV1GlobalMotion structure provided in
     code:global_motion are interpreted as defined in section 7.10 of the
     <<aomedia-av1,AV1 Specification>>;
