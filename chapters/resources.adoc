@@ -334,6 +334,20 @@ ifdef::VK_EXT_descriptor_buffer[]
     ename:VK_BUFFER_USAGE_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT or
     ename:VK_BUFFER_USAGE_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT
 endif::VK_EXT_descriptor_buffer[]
+  * [[VUID-VkBufferCreateInfo-flags-09641]]
+    If pname:flags includes ename:VK_BUFFER_CREATE_PROTECTED_BIT, then
+    pname:usage must: not contain any of the following bits
+ifdef::VK_EXT_transform_feedback[** ename:VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT]
+ifdef::VK_EXT_transform_feedback[** ename:VK_BUFFER_USAGE_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT]
+ifdef::VK_EXT_conditional_rendering[** ename:VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT]
+ifdef::VK_KHR_acceleration_structure[** ename:VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR]
+ifdef::VK_KHR_acceleration_structure[** ename:VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR]
+ifdef::VK_KHR_ray_tracing_pipeline[** ename:VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR]
+ifdef::VK_EXT_descriptor_buffer[** ename:VK_BUFFER_USAGE_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT]
+ifdef::VK_EXT_descriptor_buffer[** ename:VK_BUFFER_USAGE_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT]
+ifdef::VK_EXT_descriptor_buffer[** ename:VK_BUFFER_USAGE_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT]
+ifdef::VK_EXT_opacity_micromap[** ename:VK_BUFFER_USAGE_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT]
+ifdef::VK_EXT_opacity_micromap[** ename:VK_BUFFER_USAGE_MICROMAP_STORAGE_BIT_EXT]
 ****
 ifdef::VKSC_VERSION_1_0[]
 ifdef::hidden[]
@@ -1679,7 +1693,9 @@ ifdef::VK_KHR_video_queue[]
   *** slink:VkImageCreateInfo::pname:tiling equals
       slink:VkVideoFormatPropertiesKHR::pname:imageTiling.
   *** slink:VkImageCreateInfo::pname:usage only contains bits also set in
-      slink:VkVideoFormatPropertiesKHR::pname:imageUsageFlags.
+      slink:VkVideoFormatPropertiesKHR::pname:imageUsageFlags, or
+      slink:VkImageCreateInfo::pname:flags includes
+      ename:VK_IMAGE_CREATE_EXTENDED_USAGE_BIT.
   ** Otherwise `supportedVideoFormat` is ename:VK_FALSE.
 endif::VK_KHR_video_queue[]
 ****
@@ -5675,7 +5691,7 @@ equal to ename:VK_REMAINING_3D_SLICES_EXT.
     specified in <<resources-image-mip-level-sizing,Image Mip Level Sizing>>
   * [[VUID-VkImageViewSlicedCreateInfoEXT-sliceCount-07868]]
     If pname:sliceCount is not ename:VK_REMAINING_3D_SLICES_EXT, it must: be
-    be non-zero and [eq]#pname:sliceOffset {plus} pname:sliceCount# must: be
+    non-zero and [eq]#pname:sliceOffset {plus} pname:sliceCount# must: be
     less than or equal to the effective view depth as specified in
     <<resources-image-mip-level-sizing,Image Mip Level Sizing>>
   * [[VUID-VkImageViewSlicedCreateInfoEXT-image-07869]]
