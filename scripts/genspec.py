@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 #
 # Copyright 2016-2024 The Khronos Group Inc.
 #
@@ -160,5 +160,4 @@ def createTags(releaseNum, tagdate):
     now = tagdate.strftime('%Y%m%d')
 
     print('echo To tag the spec branch for this release, execute the command:')
-    print('echo git tag -a -m \\"Tag Vulkan API specification for 1.3.' +
-          releaseNum, 'release\\"', 'v1.3.' + releaseNum)
+    print(f'echo git tag -a -m \\"Tag Vulkan API specification for 1.4.{releaseNum} release\\" v1.4.{releaseNum}')

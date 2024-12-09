@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 #
 # Copyright 2013-2024 The Khronos Group Inc.
 #
@@ -153,6 +153,7 @@ def makeGenOpts(args):
         from extensionmetadocgenerator import (ExtensionMetaDocGeneratorOptions,
                                             ExtensionMetaDocOutputGenerator)
         from interfacedocgenerator import InterfaceDocGenerator
+        from featurerequirementsgenerator import FeatureRequirementsDocGenerator
         from spirvcapgenerator import SpirvCapabilityOutputGenerator
         from formatsgenerator import FormatsOutputGenerator
         from syncgenerator import SyncOutputGenerator
@@ -325,6 +326,25 @@ def makeGenOpts(args):
                 removeExtensions  = removeExtensionsPat,
                 emitExtensions    = emitExtensionsPat,
                 reparentEnums     = False)
+            ]
+    
+        # Feature requirements for versions/extensions
+        # Includes all extensions by default.
+        genOpts['requirementsinc'] = [
+              FeatureRequirementsDocGenerator,
+              DocGeneratorOptions(
+                conventions       = conventions,
+                filename          = 'featurerequirements.adoc',
+                directory         = directory,
+                genpath           = None,
+                apiname           = defaultAPIName,
+                profile           = None,
+                versions          = featuresPat,
+                emitversions      = featuresPat,
+                defaultExtensions = addExtensionsPat,
+                addExtensions     = addExtensionsPat,
+                removeExtensions  = removeExtensionsPat,
+                emitExtensions    = emitExtensionsPat)
             ]
 
         genOpts['spirvcapinc'] = [
@@ -861,6 +881,7 @@ def makeGenOpts(args):
         'vulkan_video_codec_h265std_encode',
         'vulkan_video_codec_av1std',
         'vulkan_video_codec_av1std_decode',
+        'vulkan_video_codec_av1std_encode',
     ]
 
     # Unused at present

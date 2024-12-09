@@ -10,7 +10,6 @@ can: be used to decode elementary video stream sequences compliant with the
 <<aomedia-av1,AV1 Specification>>.
 
 [NOTE]
-.Note
 ====
 Refer to the <<preamble,Preamble>> for information on how the Khronos
 Intellectual Property Rights Policy relates to normative references to
@@ -70,7 +69,6 @@ slink:VkVideoDecodeAV1PictureInfoKHR::pname:frameHeaderOffset should:
 specify the starting offset of the frame header OBU of the frame.
 
 [NOTE]
-.Note
 ====
 When the tiles of the frame are encoded into multiple tile groups, each
 frame OBU has a separate frame header OBU but their content is expected to
@@ -102,7 +100,7 @@ Accordingly, the complete image subregion of a
 operations using an <<decode-av1-profile,AV1 decode profile>> is defined as
 the set of texels within the coordinate range:
 
-  {empty}:: [eq]#([0,pname:endX),[0,pname:endY))#
+  {empty}:: [eq]#([0,pname:endX), [0,pname:endY))#
 
 Where:
 
@@ -142,7 +140,7 @@ code:StdVideoAV1ReferenceName:
   * code:STD_VIDEO_AV1_REFERENCE_NAME_INTRA_FRAME identifies the reference
     used for intra coding (code:INTRA_FRAME), as defined in sections 2 and
     7.11.2 of the <<aomedia-av1,AV1 Specification>>.
-  * All other enumeration constants refer to forward or backward references
+  * All other enumeration constants refer to backward or forward references
     used for inter coding, as defined in sections 2 and 7.11.3 of the
     <<aomedia-av1,AV1 Specification>>:
   ** code:STD_VIDEO_AV1_REFERENCE_NAME_LAST_FRAME identifies the
@@ -188,12 +186,11 @@ include::{generated}/api/structs/VkVideoDecodeAV1ProfileInfoKHR.adoc[]
   * [[decode-av1-film-grain-support]] pname:filmGrainSupport specifies
     whether AV1 film grain, as defined in section 7.8.3 of the
     <<aomedia-av1,AV1 Specification>>, can: be used with the video profile.
-    When this member is set to ename:VK_TRUE, video session objects created
-    against the video profile will be able to decode pictures that have
+    When this member is ename:VK_TRUE, video session objects created against
+    the video profile will be able to decode pictures that have
     <<decode-av1-film-grain,film grain>> enabled.
 
 [NOTE]
-.Note
 ====
 Enabling pname:filmGrainSupport may: increase the memory requirements of
 video sessions and/or video picture resources on some implementations.
@@ -262,7 +259,6 @@ include::{generated}/api/structs/VkVideoDecodeAV1SessionParametersCreateInfoKHR.
     created object.
 
 [NOTE]
-.Note
 ====
 As AV1 video session parameters objects will only ever contain a single AV1
 sequence header, this has to be specified at object creation time and such
@@ -344,8 +340,6 @@ pname:pStdPictureInfo are interpreted as follows:
   * [[decode-av1-film-grain]] code:flags.apply_grain indicates that film
     grain is enabled for the decoded picture, as defined in section 6.8.20
     of the <<aomedia-av1,AV1 Specification>>;
-  * code:tg_start and code:tg_end are interpreted as defined in section
-    6.10.1 of the <<aomedia-av1,AV1 Specification>>;
   * code:OrderHint, code:OrderHints, and code:expectedFrameId are
     interpreted as defined in section 6.8.2 of the <<aomedia-av1,AV1
     Specification>>;
@@ -412,7 +406,7 @@ pname:pStdPictureInfo are interpreted as follows:
      code:LoopRestorationSize[code:plane] as defined in section 6.10.15 of
      the <<aomedia-av1,AV1 Specification>>.
   ** all other members of code:StdVideoAV1LoopRestoration are defined as in
-    section 6.10.15 of the <<aomedia-av1,AV1 Specification>>;
+     section 6.10.15 of the <<aomedia-av1,AV1 Specification>>;
   * the members of the code:StdVideoAV1GlobalMotion structure provided in
     code:global_motion are interpreted as defined in section 7.10 of the
     <<aomedia-av1,AV1 Specification>>;
@@ -539,6 +533,13 @@ by pname:pStdReferenceInfo are interpreted as follows:
     6.8.13 of the <<aomedia-av1,AV1 Specification>>;
   * code:frame_type is interpreted as defined in section 6.8.2 of the
     <<aomedia-av1,AV1 Specification>>;
++
+[NOTE]
+====
+The code:frame_type member is defined with the type code:uint8_t, but it
+takes the same values defined in the code:StdVideoAV1FrameType enumeration
+type as code:StdVideoDecodeAV1PictureInfo::code:frame_type.
+====
   * code:RefFrameSignBias is a bitmask where bit index [eq]#i# corresponds
     to `RefFrameSignBias[i]` as defined in section 6.8.2 of the
     <<aomedia-av1,AV1 Specification>>;
@@ -548,7 +549,6 @@ by pname:pStdReferenceInfo are interpreted as follows:
     <<aomedia-av1,AV1 Specification>>.
 +
 [NOTE]
-.Note
 ====
 When the AV1 reference information is provided for the reconstructed
 picture, certain parameters (e.g. code:frame_type) are specified both in the

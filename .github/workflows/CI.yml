@@ -21,23 +21,23 @@ jobs:
     runs-on: ubuntu-latest
     # We now refer to the container by its SHA instead of the name, to prevent
     # caching problems when updating the image.
-    # container: khronosgroup/docker-images:asciidoctor-spec
-    container: khronosgroup/docker-images@sha256:42123ba13792c4e809d037b69152c2230ad97fbf43b677338075ab9c928ab6ed
+    # container: khronosgroup/docker-images:asciidoctor-spec.20240726
+    container: khronosgroup/docker-images@sha256:089687083ceb36483a3917389e4278718ab19c594099634f5dd80e22540c960f
 
     steps:
       - uses: actions/checkout@v4
       - name: REUSE license checker
         run: reuse lint
 
-  terminology-check:
-    name: Run various checker scripts on the spec and XML sources
+  consistency-check:
+    name: Run consistency checks on the spec and XML sources
     runs-on: ubuntu-latest
-    container: khronosgroup/docker-images@sha256:42123ba13792c4e809d037b69152c2230ad97fbf43b677338075ab9c928ab6ed
+    container: khronosgroup/docker-images@sha256:089687083ceb36483a3917389e4278718ab19c594099634f5dd80e22540c960f
 
     steps:
       - uses: actions/checkout@v4
       - name: Internal self-test of the check_spec_links script
-        run: py.test-3 test*.py
+        run: pytest test*.py
         working-directory: scripts
       - name: Generate a summary of problems for CI logs (if any)
         run: |
@@ -45,10 +45,19 @@ jobs:
           scripts/check_spec_links.py --html=gen/out/checks/problems.html > /dev/null || true
           make CHECK_XREFS= allchecks
 
+  spec-toolchain:
+    name: Build a test spec and check against expectation, to make sure the spec toolchain works as expected
+    runs-on: ubuntu-latest
+    container: khronosgroup/docker-images@sha256:089687083ceb36483a3917389e4278718ab19c594099634f5dd80e22540c960f
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./testBuild
+
   spec-core:
     name: Build the core-only spec, to try and catch ifdef errors in extension markup
     runs-on: ubuntu-latest
-    container: khronosgroup/docker-images@sha256:42123ba13792c4e809d037b69152c2230ad97fbf43b677338075ab9c928ab6ed
+    container: khronosgroup/docker-images@sha256:089687083ceb36483a3917389e4278718ab19c594099634f5dd80e22540c960f
 
     steps:
       - uses: actions/checkout@v4
@@ -57,17 +66,18 @@ jobs:
   spec-generate:
     name: Build the vulkan specification and generate any associated files (such as vulkan.h)
     runs-on: ubuntu-latest
-    container: khronosgroup/docker-images@sha256:42123ba13792c4e809d037b69152c2230ad97fbf43b677338075ab9c928ab6ed
+    container: khronosgroup/docker-images@sha256:089687083ceb36483a3917389e4278718ab19c594099634f5dd80e22540c960f
 
     steps:
       - uses: actions/checkout@v4
+      - name: Validate the XML before building anything using it
+        run: make -C xml validate
       - name: Build the actual spec (both chunked and single-page HTML), and other common targets
         run: ./makeSpec -clean -spec all QUIET= -j${nproc} -Otarget manhtmlpages validusage styleguide registry chunked html
       - name: Check consistency of internal xrefs and anchors in the output, now that an HTML output is available
         run: make check-xrefs
       - name: Build headers, for use by all later stages
-        run: make validate install test
-        working-directory: xml
+        run: make -C xml install codec_headers test vtest
       - name: Package generated spec
         # https://github.com/actions/upload-artifact#limitations
         # upload-artifact would upload all of almost 10k files individually
@@ -185,7 +195,7 @@ jobs:
   cts-framework-tests:
     name: Run Vulkan CTS framework tests to validate against XML changes
     runs-on: ubuntu-latest
-    container: khronosgroup/docker-images@sha256:42123ba13792c4e809d037b69152c2230ad97fbf43b677338075ab9c928ab6ed
+    container: khronosgroup/docker-images@sha256:089687083ceb36483a3917389e4278718ab19c594099634f5dd80e22540c960f
     continue-on-error: true
 
     steps:

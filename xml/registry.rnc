@@ -21,6 +21,7 @@ start = element registry {
         Extensions        * |
         Formats           * |
         Sync              * |
+        VideoCodecs       * |
         SpirvExtensions   * |
         SpirvCapabilities *
     ) *
@@ -69,6 +70,8 @@ Types = element types {
 
 # <type> defines a single type. It is usually a C typedef but
 # may contain arbitrary C code.
+# The attributes are more fully described in the registry schema document.
+#
 #   name - name of this type, if not present in the <name> tag
 #   api - matches a <feature> api attribute, if present
 #   alias - name of a type this type aliases
@@ -115,6 +118,10 @@ Types = element types {
 #           or a latex equation (prefixed with 'latexmath:')
 #       altlen - if len has latexmath equations, this contains equivalent C99
 #                expressions separated by commas.
+#       stride - if the member is an array, stride specifies the name of
+#           another member containing the byte stride between consecutive
+#           elements in the array. The array is assumed to be tightly packed
+#           if omitted.
 #       deprecated - denotes that this member is deprecated, and why.
 #           Valid values: 'ignored', 'true'.
 #       externsync - denotes that the member should be externally synchronized
@@ -134,6 +141,11 @@ Types = element types {
 #           a uint64_t value. Specifies the name of another member which is
 #           a VkObjectType or VkDebugReportObjectTypeEXT value specifying
 #           the type of object the handle references.
+#       featurelink - only applicable for members representing a Boolean API
+#           feature. Specifies that the feature has a link in the
+#           specification that does not match the name of the feature.
+#           Typically for features in extensions that were later promoted but
+#           with changes.
 #   <comment> - containing arbitrary text (unused)
 #
 # *** There is a problem here: I am not sure how to represent the <type>
@@ -153,7 +165,7 @@ Type = element type {
     attribute parent { TypeName } ? ,
     attribute returnedonly { text } ? ,
     attribute structextends { text } ? ,
-    attribute allowduplicate { text } ? ,
+    attribute allowduplicate { StringBool } ? ,
     attribute objtypeenum { text } ? ,
     Comment ? ,
     (
@@ -175,6 +187,7 @@ Type = element type {
                 attribute api { text } ? ,
                 attribute len { text } ? ,
                 attribute altlen { text } ? ,
+                attribute stride { text } ? ,
                 attribute externsync { text } ? ,
                 attribute optional { text } ? ,
                 attribute selector { text } ? ,
@@ -184,6 +197,7 @@ Type = element type {
                 attribute limittype { text } ? ,
                 attribute objecttype { text } ? ,
                 attribute deprecated { text } ? ,
+                attribute featurelink { text } ? ,
                 mixed {
                     element type { TypeName } ? ,
                     element name { text } ? ,
@@ -199,18 +213,18 @@ Type = element type {
 # <enums> defines a group of enumerants
 #   name - identifies a type name associated with this group. Should
 #       match a <type> name to trigger generation of the type.
-#   type - 'enum' or 'bitmask', if present
+#   type - 'bitmask', 'constants' or 'enum'.
 #   bitwidth - bit width of the enum value type.
 #   comment - descriptive text with no semantic meaning
 Enums = element enums {
     attribute name { text } ? ,
-    attribute type { text } ? ,
+    attribute type { text } ,
     attribute bitwidth { Integer } ? ,
     Comment ? ,
     (
         Enum |
         Unused |
-        element comment { text}
+        element comment { text }
     ) *
 }
 
@@ -297,6 +311,9 @@ Commands = element commands {
 # <command> defines a single command
 #
 # There are two forms of the tag.
+# The attributes are more fully described in the registry schema document.
+# The "prefix" and "suffix" attributes are currently present only in the
+# OpenCL XML registry, where they are currently unused.
 #
 # Either form may have an 'api' attribute
 #   api - matches a <feature> api attribute, if present
@@ -305,9 +322,6 @@ Commands = element commands {
 # It defines a command alias.
 #
 # The second form fully defines a command, and has the following structure:
-# The possible attributes are not described in this comment block yet, but
-# are in registry.html. The "prefix" and "suffix" attributes are currently
-# present only in the OpenCL XML registry, where they are currently unused.
 #
 #   <proto> is the C function prototype, including the return type
 #   <param> are function parameters, in order
@@ -318,6 +332,10 @@ Commands = element commands {
 #           or a latex equation (prefixed with 'latexmath:')
 #     altlen - if len has latexmath equations, this contains equivalent C99
 #              expressions separated by commas.
+#     stride - if the member is an array, stride specifies the name of
+#         another parameter containing the byte stride between consecutive
+#         elements in the array. The array is assumed to be tightly packed
+#         if omitted.
 #     externsync - denotes that the member should be externally synchronized
 #         when accessed by Vulkan
 #     optional - whether this value can be omitted by providing NULL (for
@@ -335,9 +353,6 @@ Commands = element commands {
 #         placeholders. Specifies a comma-separated list of structures which
 #         may be passed in place of the parameter, or anywhere in the pNext
 #         chain of the parameter.
-#     stride - if the member is an array, stride specifies the name of
-#         another member containing the byte stride between consecutive
-#         elements in the array. Is assumed tightly packed if omitted.
 #     <type> is a <type> name, if present
 #     <name> is the function / parameter name, if present (normally should
 #         be, except for void parameters).
@@ -376,13 +391,13 @@ Command = element command {
             attribute api { text } ? ,
             attribute len { text } ? ,
             attribute altlen { text } ? ,
+            attribute stride { text } ? ,
             attribute externsync { text } ? ,
             attribute optional { text } ? ,
             attribute selector { text } ? ,
             attribute noautovalidity { text } ? ,
             attribute objecttype { text } ? ,
             attribute validstructs { text } ? ,
-            attribute stride { text } ? ,
             mixed {
                 element type { TypeName } ? ,
                 element name { text } ?
@@ -406,17 +421,23 @@ Command = element command {
 #   api - API tag (e.g. 'gl', 'gles2', etc. - used internally, not
 #     necessarily an actual API name
 #   name - version name (C preprocessor name, e.g. GL_VERSION_4_2)
-#   number - version number, e.g. 4.2
+#   number - version number, e.g. 4.2 (deprecated)
+#   depends - boolean expression of API and/or extension names
+#       upon which this feature depends.
 #   protect - additional #ifdef symbol to place around the feature
 #   sortorder - order relative to other features, default 0
 #   <require> / <remove> contains features to require or remove in
 #                        this version
+#     depends - as a require tag the depends tag may additionally
+#               include named feature booleans in C-style as
+#               "VkStructName::featureBooleanName"
 #     profile - only require/remove when generated profile matches
 #     comment - descriptive text with no semantic meaning
 Feature = element feature {
     attribute api { text } ,
     Name ,
-    attribute number { xsd:float } ,
+    attribute number { xsd:float } ?,
+    attribute depends { text } ?,
     attribute protect { text } ? ,
     attribute sortorder { xsd:integer } ?,
     Comment ? ,
@@ -433,6 +454,7 @@ Feature = element feature {
         element remove {
             ProfileName ? ,
             Comment ? ,
+            attribute reasonlink {text} ? ,
             (
                 InterfaceElement |
                 element comment { text }
@@ -481,6 +503,8 @@ Extensions = element extensions {
 #       a special purpose of the extension. Tokens may include 'cadsupport',
 #       'd3demulation', 'devtools', 'debugging', and 'glemulation'. Others
 #       may be added in the future.
+#   nofeatures - contains "true" if this extension has no <feature> tags
+#       or "false" if it does have them. Defaults to "false".
 # In addition, <require> / <remove> tags also support an api attribute:
 #     api - only require/remove these features for the matching API.
 #       Not a regular expression.
@@ -499,8 +523,9 @@ Extension = element extension {
     attribute promotedto { text } ? ,
     attribute deprecatedby { text } ? ,
     attribute obsoletedby { text } ? ,
-    attribute provisional { text } ? ,
+    attribute provisional { StringBool } ? ,
     attribute specialuse { text } ? ,
+    attribute nofeatures { StringBool } ? ,
     Comment ? ,
     (
         element require {
@@ -626,6 +651,123 @@ SyncPipeline = element syncpipeline {
     SyncPipelineStage *
 }
 
+# Each <videocodec> element defines either a video codec category or a
+# specific video codec that can be used in the API.
+# Video codec categories are defined with a <videocodec> element with a
+# single name attribute specifying the video codec category (such as decode
+# or encode).
+# Specific video codecs are defined with a <videocodec> element with the
+# following attributes:
+#   name - descriptive name of the specific video codec
+#   extend - descriptive name of the video codec category it specializes
+#   value - the VkVideoCodecOperationFlagBitsKHR value identifying the codec
+#
+# Each <videocapabilities> element defines a video capability structure that
+# is supported by the video codec and has a single struct attribute
+# identifying the video capability structure.
+#
+# Each <videoformat> element defines a video format category that is
+# supported by the video codec. If this is a new video format category
+# (typically defined in video codec categories), the following attributes
+# are required:
+#   name - descriptive name of the video format category
+#   usage - image usage flags expected to be specified in
+#       VkPhysicalDeviceVideoFormatInfoKHR::imageUsage to query the format
+#       properties for the video format category ("," and "+" can be used to
+#       express disjunction and conjunction, respectively)
+# In case a specific video codec extends the video format category with
+# additional codec-specific information, the descriptive name of the
+# extended video format category is specified through a single extend
+# attribute.
+# Video format properties supported by the video format category are
+# defined with <videoformatproperties> elements with a single struct
+# attribute identifying the video format properties structure.
+# If the video format category is dependent on some capability, then
+# <videorequirecapabilities> elements can be included in them with the
+# following attributes:
+#   struct - name of the capability structure used to determine the
+#       precondition
+#   member - name of the capability structure member used to determine the
+#       precondition
+#   value - the value the member should have to meet the precondition
+#       ("," and "+" can be used to express disjunction and conjunction,
+#       respectively)
+# If more <videorequirecapabilities> elements are specified, then the
+# overall precondition is the conjunction of the individual preconditions.
+#
+# Specific video profiles supported by a video codec are declared by a
+# <videoprofiles> element with a single struct attribute identifying the
+# codec-specific video profile structure. For each member of the specified
+# profile structure, a <videoprofilemember> element is expected to be
+# included with the name attribute specifying the name of the video profile
+# structure member.
+# Each <profile> element defined in a <member> element has the following
+# attributes:
+#   name - descriptive name of the profile
+#   value - value of the member in case of this profile
+# Some codec-specific video profile structures have multiple members. In
+# such cases the complete definition and name of specific video profiles
+# is constructed by combinations of the <profile> elements of each member.
+
+VideoCodecs = element videocodecs {
+    Comment ? ,
+    VideoCodec *
+}
+
+VideoCodec = element videocodec {
+    Comment ? ,
+    attribute name { text } ,
+    attribute extend { text } ? ,
+    attribute value { text } ? ,
+    VideoProfiles * ,
+    VideoCapabilities * ,
+    VideoFormat *
+}
+
+VideoProfiles = element videoprofiles {
+    Comment ? ,
+    attribute struct { text } ,
+    VideoProfileMember +
+}
+
+VideoProfileMember = element videoprofilemember {
+    Comment ? ,
+    attribute name { text } ,
+    VideoProfile +
+}
+
+VideoProfile = element videoprofile {
+    Comment ? ,
+    attribute name { text },
+    attribute value { text }
+}
+
+VideoCapabilities = element videocapabilities {
+    Comment ? ,
+    attribute struct { text }
+}
+
+VideoFormat = element videoformat {
+    Comment ? ,
+    attribute name { text } ? ,
+    attribute usage { text } ? ,
+    attribute extend { text } ? ,
+    VideoRequireCapabilities * ,
+    VideoFormatProperties *
+}
+
+VideoFormatProperties = element videoformatproperties {
+    Comment ? ,
+    attribute struct { text }
+}
+
+VideoRequireCapabilities = element videorequirecapabilities {
+    Comment ? ,
+    attribute struct { text } ,
+    attribute member { text } ,
+    attribute value { text }
+}
+
 # Each <spirvextension> define a SPIR-V extension that can be used in the API.
 # Each <spirvcapability> define a SPIR-V capability that can be used in the API.
 # Contains information to both generate table in spec as well as validating
@@ -691,8 +833,10 @@ Enable = element enable {
 
 # Contents of a <require> / <remove> tag, defining a group
 # of features to require or remove.
-#   <type> / <enum> / <command> all have attributes
+#   <type> / <enum> / <command> / <feature> all have attributes
 #     name - feature name which must match
+# The Name of a feature element may be a comma separated list to indicate
+# that any one of the named features must be supported
 InterfaceElement =
     element type {
         Name ,
@@ -702,6 +846,11 @@ InterfaceElement =
     element command {
         Name ,
         Comment ?
+    } |
+    element feature {
+        Name ,
+        attribute struct {text} ,
+        Comment ?
     }
 
 # Integers are allowed to be either decimal or C-hex (0x[0-9A-F]+), but
@@ -709,7 +858,7 @@ InterfaceElement =
 # as a placeholder.
 Integer = text
 
-# EnumName is a compile-time constant name
+# EnumName is a compile time constant name
 EnumName = text
 
 # TypeName is an argument/return value C type name
@@ -721,6 +870,9 @@ TypeSuffix = text
 # StringGroup is a regular expression with an implicit
 #   '^(' and ')$' bracketing it.
 StringGroup = text
+
+# StringBool is "true" or "false"
+StringBool = text
 
 # Repeatedly used attributes
 ProfileName = attribute profile { text }

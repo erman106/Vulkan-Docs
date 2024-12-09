@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -i
+#!/usr/bin/env python3 -i
 #
 # Copyright 2013-2024 The Khronos Group Inc.
 #
@@ -150,11 +150,6 @@ class SpirvCapabilityOutputGenerator(OutputGenerator):
                     # For cases, like bufferDeviceAddressEXT where need manual help
                     if alias:
                         link_name = alias
-                    exceptions = {
-                        'VkPhysicalDeviceCooperativeMatrixFeaturesNV::cooperativeMatrix': 'cooperativeMatrix-NV',
-                    }
-                    if struct + '::' + feature in exceptions:
-                        link_name = exceptions[struct + '::' + feature]
 
                     enable = requires
                     link = 'features-' + link_name

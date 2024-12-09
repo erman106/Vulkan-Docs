@@ -5,8 +5,8 @@
 [[dispatch]]
 = Dispatching Commands
 
-_Dispatching commands_ (commands with ftext:Dispatch in the name) provoke
-work in a compute pipeline.
+The _dispatching commands_ described in this chapter provoke work in a
+compute pipeline.
 Dispatching commands are recorded into a command buffer and when executed by
 a queue, will produce work which executes according to the bound compute
 pipeline.
@@ -84,7 +84,7 @@ include::{chapters}/commonvalidity/draw_dispatch_indirect_common.adoc[]
 include::{generated}/validity/protos/vkCmdDispatchIndirect.adoc[]
 --
 
-[open,refpage='VkDispatchIndirectCommand',desc='Structure specifying a indirect dispatching command',type='structs',xrefs='vkCmdDispatchIndirect']
+[open,refpage='VkDispatchIndirectCommand',desc='Structure specifying an indirect dispatching command',type='structs',xrefs='vkCmdDispatchIndirect']
 --
 The sname:VkDispatchIndirectCommand structure is defined as:
 
@@ -186,6 +186,10 @@ include::{chapters}/commonvalidity/draw_dispatch_nonindirect_common.adoc[]
     If any of pname:baseGroupX, pname:baseGroupY, or pname:baseGroupZ are
     not zero, then the bound compute pipeline must: have been created with
     the ename:VK_PIPELINE_CREATE_DISPATCH_BASE flag
+ifdef::VK_EXT_shader_object[]
+    or the bound compute shader object must: have been created with the
+    ename:VK_SHADER_CREATE_DISPATCH_BASE_BIT_EXT flag
+endif::VK_EXT_shader_object[]
 ****
 
 include::{generated}/validity/protos/vkCmdDispatchBase.adoc[]
@@ -216,7 +220,7 @@ area size / local workgroup size) local workgroups is assembled.
 ****
 include::{chapters}/commonvalidity/draw_dispatch_common.adoc[]
   * [[VUID-vkCmdSubpassShadingHUAWEI-None-04931]]
-    This command must be called in a subpass with bind point
+    This command must: be called in a subpass with bind point
     ename:VK_PIPELINE_BIND_POINT_SUBPASS_SHADING_HUAWEI.
     No draw commands can be called in the same subpass.
     Only one flink:vkCmdSubpassShadingHUAWEI command can be called in a

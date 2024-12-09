@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -i
+#!/usr/bin/env python3 -i
 #
 # Copyright 2020-2024 The Khronos Group Inc.
 #
@@ -175,7 +175,7 @@ class JSONHeaderOutputGenerator(OutputGenerator):
     def endFeature(self):
         if self.emit:
             if self.feature_not_empty:
-                if self.genOpts.conventions.writeFeature(self.featureExtraProtect, self.genOpts.filename):
+                if self.genOpts.conventions.writeFeature(self.featureName, self.featureExtraProtect, self.genOpts.filename):
 
                     for section in self.TYPE_SECTIONS:
                         contents = self.sections[section]

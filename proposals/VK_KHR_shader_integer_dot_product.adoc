@@ -4,7 +4,8 @@
 
 = VK_KHR_shader_integer_dot_product
 :toc: left
-:refpage: https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/
+:docs: https://docs.vulkan.org/spec/latest/
+:extensions: {docs}appendices/extensions.html#
 :sectnums:
 
 This document proposes adding support for shader integer dot product instructions.
@@ -107,7 +108,7 @@ typedef struct VkPhysicalDeviceShaderIntegerDotProductPropertiesKHR {
 } VkPhysicalDeviceShaderIntegerDotProductPropertiesKHR;
 ----
 
-Each of these properties is a boolean that will be ename:VK_TRUE if the implementation provides a performance advantage for the corresponding SPIR-V instruction, over application-provided code composed from elementary instructions and/or other dot product instructions.
+Each of these properties is a boolean that will be `VK_TRUE` if the implementation provides a performance advantage for the corresponding SPIR-V instruction, over application-provided code composed from elementary instructions and/or other dot product instructions.
 This could be either because the implementation uses optimized machine code sequences whose generation from application-provided code cannot be guaranteed or because it uses hardware features that cannot otherwise be targeted from application-provided code.
 
 [NOTE]

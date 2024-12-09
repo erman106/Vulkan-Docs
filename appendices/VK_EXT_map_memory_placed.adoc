@@ -21,12 +21,12 @@ include::{generated}/meta/{refprefix}VK_EXT_map_memory_placed.adoc[]
 
 === Description
 
-This extension allows a client to request that flink:vkMapMemory2KHR attempt
-to place the memory map at a particular virtual address.
+This extension allows an application to request that flink:vkMapMemory2KHR
+attempt to place the memory map at a particular virtual address.
 
 include::{generated}/interfaces/VK_EXT_map_memory_placed.adoc[]
 
 === Version History
 
-  * Revision 0, 2024-01-14 (Faith Ekstrand)
+  * Revision 1, 2024-01-14 (Faith Ekstrand)
   ** Internal revisions

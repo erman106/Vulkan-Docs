@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -i
+#!/usr/bin/env python3 -i
 #
 # Copyright 2013-2024 The Khronos Group Inc.
 #
@@ -35,14 +35,12 @@ def orgLevelKey(name):
         'VK_KHR_',
         'VK_EXT_')
 
-    i = 0
-    for prefix in prefixes:
+    for index, prefix in enumerate(prefixes):
         if name.startswith(prefix):
-            return i
-        i += 1
+            return index
 
     # Everything else (e.g. vendor extensions) is least important
-    return i
+    return len(prefixes)
 
 
 class DocGeneratorOptions(GeneratorOptions):
@@ -170,7 +168,7 @@ class DocOutputGenerator(OutputGenerator):
         # Finish processing in superclass
         OutputGenerator.endFeature(self)
 
-    def genRequirements(self, name, mustBeFound = True):
+    def genRequirements(self, name, mustBeFound = True, indent = 0):
         """Generate text showing what core versions and extensions introduce
         an API. This relies on the map in apimap.py, which may be loaded at
         runtime into self.apidict. If not present, no message is
@@ -216,7 +214,7 @@ class DocOutputGenerator(OutputGenerator):
                 provider = ', '.join(sorted(
                                         sorted(features),
                                         key=orgLevelKey))
-                return f'// Provided by {provider}\n'
+                return indent * ' ' + f'// Provided by {provider}\n'
             else:
                 if mustBeFound:
                     self.logMsg('warn', 'genRequirements: API {} not found'.format(name))
@@ -232,12 +230,12 @@ class DocOutputGenerator(OutputGenerator):
         - basename - base name of the file
         - contents - contents of the file (Asciidoc boilerplate aside)"""
         # Create subdirectory, if needed
-        directory = self.genOpts.directory + '/' + directory
+        directory = Path(self.genOpts.directory) / directory
         self.makeDir(directory)
 
         # Create file
-        filename = directory + '/' + basename + self.file_suffix
-        self.logMsg('diag', '# Generating include file:', filename)
+        filename = directory / (f"{basename}{self.file_suffix}")
+        self.logMsg('diag', '# Generating include file:', str(filename))
         fp = open(filename, 'w', encoding='utf-8')
 
         # Asciidoc anchor
@@ -267,7 +265,7 @@ class DocOutputGenerator(OutputGenerator):
 
         if self.genOpts.secondaryInclude:
             # Create secondary no cross-reference include file
-            filename = f'{directory}/{basename}.no-xref{self.file_suffix}'
+            filename = directory / f'{basename}.no-xref{self.file_suffix}'
             self.logMsg('diag', '# Generating include file:', filename)
             fp = open(filename, 'w', encoding='utf-8')
 
@@ -283,7 +281,7 @@ class DocOutputGenerator(OutputGenerator):
     def writeEnumTable(self, basename, values):
         """Output a table of enumerants."""
         directory = Path(self.genOpts.directory) / 'enums'
-        self.makeDir(str(directory))
+        self.makeDir(directory)
 
         filename = str(directory / f'{basename}.comments{self.file_suffix}')
         self.logMsg('diag', '# Generating include file:', filename)
@@ -349,6 +347,10 @@ class DocOutputGenerator(OutputGenerator):
                         name, category))
         else:
             body = self.genRequirements(name)
+            body += self.deprecationComment(typeElem)
+            # This is not appropriate for Vulkan
+            # if category in ('define',):
+            #    body = body.strip()
             if alias:
                 # If the type is an alias, just emit a typedef declaration
                 body += 'typedef ' + alias + ' ' + name + ';\n'
@@ -382,6 +384,7 @@ class DocOutputGenerator(OutputGenerator):
 
         targetLen = self.getMaxCParamTypeLength(typeinfo)
         for member in typeElem.findall('.//member'):
+            body += self.deprecationComment(member, indent = 4)
             body += self.makeCParamDecl(member, targetLen + 4)
             body += ';\n'
         body += '} ' + typeName + ';'
@@ -391,7 +394,8 @@ class DocOutputGenerator(OutputGenerator):
         """Generate struct."""
         OutputGenerator.genStruct(self, typeinfo, typeName, alias)
 
-        body = self.genRequirements(typeName)
+        body = self.deprecationComment(typeinfo.elem)
+        body += self.genRequirements(typeName)
         if alias:
             if self.conventions.duplicate_aliased_structs:
                 # TODO maybe move this outside the conditional? This would be a visual change.
@@ -500,7 +504,8 @@ class DocOutputGenerator(OutputGenerator):
 
         OutputGenerator.genEnum(self, enuminfo, name, alias)
 
-        body = self.buildConstantCDecl(enuminfo, name, alias)
+        body = self.deprecationComment(enuminfo.elem)
+        body += self.buildConstantCDecl(enuminfo, name, alias)
 
         self.writeInclude('enums', name, body)
 

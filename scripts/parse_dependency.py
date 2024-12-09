@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # Copyright 2022-2024 The Khronos Group Inc.
 # Copyright 2003-2019 Paul McGuire
@@ -110,8 +110,8 @@ def push_first(toks):
 
     exprStack.append(toks[0])
 
-# An identifier (version or extension name)
-dependencyIdent = Word(alphanums + '_')
+# An identifier (version, feature boolean, or extension name)
+dependencyIdent = Word(alphanums + '_' + ':')
 
 # Infix expression for depends expressions
 dependencyExpr = pp.infixNotation(dependencyIdent,

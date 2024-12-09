@@ -28,19 +28,19 @@ include::{chapters}/commonvalidity/draw_dispatch_common.adoc[]
     same elink:VkFormat as the corresponding subpass definition, and be
     created with a slink:VkImageView that is compatible with the attachment
     referenced by the subpass'
-    pname:pInputAttachments[code:InputAttachmentIndex] in the currently
-    bound slink:VkFramebuffer as specified by
+    pname:pInputAttachments[code:InputAttachmentIndex] in the bound
+    slink:VkFramebuffer as specified by
     <<compatibility-inputattachment,Fragment Input Attachment
     Compatibility>>
-ifdef::VK_KHR_dynamic_rendering_local_read[]
+ifdef::VK_VERSION_1_4,VK_KHR_dynamic_rendering_local_read[]
   * [[VUID-{refpage}-pDepthInputAttachmentIndex-09595]]
     Input attachment views accessed in a dynamic render pass with a
     code:InputAttachmentIndex referenced by
-    slink:VkRenderingInputAttachmentIndexInfoKHR, or no
+    slink:VkRenderingInputAttachmentIndexInfo, or no
     code:InputAttachmentIndex if
-    slink:VkRenderingInputAttachmentIndexInfoKHR:pname:pDepthInputAttachmentIndex
+    slink:VkRenderingInputAttachmentIndexInfo:pname:pDepthInputAttachmentIndex
     or
-    slink:VkRenderingInputAttachmentIndexInfoKHR:pname:pStencilInputAttachmentIndex
+    slink:VkRenderingInputAttachmentIndexInfo:pname:pStencilInputAttachmentIndex
     are `NULL`, must: be created with a slink:VkImageView that is compatible
     with the corresponding color, depth, or stencil attachment in
     slink:VkRenderingInfo
@@ -48,17 +48,17 @@ ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-pDepthInputAttachmentIndex-09596]]
     Input attachment views accessed in a dynamic render pass via a shader
     object must: have an code:InputAttachmentIndex if both
-    slink:VkRenderingInputAttachmentIndexInfoKHR:pname:pDepthInputAttachmentIndex
+    slink:VkRenderingInputAttachmentIndexInfo:pname:pDepthInputAttachmentIndex
     and
-    slink:VkRenderingInputAttachmentIndexInfoKHR:pname:pStencilInputAttachmentIndex
+    slink:VkRenderingInputAttachmentIndexInfo:pname:pStencilInputAttachmentIndex
     are non-`NULL`
   * [[VUID-{refpage}-InputAttachmentIndex-09597]]
     If an input attachment view accessed in a dynamic render pass via a
     shader object has an code:InputAttachmentIndex, the
     code:InputAttachmentIndex must: match an index in
-    slink:VkRenderingInputAttachmentIndexInfoKHR
+    slink:VkRenderingInputAttachmentIndexInfo
 endif::VK_EXT_shader_object[]
-endif::VK_KHR_dynamic_rendering_local_read[]
+endif::VK_VERSION_1_4,VK_KHR_dynamic_rendering_local_read[]
   * [[VUID-{refpage}-None-06537]]
     Memory backing image subresources used as attachments in the current
     render pass must: not be written in any way other than as an attachment
@@ -75,20 +75,22 @@ ifdef::VK_EXT_attachment_feedback_loop_dynamic_state[]
   ** {empty}
 endif::VK_EXT_attachment_feedback_loop_dynamic_state[]
     the ename:VK_PIPELINE_CREATE_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT is
-    set on the currently bound pipeline
+    set on the bound pipeline
 ifdef::VK_EXT_attachment_feedback_loop_dynamic_state[]
     or
   ** the last call to flink:vkCmdSetAttachmentFeedbackLoopEnableEXT included
      ename:VK_IMAGE_ASPECT_COLOR_BIT and
 ifdef::VK_EXT_shader_object[]
-  *** there is no currently bound graphics pipeline or
+  *** there is no bound graphics pipeline or
 endif::VK_EXT_shader_object[]
-  *** the currently bound graphics pipeline was created with
+  *** the bound graphics pipeline was created with
       ename:VK_DYNAMIC_STATE_ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT
 endif::VK_EXT_attachment_feedback_loop_dynamic_state[]
 endif::VK_EXT_attachment_feedback_loop_layout[]
-    it must: not be accessed in any way other than as an attachment by this
-    command
+
++
+it must: not be accessed in any way other than as an attachment by this
+command
   * [[VUID-{refpage}-None-09001]]
     If a depth attachment is written by any prior command in this subpass or
     by the load, store, or resolve operations for this subpass,
@@ -102,20 +104,22 @@ ifdef::VK_EXT_attachment_feedback_loop_dynamic_state[]
 endif::VK_EXT_attachment_feedback_loop_dynamic_state[]
     the
     ename:VK_PIPELINE_CREATE_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT
-    is set on the currently bound pipeline
+    is set on the bound pipeline
 ifdef::VK_EXT_attachment_feedback_loop_dynamic_state[]
     or
   ** the last call to flink:vkCmdSetAttachmentFeedbackLoopEnableEXT included
      ename:VK_IMAGE_ASPECT_DEPTH_BIT and
 ifdef::VK_EXT_shader_object[]
-  *** there is no currently bound graphics pipeline or
+  *** there is no bound graphics pipeline or
 endif::VK_EXT_shader_object[]
-  *** the currently bound graphics pipeline was created with
+  *** the bound graphics pipeline was created with
       ename:VK_DYNAMIC_STATE_ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT
 endif::VK_EXT_attachment_feedback_loop_dynamic_state[]
 endif::VK_EXT_attachment_feedback_loop_layout[]
-    it must: not be accessed in any way other than as an attachment by this
-    command
+
++
+it must: not be accessed in any way other than as an attachment by this
+command
   * [[VUID-{refpage}-None-09002]]
     If a stencil attachment is written by any prior command in this subpass
     or by the load, store, or resolve operations for this subpass,
@@ -129,20 +133,22 @@ ifdef::VK_EXT_attachment_feedback_loop_dynamic_state[]
 endif::VK_EXT_attachment_feedback_loop_dynamic_state[]
     the
     ename:VK_PIPELINE_CREATE_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT
-    is set on the currently bound pipeline
+    is set on the bound pipeline
 ifdef::VK_EXT_attachment_feedback_loop_dynamic_state[]
     or
   ** the last call to flink:vkCmdSetAttachmentFeedbackLoopEnableEXT included
      ename:VK_IMAGE_ASPECT_STENCIL_BIT and
 ifdef::VK_EXT_shader_object[]
-  *** there is no currently bound graphics pipeline or
+  *** there is no bound graphics pipeline or
 endif::VK_EXT_shader_object[]
-  *** the currently bound graphics pipeline was created with
+  *** the bound graphics pipeline was created with
       ename:VK_DYNAMIC_STATE_ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT
 endif::VK_EXT_attachment_feedback_loop_dynamic_state[]
 endif::VK_EXT_attachment_feedback_loop_layout[]
-    it must: not be accessed in any way other than as an attachment by this
-    command
+
++
+it must: not be accessed in any way other than as an attachment by this
+command
 ifdef::VK_EXT_attachment_feedback_loop_layout[]
   * [[VUID-{refpage}-None-09003]]
     If an attachment is written by any prior command in this subpass or by
@@ -167,18 +173,21 @@ endif::VK_EXT_attachment_feedback_loop_layout[]
   * [[VUID-{refpage}-None-07831]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_VIEWPORT dynamic state enabled then
-    flink:vkCmdSetViewport must: have been called in the current command
-    buffer prior to this drawing command
+    flink:vkCmdSetViewport must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
   * [[VUID-{refpage}-None-07832]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_SCISSOR dynamic state enabled then
-    flink:vkCmdSetScissor must: have been called in the current command
-    buffer prior to this drawing command
+    flink:vkCmdSetScissor must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
   * [[VUID-{refpage}-None-07833]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_LINE_WIDTH dynamic state enabled then
-    flink:vkCmdSetLineWidth must: have been called in the current command
-    buffer prior to this drawing command
+    flink:vkCmdSetLineWidth must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
 ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-08617]]
     If a shader object is bound to any graphics stage, and the most recent
@@ -186,53 +195,51 @@ ifdef::VK_EXT_shader_object[]
     buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
     recent call to flink:vkCmdSetPolygonModeEXT in the current command
     buffer set pname:polygonMode to ename:VK_POLYGON_MODE_LINE,
-    flink:vkCmdSetLineWidth must: have been called in the current command
-    buffer prior to this drawing command
+    flink:vkCmdSetLineWidth must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
   * [[VUID-{refpage}-None-08618]]
     If a shader object is bound to any graphics stage, and the most recent
     call to flink:vkCmdSetRasterizerDiscardEnable in the current command
     buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
     recent call to flink:vkCmdSetPrimitiveTopology in the current command
     buffer set pname:primitiveTopology to any line topology,
-    flink:vkCmdSetLineWidth must: have been called in the current command
-    buffer prior to this drawing command
+    flink:vkCmdSetLineWidth must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
   * [[VUID-{refpage}-None-08619]]
     If a shader object that outputs line primitives is bound to the
     ename:VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT or
     ename:VK_SHADER_STAGE_GEOMETRY_BIT stage, and the most recent call to
     flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
     pname:rasterizerDiscardEnable to ename:VK_FALSE, flink:vkCmdSetLineWidth
-    must: have been called in the current command buffer prior to this
-    drawing command
+    must: have been called and not subsequently <<dynamic-state-lifetime,
+    invalidated>> in the current command buffer prior to this drawing
+    command
 endif::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-07834]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DEPTH_BIAS dynamic state enabled then
-    flink:vkCmdSetDepthBias
-ifdef::VK_EXT_depth_bias_control[]
-    or flink:vkCmdSetDepthBias2EXT
-endif::VK_EXT_depth_bias_control[]
-    must: have been called in the current command buffer prior to this
-    drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08620]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetDepthBiasEnable in the current command
-    buffer set pname:depthBiasEnable to ename:VK_TRUE,
-    flink:vkCmdSetDepthBias
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_BIAS dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of pname:depthBiasEnable
+    is ename:VK_TRUE, then flink:vkCmdSetDepthBounds
 ifdef::VK_EXT_depth_bias_control[]
     or flink:vkCmdSetDepthBias2EXT
 endif::VK_EXT_depth_bias_control[]
-    must: have been called in the current command buffer prior to this
-    drawing command
-endif::VK_EXT_shader_object[]
+    must: have been called and not subsequently <<dynamic-state-lifetime,
+    invalidated>> in the current command buffer prior to this drawing
+    command
   * [[VUID-{refpage}-None-07835]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_BLEND_CONSTANTS dynamic state enabled then
-    flink:vkCmdSetBlendConstants must: have been called in the current
-    command buffer prior to this drawing command
+    flink:vkCmdSetBlendConstants must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
 ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-08621]]
     If a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT
@@ -248,73 +255,66 @@ ifdef::VK_EXT_shader_object[]
     ename:VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR,
     ename:VK_BLEND_FACTOR_CONSTANT_ALPHA, or
     ename:VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA,
-    flink:vkCmdSetBlendConstants must: have been called in the current
-    command buffer prior to this drawing command
+    flink:vkCmdSetBlendConstants must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
 endif::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-07836]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DEPTH_BOUNDS dynamic state enabled, and if the
-    current pname:depthBoundsTestEnable state is ename:VK_TRUE, then
-    flink:vkCmdSetDepthBounds must: have been called in the current command
-    buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08622]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetDepthBoundsTestEnable in the current
-    command buffer set pname:depthBoundsTestEnable to ename:VK_TRUE, then
-    flink:vkCmdSetDepthBounds must: have been called in the current command
-    buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_BOUNDS dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:depthBoundsTestEnable is ename:VK_TRUE, then
+    flink:vkCmdSetDepthBounds must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
   * [[VUID-{refpage}-None-07837]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK dynamic state enabled, and
-    if the current pname:stencilTestEnable state is ename:VK_TRUE, then
-    flink:vkCmdSetStencilCompareMask must: have been called in the current
-    command buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08623]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetStencilTestEnable in the current command
-    buffer set pname:stencilTestEnable to ename:VK_TRUE,
-    flink:vkCmdSetStencilCompareMask must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:stencilTestEnable is ename:VK_TRUE, then
+    flink:vkCmdSetStencilCompareMask must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07838]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_STENCIL_WRITE_MASK dynamic state enabled, and if
-    the current pname:stencilTestEnable state is ename:VK_TRUE, then
-    flink:vkCmdSetStencilWriteMask must: have been called in the current
-    command buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08624]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetStencilTestEnable in the current command
-    buffer set pname:stencilTestEnable to ename:VK_TRUE,
-    flink:vkCmdSetStencilWriteMask must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_STENCIL_WRITE_MASK dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:stencilTestEnable is ename:VK_TRUE, then
+    flink:vkCmdSetStencilWriteMask must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07839]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_STENCIL_REFERENCE dynamic state enabled, and if
-    the current pname:stencilTestEnable state is ename:VK_TRUE, then
-    flink:vkCmdSetStencilReference must: have been called in the current
-    command buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08625]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetStencilTestEnable in the current command
-    buffer set pname:stencilTestEnable to ename:VK_TRUE,
-    flink:vkCmdSetStencilReference must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_STENCIL_REFERENCE dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of and
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, the
+    <<dynamic-state-current-value, current value>> of
+    pname:stencilTestEnable is ename:VK_TRUE, then
+    flink:vkCmdSetStencilReference must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 ifdef::VK_VERSION_1_1,VK_KHR_multiview[]
   * [[VUID-{refpage}-maxMultiviewInstanceIndex-02688]]
     If the draw is recorded in a render pass instance with multiview
@@ -328,168 +328,175 @@ ifdef::VK_EXT_sample_locations[]
     set to ename:VK_TRUE and the current subpass has a depth/stencil
     attachment, then that attachment must: have been created with the
     ename:VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT bit set
-  * [[VUID-{refpage}-None-06666]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT dynamic state enabled then
-    flink:vkCmdSetSampleLocationsEXT must: have been called in the current
-    command buffer prior to this drawing command
+ifdef::VK_EXT_extended_dynamic_state3[]
+  * [[VUID-{refpage}-None-07634]]
+    If the `apiext:VK_EXT_sample_locations` extension is enabled,
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08626]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetSampleLocationsEnableEXT in the current
-    command buffer set pname:sampleLocationsEnable to ename:VK_TRUE, then
-    flink:vkCmdSetSampleLocationsEXT must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_ENABLE_EXT dynamic state
+    enabled, and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetSampleLocationsEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_extended_dynamic_state3[]
+  * [[VUID-{refpage}-None-06666]]
+    If the `apiext:VK_EXT_sample_locations` extension is enabled,
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:sampleLocationsEnable is ename:VK_TRUE, then
+    flink:vkCmdSetSampleLocationsEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 endif::VK_EXT_sample_locations[]
 ifdef::VK_VERSION_1_3,VK_EXT_extended_dynamic_state[]
   * [[VUID-{refpage}-None-07840]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_CULL_MODE dynamic state enabled then
-    flink:vkCmdSetCullMode must: have been called in the current command
-    buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08627]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetCullMode must: have been called in the current command
-    buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_CULL_MODE dynamic state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetCullMode must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
   * [[VUID-{refpage}-None-07841]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_FRONT_FACE dynamic state enabled then
-    flink:vkCmdSetFrontFace must: have been called in the current command
-    buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08628]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetFrontFace must: have been called in the current command
-    buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_FRONT_FACE dynamic state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetFrontFace must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
   * [[VUID-{refpage}-None-07843]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DEPTH_TEST_ENABLE dynamic state enabled then
-    flink:vkCmdSetDepthTestEnable must: have been called in the current
-    command buffer prior to this drawing command
+     If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08629]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetDepthTestEnable must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_TEST_ENABLE dynamic state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE,
+    flink:vkCmdSetDepthTestEnable must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07844]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DEPTH_WRITE_ENABLE dynamic state enabled then
-    flink:vkCmdSetDepthWriteEnable must: have been called in the current
-    command buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08630]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetDepthWriteEnable must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_WRITE_ENABLE dynamic state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetDepthWriteEnable must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07845]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DEPTH_COMPARE_OP dynamic state enabled then
-    flink:vkCmdSetDepthCompareOp must: have been called in the current
-    command buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08631]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetDepthTestEnable in the current command
-    buffer set pname:depthTestEnable to ename:VK_TRUE, then
-    flink:vkCmdSetDepthCompareOp must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_COMPARE_OP dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of pname:depthTestEnable
+    is ename:VK_TRUE, then flink:vkCmdSetDepthCompareOp must: have been
+    called and not subsequently <<dynamic-state-lifetime, invalidated>> in
+    the current command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07846]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DEPTH_BOUNDS_TEST_ENABLE dynamic state enabled
-    then flink:vkCmdSetDepthBoundsTestEnable must: have been called in the
-    current command buffer prior to this drawing command
+    If the <<features-depthBounds, pname:depthBounds>> feature is enabled,
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08632]]
-    If a shader object is bound to any graphics stage, and the
-    <<features-depthBounds, pname:depthBounds>> feature is enabled, and the
-    most recent call to flink:vkCmdSetRasterizerDiscardEnable in the current
-    command buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    the flink:vkCmdSetDepthBoundsTestEnable must: have been called in the
-    current command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_BOUNDS_TEST_ENABLE dynamic state enabled,
+    and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetDepthBoundsTestEnable must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07847]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_STENCIL_TEST_ENABLE dynamic state enabled then
-    flink:vkCmdSetStencilTestEnable must: have been called in the current
-    command buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08633]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetStencilTestEnable must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_STENCIL_TEST_ENABLE dynamic state enabled, and
+    the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetStencilTestEnable must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07848]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_STENCIL_OP dynamic state enabled then
-    flink:vkCmdSetStencilOp must: have been called in the current command
-    buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08634]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetStencilTestEnable in the current command
-    buffer set pname:stencilTestEnable to ename:VK_TRUE, then
-    flink:vkCmdSetStencilOp must: have been called in the current command
-    buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_STENCIL_OP dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, the
+    <<dynamic-state-current-value, current value>> of
+    pname:stencilTestEnable is ename:VK_TRUE, then flink:vkCmdSetStencilOp
+    must: have been called and not subsequently <<dynamic-state-lifetime,
+    invalidated>> in the current command buffer prior to this drawing
+    command
   * [[VUID-{refpage}-viewportCount-03417]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT dynamic state enabled, but
-    not the ename:VK_DYNAMIC_STATE_SCISSOR_WITH_COUNT dynamic state enabled,
-    then flink:vkCmdSetViewportWithCount must: have been called in the
-    current command buffer prior to this drawing command, and the
-    pname:viewportCount parameter of fname:vkCmdSetViewportWithCount must:
-    match the sname:VkPipelineViewportStateCreateInfo::pname:scissorCount of
-    the pipeline
-  * [[VUID-{refpage}-scissorCount-03418]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_SCISSOR_WITH_COUNT dynamic state enabled, but not
-    the ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT dynamic state enabled,
-    then flink:vkCmdSetScissorWithCount must: have been called in the
-    current command buffer prior to this drawing command, and the
-    pname:scissorCount parameter of fname:vkCmdSetScissorWithCount must:
-    match the sname:VkPipelineViewportStateCreateInfo::pname:viewportCount
-    of the pipeline
-  * [[VUID-{refpage}-viewportCount-03419]]
-    If the bound graphics pipeline state was created with both the
-    ename:VK_DYNAMIC_STATE_SCISSOR_WITH_COUNT and
-    ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT dynamic states enabled then
-    both flink:vkCmdSetViewportWithCount and flink:vkCmdSetScissorWithCount
-    must: have been called in the current command buffer prior to this
-    drawing command, and the pname:viewportCount parameter of
-    fname:vkCmdSetViewportWithCount must: match the pname:scissorCount
-    parameter of fname:vkCmdSetScissorWithCount
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08635]]
-    If a shader object is bound to any graphics stage, then both
-    flink:vkCmdSetViewportWithCount and flink:vkCmdSetScissorWithCount must:
-    have been called in the current command buffer prior to this drawing
-    command, and the pname:viewportCount parameter of
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT dynamic state enabled,
+ifdef::VK_NV_inherited_viewport_scissor[]
+    and the state is not inherited,
+endif::VK_NV_inherited_viewport_scissor[]
+    then flink:vkCmdSetViewportWithCount must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+  * [[VUID-{refpage}-scissorCount-03418]]
+    If
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_SCISSOR_WITH_COUNT dynamic state enabled,
+ifdef::VK_NV_inherited_viewport_scissor[]
+    and the state is not inherited,
+endif::VK_NV_inherited_viewport_scissor[]
+    then flink:vkCmdSetScissorWithCount must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing
+  * [[VUID-{refpage}-viewportCount-03419]]
+    If
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with both the
+    ename:VK_DYNAMIC_STATE_SCISSOR_WITH_COUNT and
+    ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT dynamic states enabled,
+ifdef::VK_NV_inherited_viewport_scissor[]
+    and the state is not inherited,
+endif::VK_NV_inherited_viewport_scissor[]
+    then the pname:viewportCount parameter of
     fname:vkCmdSetViewportWithCount must: match the pname:scissorCount
     parameter of fname:vkCmdSetScissorWithCount
-endif::VK_EXT_shader_object[]
 ifdef::VK_NV_clip_space_w_scaling[]
   * [[VUID-{refpage}-viewportCount-04137]]
     If the bound graphics pipeline state was created with the
@@ -500,31 +507,32 @@ ifdef::VK_NV_clip_space_w_scaling[]
     greater or equal to the pname:viewportCount parameter in the last call
     to flink:vkCmdSetViewportWithCount
   * [[VUID-{refpage}-viewportCount-04138]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT and
-    ename:VK_DYNAMIC_STATE_VIEWPORT_W_SCALING_NV dynamic states enabled then
-    the pname:viewportCount parameter in the last call to
-    flink:vkCmdSetViewportWScalingNV must: be greater than or equal to the
-    pname:viewportCount parameter in the last call to
-    flink:vkCmdSetViewportWithCount
+    If the `apiext:VK_NV_clip_space_w_scaling` extension is enabled, and
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-09232]]
-    If the `apiext:VK_NV_clip_space_w_scaling` extension is enabled, and a
-    shader object is bound to any graphics stage, and the most recent call
-    to flink:vkCmdSetViewportWScalingEnableNV in the current command buffer
-    set pname:viewportWScalingEnable to ename:VK_TRUE, then
-    flink:vkCmdSetViewportWScalingNV must: have been called in the current
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT and
+    ename:VK_DYNAMIC_STATE_VIEWPORT_W_SCALING_NV dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of
+    pname:viewportWScalingEnable is ename:VK_TRUE, then
+    flink:vkCmdSetViewportWScalingNV must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command
   * [[VUID-{refpage}-None-08636]]
-    If the `apiext:VK_NV_clip_space_w_scaling` extension is enabled, and a
-    shader object is bound to any graphics stage, and the most recent call
-    to flink:vkCmdSetViewportWScalingEnableNV in the current command buffer
-    set pname:viewportWScalingEnable to ename:VK_TRUE, then the
+    If the `apiext:VK_NV_clip_space_w_scaling` extension is enabled, and
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT and
+    ename:VK_DYNAMIC_STATE_VIEWPORT_W_SCALING_NV dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of
+    pname:viewportWScalingEnable is ename:VK_TRUE, then the
     pname:viewportCount parameter in the last call to
     flink:vkCmdSetViewportWScalingNV must: be greater than or equal to the
     pname:viewportCount parameter in the last call to
     flink:vkCmdSetViewportWithCount
-endif::VK_EXT_shader_object[]
 endif::VK_NV_clip_space_w_scaling[]
 ifdef::VK_NV_shading_rate_image[]
   * [[VUID-{refpage}-viewportCount-04139]]
@@ -536,44 +544,52 @@ ifdef::VK_NV_shading_rate_image[]
     slink:VkPipelineViewportShadingRateImageStateCreateInfoNV::pname:viewportCount
     greater or equal to the pname:viewportCount parameter in the last call
     to flink:vkCmdSetViewportWithCount
-  * [[VUID-{refpage}-viewportCount-04140]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT and
-    ename:VK_DYNAMIC_STATE_VIEWPORT_SHADING_RATE_PALETTE_NV dynamic states
-    enabled then the pname:viewportCount parameter in the last call to
-    flink:vkCmdSetViewportShadingRatePaletteNV must: be greater than or
-    equal to the pname:viewportCount parameter in the last call to
-    flink:vkCmdSetViewportWithCount
-ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-shadingRateImage-09233]]
     If the <<features-shadingRateImage, pname:shadingRateImage>> feature is
-    enabled, and a shader object is bound to any graphics stage, and the
-    most recent call to flink:vkCmdSetRasterizerDiscardEnable in the current
-    command buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetCoarseSampleOrderNV must: have been called in the current
+    enabled, and
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_VIEWPORT_COARSE_SAMPLE_ORDER_NV and the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetCoarseSampleOrderNV must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command
   * [[VUID-{refpage}-shadingRateImage-09234]]
     If the <<features-shadingRateImage, pname:shadingRateImage>> feature is
-    enabled, and a shader object is bound to any graphics stage, and the
-    most recent call to flink:vkCmdSetRasterizerDiscardEnable in the current
-    command buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and
-    the most recent call to flink:vkCmdSetShadingRateImageEnableNV in the
-    current command buffer set pname:shadingRateImageEnable to
-    ename:VK_TRUE, then flink:vkCmdSetViewportShadingRatePaletteNV must:
-    have been called in the current command buffer prior to this drawing
-    command
+    enabled, and
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT and
+    ename:VK_DYNAMIC_STATE_VIEWPORT_SHADING_RATE_PALETTE_NV dynamic state
+    enabled, the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:shadingRateImageEnable is ename:VK_TRUE, then
+    flink:vkCmdSetViewportShadingRatePaletteNV must: have been called and
+    not subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-08637]]
     If the <<features-shadingRateImage, pname:shadingRateImage>> feature is
-    enabled, and a shader object is bound to any graphics stage, and the
-    most recent call to flink:vkCmdSetRasterizerDiscardEnable in the current
-    command buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and
-    the most recent call to flink:vkCmdSetShadingRateImageEnableNV in the
-    current command buffer set pname:shadingRateImageEnable to
-    ename:VK_TRUE, then the pname:viewportCount parameter in the last call
-    to flink:vkCmdSetViewportShadingRatePaletteNV must: be greater than or
+    enabled, and
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT and
+    ename:VK_DYNAMIC_STATE_VIEWPORT_SHADING_RATE_PALETTE_NV dynamic state
+    enabled, the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:shadingRateImageEnable is ename:VK_TRUE, then the
+    pname:viewportCount parameter in the last call to
+    flink:vkCmdSetViewportShadingRatePaletteNV must: be greater than or
     equal to the pname:viewportCount parameter in the last call to
     flink:vkCmdSetViewportWithCount
-endif::VK_EXT_shader_object[]
 endif::VK_NV_shading_rate_image[]
 ifdef::VK_NV_viewport_swizzle[]
   * [[VUID-{refpage}-VkPipelineVieportCreateInfo-04141]]
@@ -597,74 +613,68 @@ ifdef::VK_NV_scissor_exclusive[]
     greater or equal to the pname:viewportCount parameter in the last call
     to flink:vkCmdSetViewportWithCount
   * [[VUID-{refpage}-None-07878]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_EXCLUSIVE_SCISSOR_ENABLE_NV dynamic state enabled
-    then flink:vkCmdSetExclusiveScissorEnableNV must: have been called in
+    If the <<features-exclusiveScissor, pname:exclusiveScissor>> feature is
+    enabled, and
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_EXCLUSIVE_SCISSOR_ENABLE_NV dynamic state
+    enabled, then flink:vkCmdSetExclusiveScissorEnableNV must: have been
+    called and not subsequently <<dynamic-state-lifetime, invalidated>> in
     the current command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07879]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_EXCLUSIVE_SCISSOR_NV dynamic state enabled then
-    flink:vkCmdSetExclusiveScissorNV must: have been called in the current
-    command buffer prior to this drawing command
+    If the <<features-exclusiveScissor, pname:exclusiveScissor>> feature is
+    enabled,
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-exclusiveScissor-09235]]
-    If the <<features-exclusiveScissor, pname:exclusiveScissor>> feature is
-    enabled, and a shader object is bound to any graphics stage, then
-    flink:vkCmdSetExclusiveScissorEnableNV must: have been called in the
-    current command buffer prior to this drawing command
-  * [[VUID-{refpage}-None-08638]]
-    If the <<features-exclusiveScissor, pname:exclusiveScissor>> feature is
-    enabled, and a shader object is bound to any graphics stage, and the
-    most recent call to flink:vkCmdSetExclusiveScissorEnableNV in the
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_EXCLUSIVE_SCISSOR_NV dynamic state enabled, and
+    the most recent call to flink:vkCmdSetExclusiveScissorEnableNV in the
     current command buffer set any element of pname:pExclusiveScissorEnables
     to ename:VK_TRUE, then flink:vkCmdSetExclusiveScissorNV must: have been
-    called in the current command buffer prior to this drawing command
-endif::VK_EXT_shader_object[]
+    called and not subsequently <<dynamic-state-lifetime, invalidated>> in
+    the current command buffer prior to this drawing command
 endif::VK_NV_scissor_exclusive[]
 endif::VK_VERSION_1_3,VK_EXT_extended_dynamic_state[]
 ifdef::VK_VERSION_1_3,VK_EXT_extended_dynamic_state2[]
   * [[VUID-{refpage}-None-04876]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_RASTERIZER_DISCARD_ENABLE dynamic state enabled
-    then flink:vkCmdSetRasterizerDiscardEnable must: have been called in the
-    current command buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08639]]
-    If a shader object is bound to any graphics stage, then
-    flink:vkCmdSetRasterizerDiscardEnable must: have been called in the
-    current command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_RASTERIZER_DISCARD_ENABLE dynamic state enabled,
+    then flink:vkCmdSetRasterizerDiscardEnable must: have been called and
+    not subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-04877]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DEPTH_BIAS_ENABLE dynamic state enabled then
-    flink:vkCmdSetDepthBiasEnable must: have been called in the current
-    command buffer prior to this drawing command
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08640]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetDepthBiasEnable must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_BIAS_ENABLE dynamic state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetDepthBiasEnable must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 ifdef::VK_EXT_extended_dynamic_state2[]
   * [[VUID-{refpage}-logicOp-04878]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_LOGIC_OP_EXT dynamic state enabled then
-    flink:vkCmdSetLogicOpEXT must: have been called in the current command
-    buffer prior to this drawing command and the pname:logicOp must: be a
-    valid elink:VkLogicOp value
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08641]]
-    If a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT
-    stage, and the most recent call to flink:vkCmdSetRasterizerDiscardEnable
-    in the current command buffer set pname:rasterizerDiscardEnable to
-    ename:VK_FALSE, and the most recent call to
-    flink:vkCmdSetLogicOpEnableEXT set pname:logicOpEnable to ename:VK_TRUE,
-    then flink:vkCmdSetLogicOpEXT must: have been called in the current
-    command buffer prior to this drawing command and the pname:logicOp must:
-    be a valid elink:VkLogicOp value
+    a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_LOGIC_OP_EXT dynamic state enabled, the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of pname:logicOpEnable is
+    ename:VK_TRUE, then flink:vkCmdSetLogicOpEXT must: have been called and
+    not subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 endif::VK_EXT_extended_dynamic_state2[]
 endif::VK_VERSION_1_3,VK_EXT_extended_dynamic_state2[]
 ifdef::VK_KHR_fragment_shading_rate[]
@@ -731,9 +741,8 @@ endif::VK_EXT_multisampled_render_to_single_sampled[]
 endif::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples,VK_EXT_multisampled_render_to_single_sampled[]
 
 +
-then pname:rasterizationSamples for the currently bound graphics pipeline
-must: be the same as the current subpass color and/or depth/stencil
-attachments
+then pname:rasterizationSamples for the bound graphics pipeline must: be the
+same as the current subpass color and/or depth/stencil attachments
 ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-08644]]
     If a shader object is bound to any graphics stage, and the most recent
@@ -813,10 +822,9 @@ ifdef::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
 endif::VK_VERSION_1_2,VK_KHR_separate_depth_stencil_layouts[]
   * [[VUID-{refpage}-viewMask-06178]]
     If the current render pass instance was begun with
-    flink:vkCmdBeginRendering, the currently bound graphics pipeline must:
-    have been created with a
-    slink:VkPipelineRenderingCreateInfo::pname:viewMask equal to
-    slink:VkRenderingInfo::pname:viewMask
+    flink:vkCmdBeginRendering, the bound graphics pipeline must: have been
+    created with a slink:VkPipelineRenderingCreateInfo::pname:viewMask equal
+    to slink:VkRenderingInfo::pname:viewMask
   * [[VUID-{refpage}-colorAttachmentCount-06179]]
     If
 ifdef::VK_EXT_dynamic_rendering_unused_attachments[]
@@ -824,8 +832,8 @@ ifdef::VK_EXT_dynamic_rendering_unused_attachments[]
     pname:dynamicRenderingUnusedAttachments>> feature is not enabled and
 endif::VK_EXT_dynamic_rendering_unused_attachments[]
     the current render pass instance was begun with
-    flink:vkCmdBeginRendering, the currently bound graphics pipeline must:
-    have been created with a
+    flink:vkCmdBeginRendering, the bound graphics pipeline must: have been
+    created with a
     slink:VkPipelineRenderingCreateInfo::pname:colorAttachmentCount equal to
     slink:VkRenderingInfo::pname:colorAttachmentCount
   * [[VUID-{refpage}-dynamicRenderingUnusedAttachments-08910]]
@@ -841,7 +849,7 @@ endif::VK_EXT_dynamic_rendering_unused_attachments[]
     with an pname:imageView not equal to dlink:VK_NULL_HANDLE must: have
     been created with a elink:VkFormat equal to the corresponding element of
     slink:VkPipelineRenderingCreateInfo::pname:pColorAttachmentFormats used
-    to create the currently bound graphics pipeline
+    to create the bound graphics pipeline
   * [[VUID-{refpage}-dynamicRenderingUnusedAttachments-08912]]
     If
 ifdef::VK_EXT_dynamic_rendering_unused_attachments[]
@@ -855,8 +863,7 @@ endif::VK_EXT_dynamic_rendering_unused_attachments[]
     with an pname:imageView equal to dlink:VK_NULL_HANDLE must: have the
     corresponding element of
     slink:VkPipelineRenderingCreateInfo::pname:pColorAttachmentFormats used
-    to create the currently bound pipeline equal to
-    ename:VK_FORMAT_UNDEFINED
+    to create the bound pipeline equal to ename:VK_FORMAT_UNDEFINED
 ifdef::VK_EXT_dynamic_rendering_unused_attachments[]
   * [[VUID-{refpage}-dynamicRenderingUnusedAttachments-08911]]
     If the <<features-dynamicRenderingUnusedAttachments,
@@ -868,8 +875,7 @@ ifdef::VK_EXT_dynamic_rendering_unused_attachments[]
     have been created with a elink:VkFormat equal to the corresponding
     element of
     slink:VkPipelineRenderingCreateInfo::pname:pColorAttachmentFormats used
-    to create the currently bound graphics pipeline, or the corresponding
-    element of
+    to create the bound graphics pipeline, or the corresponding element of
     slink:VkPipelineRenderingCreateInfo::pname:pColorAttachmentFormats, if
     it exists, must: be ename:VK_FORMAT_UNDEFINED
 endif::VK_EXT_dynamic_rendering_unused_attachments[]
@@ -888,7 +894,7 @@ endif::VK_EXT_shader_object[]
     created with an image created with a
     slink:VkExternalFormatANDROID::pname:externalFormat value equal to the
     slink:VkExternalFormatANDROID::pname:externalFormat value used to create
-    the currently bound graphics pipeline
+    the bound graphics pipeline
   * [[VUID-{refpage}-None-09363]]
     If
 ifdef::VK_EXT_shader_object[]
@@ -904,7 +910,7 @@ endif::VK_EXT_shader_object[]
     created with an image created with a
     slink:VkExternalFormatANDROID::pname:externalFormat value equal to the
     slink:VkExternalFormatANDROID::pname:externalFormat value used to create
-    the currently bound graphics pipeline
+    the bound graphics pipeline
 ifdef::VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-09364]]
     If the current render pass instance was begun with
@@ -912,7 +918,7 @@ ifdef::VK_EXT_extended_dynamic_state3[]
 ifdef::VK_EXT_shader_object[]
     there is no shader object bound to any graphics stage,
 endif::VK_EXT_shader_object[]
-    and the currently bound graphics pipeline was created with a non-zero
+    and the bound graphics pipeline was created with a non-zero
     slink:VkExternalFormatANDROID::pname:externalFormat value and with the
     ename:VK_DYNAMIC_STATE_COLOR_BLEND_ENABLE_EXT dynamic state enabled,
     then flink:vkCmdSetColorBlendEnableEXT must: have set the blend enable
@@ -923,7 +929,7 @@ endif::VK_EXT_shader_object[]
 ifdef::VK_EXT_shader_object[]
     there is no shader object bound to any graphics stage,
 endif::VK_EXT_shader_object[]
-    and the currently bound graphics pipeline was created with a non-zero
+    and the bound graphics pipeline was created with a non-zero
     slink:VkExternalFormatANDROID::pname:externalFormat value and with the
     ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT dynamic state enabled,
     then flink:vkCmdSetRasterizationSamplesEXT must: have set
@@ -952,7 +958,7 @@ ifdef::VK_KHR_fragment_shading_rate[]
 ifdef::VK_EXT_shader_object[]
     there is no shader object bound to any graphics stage,
 endif::VK_EXT_shader_object[]
-    and the currently bound graphics pipeline was created with a non-zero
+    and the bound graphics pipeline was created with a non-zero
     slink:VkExternalFormatANDROID::pname:externalFormat value and with the
     ename:VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR dynamic state enabled,
     then flink:vkCmdSetFragmentShadingRateKHR must: have set
@@ -963,7 +969,7 @@ endif::VK_EXT_shader_object[]
 ifdef::VK_EXT_shader_object[]
     there is no shader object bound to any graphics stage,
 endif::VK_EXT_shader_object[]
-    and the currently bound graphics pipeline was created with a non-zero
+    and the bound graphics pipeline was created with a non-zero
     slink:VkExternalFormatANDROID::pname:externalFormat value and with the
     ename:VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR dynamic state enabled,
     then flink:vkCmdSetFragmentShadingRateKHR must: have set
@@ -988,16 +994,18 @@ ifdef::VK_EXT_color_write_enable[]
   * [[VUID-{refpage}-None-07749]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_COLOR_WRITE_ENABLE_EXT dynamic state enabled then
-    flink:vkCmdSetColorWriteEnableEXT must: have been called in the current
+    flink:vkCmdSetColorWriteEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command
 ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-08646]]
     If the <<features-colorWriteEnable, pname:colorWriteEnable>> feature is
-    enabled on the device, and a shader object is bound to the
+    enabled, and a shader object is bound to the
     ename:VK_SHADER_STAGE_FRAGMENT_BIT stage, and the most recent call to
     flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
     pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetColorWriteEnableEXT must: have been called in the current
+    flink:vkCmdSetColorWriteEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command
 endif::VK_EXT_shader_object[]
   * [[VUID-{refpage}-attachmentCount-07750]]
@@ -1006,11 +1014,11 @@ endif::VK_EXT_shader_object[]
     the pname:attachmentCount parameter of fname:vkCmdSetColorWriteEnableEXT
     must: be greater than or equal to the
     sname:VkPipelineColorBlendStateCreateInfo::pname:attachmentCount of the
-    currently bound graphics pipeline
+    bound graphics pipeline
 ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-08647]]
     If the <<features-colorWriteEnable, pname:colorWriteEnable>> feature is
-    enabled on the device, and a shader object is bound to the
+    enabled, and a shader object is bound to the
     ename:VK_SHADER_STAGE_FRAGMENT_BIT stage, and the most recent call to
     flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
     pname:rasterizerDiscardEnable to ename:VK_FALSE, then the
@@ -1024,15 +1032,37 @@ ifdef::VK_EXT_discard_rectangles[]
   * [[VUID-{refpage}-None-07751]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_DISCARD_RECTANGLE_EXT dynamic state enabled then
-    flink:vkCmdSetDiscardRectangleEXT must: have been called in the current
+    flink:vkCmdSetDiscardRectangleEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command for each discard rectangle
     in
     slink:VkPipelineDiscardRectangleStateCreateInfoEXT::pname:discardRectangleCount
   * [[VUID-{refpage}-None-07880]]
-    If the bound graphics pipeline state was created with the
+    If the `apiext:VK_EXT_discard_rectangles` extension is enabled,
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
     ename:VK_DYNAMIC_STATE_DISCARD_RECTANGLE_ENABLE_EXT dynamic state
-    enabled then flink:vkCmdSetDiscardRectangleEnableEXT must: have been
-    called in the current command buffer prior to this drawing command
+    enabled, the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetDiscardRectangleEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+  * [[VUID-{refpage}-None-07881]]
+    If the `apiext:VK_EXT_discard_rectangles` extension is enabled,
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DISCARD_RECTANGLE_MODE_EXT dynamic state enabled,
+    the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:discardRectangleEnable is ename:VK_TRUE, then
+    flink:vkCmdSetDiscardRectangleModeEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-rasterizerDiscardEnable-09236]]
     If the `apiext:VK_EXT_discard_rectangles` extension is enabled, and a
@@ -1041,31 +1071,9 @@ ifdef::VK_EXT_shader_object[]
     set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most recent
     call to flink:vkCmdSetDiscardRectangleEnableEXT in the current command
     buffer set pname:discardRectangleEnable to ename:VK_TRUE, then
-    flink:vkCmdSetDiscardRectangleEXT must: have been called in the current
+    flink:vkCmdSetDiscardRectangleEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command
-  * [[VUID-{refpage}-None-08648]]
-    If the `apiext:VK_EXT_discard_rectangles` extension is enabled, and a
-    shader object is bound to any graphics stage, and the most recent call
-    to flink:vkCmdSetRasterizerDiscardEnable in the current command buffer
-    set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetDiscardRectangleEnableEXT must: have been called in the
-    current command buffer prior to this drawing command
-endif::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-07881]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DISCARD_RECTANGLE_MODE_EXT dynamic state enabled
-    then flink:vkCmdSetDiscardRectangleModeEXT must: have been called in the
-    current command buffer prior to this drawing command
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08649]]
-    If the `apiext:VK_EXT_discard_rectangles` extension is enabled, and a
-    shader object is bound to any graphics stage, and the most recent call
-    to flink:vkCmdSetRasterizerDiscardEnable in the current command buffer
-    set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most recent
-    call to flink:vkCmdSetDiscardRectangleEnableEXT in the current command
-    buffer set pname:discardRectangleEnable to ename:VK_TRUE, then
-    flink:vkCmdSetDiscardRectangleModeEXT must: have been called in the
-    current command buffer prior to this drawing command
 endif::VK_EXT_shader_object[]
 endif::VK_EXT_discard_rectangles[]
   * [[VUID-{refpage}-dynamicRenderingUnusedAttachments-08913]]
@@ -1079,7 +1087,7 @@ endif::VK_EXT_dynamic_rendering_unused_attachments[]
     and slink:VkRenderingInfo::pname:pDepthAttachment->imageView was
     dlink:VK_NULL_HANDLE, the value of
     slink:VkPipelineRenderingCreateInfo::pname:depthAttachmentFormat used to
-    create the currently bound graphics pipeline must: be equal to
+    create the bound graphics pipeline must: be equal to
     ename:VK_FORMAT_UNDEFINED
   * [[VUID-{refpage}-dynamicRenderingUnusedAttachments-08914]]
     If current render pass instance was begun with
@@ -1092,9 +1100,8 @@ endif::VK_EXT_dynamic_rendering_unused_attachments[]
     and slink:VkRenderingInfo::pname:pDepthAttachment->imageView was not
     dlink:VK_NULL_HANDLE, the value of
     slink:VkPipelineRenderingCreateInfo::pname:depthAttachmentFormat used to
-    create the currently bound graphics pipeline must: be equal to the
-    elink:VkFormat used to create
-    slink:VkRenderingInfo::pname:pDepthAttachment->imageView
+    create the bound graphics pipeline must: be equal to the elink:VkFormat
+    used to create slink:VkRenderingInfo::pname:pDepthAttachment->imageView
 ifdef::VK_EXT_dynamic_rendering_unused_attachments[]
   * [[VUID-{refpage}-dynamicRenderingUnusedAttachments-08915]]
     If the current render pass instance was begun with
@@ -1104,10 +1111,9 @@ ifdef::VK_EXT_dynamic_rendering_unused_attachments[]
     slink:VkRenderingInfo::pname:pDepthAttachment->imageView was not
     dlink:VK_NULL_HANDLE, and the value of
     slink:VkPipelineRenderingCreateInfo::pname:depthAttachmentFormat used to
-    create the currently bound graphics pipeline was not equal to the
-    elink:VkFormat used to create
-    slink:VkRenderingInfo::pname:pDepthAttachment->imageView, the value of
-    the format must: be ename:VK_FORMAT_UNDEFINED
+    create the bound graphics pipeline was not equal to the elink:VkFormat
+    used to create slink:VkRenderingInfo::pname:pDepthAttachment->imageView,
+    the value of the format must: be ename:VK_FORMAT_UNDEFINED
 endif::VK_EXT_dynamic_rendering_unused_attachments[]
   * [[VUID-{refpage}-dynamicRenderingUnusedAttachments-08916]]
     If the current render pass instance was begun with
@@ -1120,7 +1126,7 @@ endif::VK_EXT_dynamic_rendering_unused_attachments[]
     and slink:VkRenderingInfo::pname:pStencilAttachment->imageView was
     dlink:VK_NULL_HANDLE, the value of
     slink:VkPipelineRenderingCreateInfo::pname:stencilAttachmentFormat used
-    to create the currently bound graphics pipeline must: be equal to
+    to create the bound graphics pipeline must: be equal to
     ename:VK_FORMAT_UNDEFINED
   * [[VUID-{refpage}-dynamicRenderingUnusedAttachments-08917]]
     If current render pass instance was begun with
@@ -1133,7 +1139,7 @@ endif::VK_EXT_dynamic_rendering_unused_attachments[]
     and slink:VkRenderingInfo::pname:pStencilAttachment->imageView was not
     dlink:VK_NULL_HANDLE, the value of
     slink:VkPipelineRenderingCreateInfo::pname:stencilAttachmentFormat used
-    to create the currently bound graphics pipeline must: be equal to the
+    to create the bound graphics pipeline must: be equal to the
     elink:VkFormat used to create
     slink:VkRenderingInfo::pname:pStencilAttachment->imageView
 ifdef::VK_EXT_dynamic_rendering_unused_attachments[]
@@ -1145,32 +1151,32 @@ ifdef::VK_EXT_dynamic_rendering_unused_attachments[]
     slink:VkRenderingInfo::pname:pStencilAttachment->imageView was not
     dlink:VK_NULL_HANDLE, and the value of
     slink:VkPipelineRenderingCreateInfo::pname:stencilAttachmentFormat used
-    to create the currently bound graphics pipeline was not equal to the
+    to create the bound graphics pipeline was not equal to the
     elink:VkFormat used to create
     slink:VkRenderingInfo::pname:pStencilAttachment->imageView, the value of
     the format must: be ename:VK_FORMAT_UNDEFINED
 endif::VK_EXT_dynamic_rendering_unused_attachments[]
-ifdef::VK_KHR_fragment_shading_rate[]
+ifdef::VK_KHR_dynamic_rendering+VK_KHR_fragment_shading_rate[]
   * [[VUID-{refpage}-imageView-06183]]
     If the current render pass instance was begun with
     flink:vkCmdBeginRendering and
     slink:VkRenderingFragmentShadingRateAttachmentInfoKHR::pname:imageView
-    was not dlink:VK_NULL_HANDLE, the currently bound graphics pipeline
-    must: have been created with
+    was not dlink:VK_NULL_HANDLE, the bound graphics pipeline must: have
+    been created with
     ename:VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR
-endif::VK_KHR_fragment_shading_rate[]
+endif::VK_KHR_dynamic_rendering+VK_KHR_fragment_shading_rate[]
 ifdef::VK_EXT_fragment_density_map[]
   * [[VUID-{refpage}-imageView-06184]]
     If the current render pass instance was begun with
     flink:vkCmdBeginRendering and
     slink:VkRenderingFragmentDensityMapAttachmentInfoEXT::pname:imageView
-    was not dlink:VK_NULL_HANDLE, the currently bound graphics pipeline
-    must: have been created with
+    was not dlink:VK_NULL_HANDLE, the bound graphics pipeline must: have
+    been created with
     ename:VK_PIPELINE_CREATE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT
 endif::VK_EXT_fragment_density_map[]
 ifdef::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
   * [[VUID-{refpage}-colorAttachmentCount-06185]]
-    If the currently bound pipeline was created with a
+    If the bound pipeline was created with a
     slink:VkAttachmentSampleCountInfoAMD or
     slink:VkAttachmentSampleCountInfoNV structure, and the current render
     pass instance was begun with flink:vkCmdBeginRendering with a
@@ -1181,37 +1187,37 @@ ifdef::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
     created with a sample count equal to the corresponding element of the
     pname:pColorAttachmentSamples member of
     slink:VkAttachmentSampleCountInfoAMD or
-    slink:VkAttachmentSampleCountInfoNV used to create the currently bound
-    graphics pipeline
+    slink:VkAttachmentSampleCountInfoNV used to create the bound graphics
+    pipeline
   * [[VUID-{refpage}-pDepthAttachment-06186]]
     If the current render pass instance was begun with
-    flink:vkCmdBeginRendering, the currently bound pipeline was created with
-    a slink:VkAttachmentSampleCountInfoAMD or
+    flink:vkCmdBeginRendering, the bound pipeline was created with a
+    slink:VkAttachmentSampleCountInfoAMD or
     slink:VkAttachmentSampleCountInfoNV structure, and
     slink:VkRenderingInfo::pname:pDepthAttachment->imageView was not
     dlink:VK_NULL_HANDLE, the value of the
     pname:depthStencilAttachmentSamples member of
     slink:VkAttachmentSampleCountInfoAMD or
-    slink:VkAttachmentSampleCountInfoNV used to create the currently bound
-    graphics pipeline must: be equal to the sample count used to create
+    slink:VkAttachmentSampleCountInfoNV used to create the bound graphics
+    pipeline must: be equal to the sample count used to create
     slink:VkRenderingInfo::pname:pDepthAttachment->imageView
   * [[VUID-{refpage}-pStencilAttachment-06187]]
     If the current render pass instance was begun with
-    flink:vkCmdBeginRendering, the currently bound pipeline was created with
-    a slink:VkAttachmentSampleCountInfoAMD or
+    flink:vkCmdBeginRendering, the bound pipeline was created with a
+    slink:VkAttachmentSampleCountInfoAMD or
     slink:VkAttachmentSampleCountInfoNV structure, and
     slink:VkRenderingInfo::pname:pStencilAttachment->imageView was not
     dlink:VK_NULL_HANDLE, the value of the
     pname:depthStencilAttachmentSamples member of
     slink:VkAttachmentSampleCountInfoAMD or
-    slink:VkAttachmentSampleCountInfoNV used to create the currently bound
-    graphics pipeline must: be equal to the sample count used to create
+    slink:VkAttachmentSampleCountInfoNV used to create the bound graphics
+    pipeline must: be equal to the sample count used to create
     slink:VkRenderingInfo::pname:pStencilAttachment->imageView
 endif::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
   * [[VUID-{refpage}-multisampledRenderToSingleSampled-07285]]
     If
 ifdef::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
-    the currently bound pipeline was created without a
+    the bound pipeline was created without a
 ifdef::VK_AMD_mixed_attachment_samples[]
     slink:VkAttachmentSampleCountInfoAMD
 endif::VK_AMD_mixed_attachment_samples[]
@@ -1232,11 +1238,11 @@ endif::VK_EXT_multisampled_render_to_single_sampled[]
     slink:VkRenderingInfo::pname:pColorAttachments array with a
     pname:imageView not equal to dlink:VK_NULL_HANDLE must: have been
     created with a sample count equal to the value of
-    pname:rasterizationSamples for the currently bound graphics pipeline
+    pname:rasterizationSamples for the bound graphics pipeline
   * [[VUID-{refpage}-multisampledRenderToSingleSampled-07286]]
     If
 ifdef::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
-    the currently bound pipeline was created without a
+    the bound pipeline was created without a
 ifdef::VK_AMD_mixed_attachment_samples[]
     slink:VkAttachmentSampleCountInfoAMD
 endif::VK_AMD_mixed_attachment_samples[]
@@ -1252,12 +1258,12 @@ ifdef::VK_EXT_multisampled_render_to_single_sampled[]
 endif::VK_EXT_multisampled_render_to_single_sampled[]
     slink:VkRenderingInfo::pname:pDepthAttachment->imageView was not
     dlink:VK_NULL_HANDLE, the value of pname:rasterizationSamples for the
-    currently bound graphics pipeline must: be equal to the sample count
-    used to create slink:VkRenderingInfo::pname:pDepthAttachment->imageView
+    bound graphics pipeline must: be equal to the sample count used to
+    create slink:VkRenderingInfo::pname:pDepthAttachment->imageView
   * [[VUID-{refpage}-multisampledRenderToSingleSampled-07287]]
     If
 ifdef::VK_AMD_mixed_attachment_samples,VK_NV_framebuffer_mixed_samples[]
-    the currently bound pipeline was created without a
+    the bound pipeline was created without a
 ifdef::VK_AMD_mixed_attachment_samples[]
     slink:VkAttachmentSampleCountInfoAMD
 endif::VK_AMD_mixed_attachment_samples[]
@@ -1273,9 +1279,8 @@ ifdef::VK_EXT_multisampled_render_to_single_sampled[]
 endif::VK_EXT_multisampled_render_to_single_sampled[]
     slink:VkRenderingInfo::pname:pStencilAttachment->imageView was not
     dlink:VK_NULL_HANDLE, the value of pname:rasterizationSamples for the
-    currently bound graphics pipeline must: be equal to the sample count
-    used to create
-    slink:VkRenderingInfo::pname:pStencilAttachment->imageView
+    bound graphics pipeline must: be equal to the sample count used to
+    create slink:VkRenderingInfo::pname:pStencilAttachment->imageView
 ifdef::VK_EXT_multisampled_render_to_single_sampled[]
   * [[VUID-{refpage}-pNext-07935]]
     If this command has been called inside a render pass instance started
@@ -1283,15 +1288,15 @@ ifdef::VK_EXT_multisampled_render_to_single_sampled[]
     slink:VkRenderingInfo includes a
     slink:VkMultisampledRenderToSingleSampledInfoEXT structure with
     pname:multisampledRenderToSingleSampledEnable equal to ename:VK_TRUE,
-    then the value of pname:rasterizationSamples for the currently bound
-    graphics pipeline must: be equal to
+    then the value of pname:rasterizationSamples for the bound graphics
+    pipeline must: be equal to
     slink:VkMultisampledRenderToSingleSampledInfoEXT::pname:rasterizationSamples
 endif::VK_EXT_multisampled_render_to_single_sampled[]
   * [[VUID-{refpage}-renderPass-06198]]
     If the current render pass instance was begun with
-    flink:vkCmdBeginRendering, the currently bound pipeline must: have been
-    created with a slink:VkGraphicsPipelineCreateInfo::pname:renderPass
-    equal to dlink:VK_NULL_HANDLE
+    flink:vkCmdBeginRendering, the bound pipeline must: have been created
+    with a slink:VkGraphicsPipelineCreateInfo::pname:renderPass equal to
+    dlink:VK_NULL_HANDLE
   * [[VUID-{refpage}-pColorAttachments-08963]]
     If the current render pass instance was begun with
     flink:vkCmdBeginRendering, there is a graphics pipeline bound with a
@@ -1335,83 +1340,66 @@ ifdef::VK_EXT_transform_feedback[]
 endif::VK_EXT_transform_feedback[]
 endif::VK_EXT_primitives_generated_query[]
 ifdef::VK_EXT_extended_dynamic_state3,VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07619]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_TESSELLATION_DOMAIN_ORIGIN_EXT dynamic state
-    enabled then flink:vkCmdSetTessellationDomainOriginEXT must: have been
-    called in the current command buffer prior to this drawing command
-  * [[VUID-{refpage}-None-07620]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DEPTH_CLAMP_ENABLE_EXT dynamic state enabled then
-    flink:vkCmdSetDepthClampEnableEXT must: have been called in the current
-    command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-09237]]
-    If a shader object is bound to the
-    ename:VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT stage, then
-    flink:vkCmdSetTessellationDomainOriginEXT must: have been called in the
-    current command buffer prior to this drawing command
-  * [[VUID-{refpage}-None-08650]]
-    If the <<features-depthClamp, pname:depthClamp>> feature is enabled, and
-    a shader object is bound to any graphics stage, and the most recent call
-    to flink:vkCmdSetRasterizerDiscardEnable in the current command buffer
-    set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetDepthClampEnableEXT must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to the
+    ename:VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_TESSELLATION_DOMAIN_ORIGIN_EXT dynamic state
+    enabled, then flink:vkCmdSetTessellationDomainOriginEXT must: have been
+    called and not subsequently <<dynamic-state-lifetime, invalidated>> in
+    the current command buffer prior to this drawing command
+  * [[VUID-{refpage}-None-07620]]
+    If the <<features-depthClamp, pname:depthClamp>> feature is enabled,
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_CLAMP_ENABLE_EXT dynamic state enabled, and
+    the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetDepthClampEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 ifdef::VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07621]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_POLYGON_MODE_EXT dynamic state enabled then
-    flink:vkCmdSetPolygonModeEXT must: have been called in the current
-    command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08651]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetPolygonModeEXT must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_POLYGON_MODE_EXT dynamic state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetPolygonModeEXT must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
   * [[VUID-{refpage}-None-07622]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT dynamic state enabled
-    then flink:vkCmdSetRasterizationSamplesEXT must: have been called in the
-    current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08652]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetRasterizationSamplesEXT must: have been called in the
-    current command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT dynamic state enabled,
+    and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetRasterizationSamplesEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07623]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_SAMPLE_MASK_EXT dynamic state enabled then
-    flink:vkCmdSetSampleMaskEXT must: have been called in the current
-    command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    If
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08653]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetSampleMaskEXT must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-{refpage}-None-07624]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_ALPHA_TO_COVERAGE_ENABLE_EXT dynamic state
-    enabled then flink:vkCmdSetAlphaToCoverageEnableEXT must: have been
-    called in the current command buffer prior to this drawing command
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_SAMPLE_MASK_EXT dynamic state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetSampleMaskEXT must: have been called and not subsequently
+    <<dynamic-state-lifetime, invalidated>> in the current command buffer
+    prior to this drawing command
   * [[VUID-{refpage}-alphaToCoverageEnable-08919]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_ALPHA_TO_COVERAGE_ENABLE_EXT dynamic state
@@ -1422,12 +1410,6 @@ ifdef::VK_EXT_extended_dynamic_state3[]
     code:Index 0
 endif::VK_EXT_extended_dynamic_state3[]
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08654]]
-    If a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetAlphaToCoverageEnableEXT must: have been called in the
-    current command buffer prior to this drawing command
   * [[VUID-{refpage}-alphaToCoverageEnable-08920]]
     If a shader object is bound to any graphics stage, and the most recent
     call to flink:vkCmdSetAlphaToCoverageEnableEXT in the current command
@@ -1436,43 +1418,51 @@ ifdef::VK_EXT_shader_object[]
     variable for the alpha code:Component word in code:Location 0 at
     code:Index 0
 endif::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
+  * [[VUID-{refpage}-None-07624]]
+    If
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_ALPHA_TO_COVERAGE_ENABLE_EXT dynamic state
+    enabled, and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetAlphaToCoverageEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07625]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_ALPHA_TO_ONE_ENABLE_EXT dynamic state enabled
-    then flink:vkCmdSetAlphaToOneEnableEXT must: have been called in the
-    current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    If the <<features-alphaToOne, pname:alphaToOne>> feature is enabled,
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08655]]
-    If the <<features-alphaToOne, pname:alphaToOne>> feature is enabled, and
-    a shader object is bound to any graphics stage, and the most recent call
-    to flink:vkCmdSetRasterizerDiscardEnable in the current command buffer
-    set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetAlphaToOneEnableEXT must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_ALPHA_TO_ONE_ENABLE_EXT dynamic state enabled,
+    and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetAlphaToOneEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07626]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_LOGIC_OP_ENABLE_EXT dynamic state enabled then
-    flink:vkCmdSetLogicOpEnableEXT must: have been called in the current
-    command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    If the <<features-logicOp, pname:logicOp>> feature is enabled,
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08656]]
-    If the <<features-logicOp, pname:logicOp>> feature is enabled, and a
-    shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT stage,
-    and the most recent call to flink:vkCmdSetRasterizerDiscardEnable in the
-    current command buffer set pname:rasterizerDiscardEnable to
-    ename:VK_FALSE, then flink:vkCmdSetLogicOpEnableEXT must: have been
-    called in the current command buffer prior to this drawing command
+    a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT stage
+    or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_LOGIC_OP_ENABLE_EXT dynamic state enabled, and
+    the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetLogicOpEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 ifdef::VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07627]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_COLOR_BLEND_ENABLE_EXT dynamic state enabled then
-    flink:vkCmdSetColorBlendEnableEXT must: have been called in the current
+    flink:vkCmdSetColorBlendEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command
 endif::VK_EXT_extended_dynamic_state3[]
 ifdef::VK_EXT_shader_object[]
@@ -1482,14 +1472,16 @@ ifdef::VK_EXT_shader_object[]
     flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
     pname:rasterizerDiscardEnable to ename:VK_FALSE and there are color
     attachments bound, then flink:vkCmdSetColorBlendEnableEXT must: have
-    been called in the current command buffer prior to this drawing command
+    been called and not subsequently <<dynamic-state-lifetime, invalidated>>
+    in the current command buffer prior to this drawing command
 endif::VK_EXT_shader_object[]
 ifdef::VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07628]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_COLOR_BLEND_EQUATION_EXT dynamic state enabled
-    then flink:vkCmdSetColorBlendEquationEXT must: have been called in the
-    current command buffer prior to this drawing command
+    then flink:vkCmdSetColorBlendEquationEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 endif::VK_EXT_extended_dynamic_state3[]
 ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-08658]]
@@ -1499,14 +1491,16 @@ ifdef::VK_EXT_shader_object[]
     ename:VK_FALSE, and the most recent call to
     flink:vkCmdSetColorBlendEnableEXT for any attachment set that
     attachment's value in pname:pColorBlendEnables to ename:VK_TRUE, then
-    flink:vkCmdSetColorBlendEquationEXT must: have been called in the
-    current command buffer prior to this drawing command
+    flink:vkCmdSetColorBlendEquationEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 endif::VK_EXT_shader_object[]
 ifdef::VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07629]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT dynamic state enabled then
-    flink:vkCmdSetColorWriteMaskEXT must: have been called in the current
+    flink:vkCmdSetColorWriteMaskEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command
 endif::VK_EXT_extended_dynamic_state3[]
 ifdef::VK_EXT_shader_object[]
@@ -1516,103 +1510,78 @@ ifdef::VK_EXT_shader_object[]
     flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
     pname:rasterizerDiscardEnable to ename:VK_FALSE and there are color
     attachments bound, then flink:vkCmdSetColorWriteMaskEXT must: have been
-    called in the current command buffer prior to this drawing command
+    called and not subsequently <<dynamic-state-lifetime, invalidated>> in
+    the current command buffer prior to this drawing command
 endif::VK_EXT_shader_object[]
 ifdef::VK_EXT_transform_feedback[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07630]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_RASTERIZATION_STREAM_EXT dynamic state enabled
-    then flink:vkCmdSetRasterizationStreamEXT must: have been called in the
-    current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08660]]
     If the <<features-geometryStreams, pname:geometryStreams>> feature is
-    enabled, and a shader object is bound to the
-    ename:VK_SHADER_STAGE_GEOMETRY_BIT stage, then
-    flink:vkCmdSetRasterizationStreamEXT must: have been called in the
-    current command buffer prior to this drawing command
+    enabled, and
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to the ename:VK_SHADER_STAGE_GEOMETRY_BIT stage
+    or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_RASTERIZATION_STREAM_EXT dynamic state enabled,
+    then flink:vkCmdSetRasterizationStreamEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 endif::VK_EXT_transform_feedback[]
 ifdef::VK_EXT_conservative_rasterization[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07631]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_CONSERVATIVE_RASTERIZATION_MODE_EXT dynamic state
-    enabled then flink:vkCmdSetConservativeRasterizationModeEXT must: have
-    been called in the current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08661]]
     If the `apiext:VK_EXT_conservative_rasterization` extension is enabled,
-    and a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetConservativeRasterizationModeEXT must: have been called in
-    the current command buffer prior to this drawing command
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_CONSERVATIVE_RASTERIZATION_MODE_EXT dynamic state
+    enabled, and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetConservativeRasterizationModeEXT must: have been called
+    and not subsequently <<dynamic-state-lifetime, invalidated>> in the
+    current command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07632]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_EXTRA_PRIMITIVE_OVERESTIMATION_SIZE_EXT dynamic
-    state enabled then flink:vkCmdSetExtraPrimitiveOverestimationSizeEXT
-    must: have been called in the current command buffer prior to this
-    drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08662]]
     If the `apiext:VK_EXT_conservative_rasterization` extension is enabled,
-    and a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetConservativeRasterizationModeEXT in the
-    current command buffer set pname:conservativeRasterizationMode to
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_EXTRA_PRIMITIVE_OVERESTIMATION_SIZE_EXT dynamic
+    state enabled, the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:conservativeRasterizationMode is
     ename:VK_CONSERVATIVE_RASTERIZATION_MODE_OVERESTIMATE_EXT, then
     flink:vkCmdSetExtraPrimitiveOverestimationSizeEXT must: have been called
-    in the current command buffer prior to this drawing command
-endif::VK_EXT_shader_object[]
+    and not subsequently <<dynamic-state-lifetime, invalidated>> in the
+    current command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 endif::VK_EXT_conservative_rasterization[]
 ifdef::VK_EXT_depth_clip_enable[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07633]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DEPTH_CLIP_ENABLE_EXT dynamic state enabled then
-    flink:vkCmdSetDepthClipEnableEXT must: have been called in the current
-    command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08663]]
     If the <<features-depthClipEnable, pname:depthClipEnable>> feature is
-    enabled, and a shader object is bound to any graphics stage, then
-    flink:vkCmdSetDepthClipEnableEXT must: have been called in the current
-    command buffer prior to this drawing command
-endif::VK_EXT_shader_object[]
-endif::VK_EXT_depth_clip_enable[]
-ifdef::VK_EXT_sample_locations[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-{refpage}-None-07634]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_ENABLE_EXT dynamic state enabled
-    then flink:vkCmdSetSampleLocationsEnableEXT must: have been called in
-    the current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    enabled, and
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08664]]
-    If the `apiext:VK_EXT_sample_locations` extension is enabled, and a
-    shader object is bound to any graphics stage, and the most recent call
-    to flink:vkCmdSetRasterizerDiscardEnable in the current command buffer
-    set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetSampleLocationsEnableEXT must: have been called in the
-    current command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
-endif::VK_EXT_sample_locations[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_CLIP_ENABLE_EXT dynamic state, then
+    flink:vkCmdSetDepthClipEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
+endif::VK_EXT_depth_clip_enable[]
 ifdef::VK_EXT_blend_operation_advanced[]
   * [[VUID-{refpage}-None-07635]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_COLOR_BLEND_ADVANCED_EXT dynamic state enabled
-    then flink:vkCmdSetColorBlendAdvancedEXT must: have been called in the
-    current command buffer prior to this drawing command
+    then flink:vkCmdSetColorBlendAdvancedEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-rasterizerDiscardEnable-09416]]
     If the `apiext:VK_EXT_blend_operation_advanced` extension is enabled,
@@ -1620,332 +1589,349 @@ ifdef::VK_EXT_shader_object[]
     stage, and the most recent call to flink:vkCmdSetRasterizerDiscardEnable
     in the current command buffer set pname:rasterizerDiscardEnable to
     ename:VK_FALSE, then at least one of flink:vkCmdSetColorBlendEquationEXT
-    and flink:vkCmdSetColorBlendAdvancedEXT must: have been called in the
-    current command buffer prior to this drawing command
+    and flink:vkCmdSetColorBlendAdvancedEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 endif::VK_EXT_shader_object[]
 endif::VK_EXT_blend_operation_advanced[]
 ifdef::VK_EXT_provoking_vertex[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07636]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_PROVOKING_VERTEX_MODE_EXT dynamic state enabled
-    then flink:vkCmdSetProvokingVertexModeEXT must: have been called in the
-    current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    If the `apiext:VK_EXT_provoking_vertex` extension is enabled,
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08665]]
-    If the `apiext:VK_EXT_provoking_vertex` extension is enabled, and a
-    shader object is bound to the ename:VK_SHADER_STAGE_VERTEX_BIT stage,
-    and the most recent call to flink:vkCmdSetRasterizerDiscardEnable in the
-    current command buffer set pname:rasterizerDiscardEnable to
-    ename:VK_FALSE, then flink:vkCmdSetProvokingVertexModeEXT must: have
-    been called in the current command buffer prior to this drawing command
+    a shader object is bound to the ename:VK_SHADER_STAGE_VERTEX_BIT stage
+    or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_PROVOKING_VERTEX_MODE_EXT dynamic state enabled,
+    and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetProvokingVertexModeEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 endif::VK_EXT_provoking_vertex[]
-ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
+ifdef::VK_VERSION_1_4,VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 ifdef::VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07637]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_LINE_RASTERIZATION_MODE_EXT dynamic state enabled
-    then flink:vkCmdSetLineRasterizationModeEXT must: have been called in
-    the current command buffer prior to this drawing command
+    then flink:vkCmdSetLineRasterizationModeEXT must: have been called and
+    not subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 endif::VK_EXT_extended_dynamic_state3[]
 ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-08666]]
-    If the `apiext:VK_KHR_line_rasterization` or
-    `apiext:VK_EXT_line_rasterization` extension is enabled, and a shader
-    object is bound to any graphics stage, and the most recent call to
+    If any of the <<features-stippledRectangularLines,
+    pname:stippledRectangularLines>>, <<features-stippledBresenhamLines,
+    pname:stippledBresenhamLines>> or <<features-stippledSmoothLines,
+    pname:stippledSmoothLines>> features are enabled, and a shader object is
+    bound to any graphics stage, and the most recent call to
     flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
     pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most recent
     call to flink:vkCmdSetPolygonModeEXT in the current command buffer set
     pname:polygonMode to ename:VK_POLYGON_MODE_LINE, then
-    flink:vkCmdSetLineRasterizationModeEXT must: have been called in the
-    current command buffer prior to this drawing command
+    flink:vkCmdSetLineRasterizationModeEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-08667]]
-    If the `apiext:VK_KHR_line_rasterization` or
-    `apiext:VK_EXT_line_rasterization` extension is enabled, and a shader
-    object is bound to the ename:VK_SHADER_STAGE_VERTEX_BIT stage, and the
-    most recent call to flink:vkCmdSetRasterizerDiscardEnable in the current
-    command buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and
-    the most recent call to flink:vkCmdSetPrimitiveTopology in the current
-    command buffer set pname:primitiveTopology to any line topology, then
-    flink:vkCmdSetLineRasterizationModeEXT must: have been called in the
-    current command buffer prior to this drawing command
+    If any of the <<features-stippledRectangularLines,
+    pname:stippledRectangularLines>>, <<features-stippledBresenhamLines,
+    pname:stippledBresenhamLines>> or <<features-stippledSmoothLines,
+    pname:stippledSmoothLines>> features are enabled, and a shader object is
+    bound to the ename:VK_SHADER_STAGE_VERTEX_BIT stage, and the most recent
+    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
+    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
+    recent call to flink:vkCmdSetPrimitiveTopology in the current command
+    buffer set pname:primitiveTopology to any line topology, then
+    flink:vkCmdSetLineRasterizationModeEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-08668]]
-    If the `apiext:VK_KHR_line_rasterization` or
-    `apiext:VK_EXT_line_rasterization` extension is enabled, and a shader
-    object that outputs line primitives is bound to the
+    If any of the <<features-stippledRectangularLines,
+    pname:stippledRectangularLines>>, <<features-stippledBresenhamLines,
+    pname:stippledBresenhamLines>> or <<features-stippledSmoothLines,
+    pname:stippledSmoothLines>> features are enabled, and a shader object
+    that outputs line primitives is bound to the
     ename:VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT or
     ename:VK_SHADER_STAGE_GEOMETRY_BIT stage, and the most recent call to
     flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
     pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetLineRasterizationModeEXT must: have been called in the
-    current command buffer prior to this drawing command
+    flink:vkCmdSetLineRasterizationModeEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 endif::VK_EXT_shader_object[]
 ifdef::VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07638]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_LINE_STIPPLE_ENABLE_EXT dynamic state enabled
-    then flink:vkCmdSetLineStippleEnableEXT must: have been called in the
-    current command buffer prior to this drawing command
+    then flink:vkCmdSetLineStippleEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 endif::VK_EXT_extended_dynamic_state3[]
 ifdef::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-08669]]
-    If the `apiext:VK_KHR_line_rasterization` or
-    `apiext:VK_EXT_line_rasterization` extension is enabled, and a shader
-    object is bound to any graphics stage, and the most recent call to
+    If any of the <<features-stippledRectangularLines,
+    pname:stippledRectangularLines>>, <<features-stippledBresenhamLines,
+    pname:stippledBresenhamLines>> or <<features-stippledSmoothLines,
+    pname:stippledSmoothLines>> features are enabled, and a shader object is
+    bound to any graphics stage, and the most recent call to
     flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
     pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most recent
     call to flink:vkCmdSetPolygonModeEXT in the current command buffer set
     pname:polygonMode to ename:VK_POLYGON_MODE_LINE, then
-    flink:vkCmdSetLineStippleEnableEXT must: have been called in the current
+    flink:vkCmdSetLineStippleEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command
   * [[VUID-{refpage}-None-08670]]
-    If the `apiext:VK_KHR_line_rasterization` or
-    `apiext:VK_EXT_line_rasterization` extension is enabled, and a shader
-    object is bound to the ename:VK_SHADER_STAGE_VERTEX_BIT stage, and the
-    most recent call to flink:vkCmdSetRasterizerDiscardEnable in the current
-    command buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and
-    the most recent call to flink:vkCmdSetPrimitiveTopology in the current
-    command buffer set pname:primitiveTopology to any line topology, then
-    flink:vkCmdSetLineStippleEnableEXT must: have been called in the current
+    If any of the <<features-stippledRectangularLines,
+    pname:stippledRectangularLines>>, <<features-stippledBresenhamLines,
+    pname:stippledBresenhamLines>> or <<features-stippledSmoothLines,
+    pname:stippledSmoothLines>> features are enabled, and a shader object is
+    bound to the ename:VK_SHADER_STAGE_VERTEX_BIT stage, and the most recent
+    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
+    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
+    recent call to flink:vkCmdSetPrimitiveTopology in the current command
+    buffer set pname:primitiveTopology to any line topology, then
+    flink:vkCmdSetLineStippleEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command
   * [[VUID-{refpage}-None-08671]]
-    If the `apiext:VK_KHR_line_rasterization` or
-    `apiext:VK_EXT_line_rasterization` extension is enabled, and a shader
-    object that outputs line primitives is bound to the
+    If any of the <<features-stippledRectangularLines,
+    pname:stippledRectangularLines>>, <<features-stippledBresenhamLines,
+    pname:stippledBresenhamLines>> or <<features-stippledSmoothLines,
+    pname:stippledSmoothLines>> features are enabled, and a shader object
+    that outputs line primitives is bound to the
     ename:VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT or
     ename:VK_SHADER_STAGE_GEOMETRY_BIT stage, and the most recent call to
     flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
     pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetLineStippleEnableEXT must: have been called in the current
+    flink:vkCmdSetLineStippleEnableEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
     command buffer prior to this drawing command
 endif::VK_EXT_shader_object[]
   * [[VUID-{refpage}-None-07849]]
-    If the bound graphics pipeline state was created with the
-ifdef::VK_KHR_line_rasterization[ename:VK_DYNAMIC_STATE_LINE_STIPPLE_KHR]
-ifndef::VK_KHR_line_rasterization[ename:VK_DYNAMIC_STATE_LINE_STIPPLE_EXT]
-    dynamic state enabled then
-ifdef::VK_KHR_line_rasterization[flink:vkCmdSetLineStippleKHR]
-ifndef::VK_KHR_line_rasterization[flink:vkCmdSetLineStippleEXT]
-    must: have been called in the current command buffer prior to this
-    drawing command
+    If any of the <<features-stippledRectangularLines,
+    pname:stippledRectangularLines>>, <<features-stippledBresenhamLines,
+    pname:stippledBresenhamLines>> or <<features-stippledSmoothLines,
+    pname:stippledSmoothLines>> features are enabled and
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08672]]
-    If the `apiext:VK_KHR_line_rasterization` or
-    `apiext:VK_EXT_line_rasterization` extension is enabled, and a shader
-    object is bound to any graphics stage, and the most recent call to
-    flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
-    pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most recent
-    call to flink:vkCmdSetLineStippleEnableEXT in the current command buffer
-    set pname:stippledLineEnable to ename:VK_TRUE, then
-    flink:vkCmdSetLineStippleEXT must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage, or
 endif::VK_EXT_shader_object[]
-endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
+    a bound graphics pipeline state was created with the
+ifdef::VK_VERSION_1_4,VK_KHR_line_rasterization[ename:VK_DYNAMIC_STATE_LINE_STIPPLE]
+ifndef::VK_VERSION_1_4,VK_KHR_line_rasterization[ename:VK_DYNAMIC_STATE_LINE_STIPPLE_EXT]
+    dynamic state enabled, the <<dynamic-state-current-value, current
+    value>> of pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:stippledLineEnable is ename:VK_TRUE, then
+ifdef::VK_VERSION_1_4,VK_KHR_line_rasterization[flink:vkCmdSetLineStipple]
+ifndef::VK_VERSION_1_4,VK_KHR_line_rasterization[flink:vkCmdSetLineStippleEXT]
+    must: have been called and not subsequently <<dynamic-state-lifetime,
+    invalidated>> in the current command buffer prior to this drawing
+    command
+endif::VK_VERSION_1_4,VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 ifdef::VK_EXT_depth_clip_control[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07639]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_DEPTH_CLIP_NEGATIVE_ONE_TO_ONE_EXT dynamic state
-    enabled then flink:vkCmdSetDepthClipNegativeOneToOneEXT must: have been
-    called in the current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08673]]
     If the <<features-depthClipControl, pname:depthClipControl>> feature is
-    enabled, and a shader object is bound to any graphics stage, then
-    flink:vkCmdSetDepthClipNegativeOneToOneEXT must: have been called in the
-    current command buffer prior to this drawing command
-endif::VK_EXT_shader_object[]
-endif::VK_EXT_depth_clip_control[]
-ifdef::VK_NV_clip_space_w_scaling[]
-ifdef::VK_EXT_extended_dynamic_state3[]
-  * [[VUID-{refpage}-None-07640]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_VIEWPORT_W_SCALING_ENABLE_NV dynamic state
-    enabled then flink:vkCmdSetViewportWScalingEnableNV must: have been
-    called in the current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    enabled, and
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08674]]
-    If the `apiext:VK_NV_clip_space_w_scaling` extension is enabled, and a
-    shader object is bound to any graphics stage, then
-    flink:vkCmdSetViewportWScalingEnableNV must: have been called in the
-    current command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_CLIP_NEGATIVE_ONE_TO_ONE_EXT dynamic state
+    enabled, then flink:vkCmdSetDepthClipNegativeOneToOneEXT must: have been
+    called and not subsequently <<dynamic-state-lifetime, invalidated>> in
+    the current command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
+endif::VK_EXT_depth_clip_control[]
+ifdef::VK_EXT_depth_clamp_control[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
+  * [[VUID-{refpage}-None-09650]]
+    If the <<features-depthClampControl, pname:depthClampControl>> feature
+    is enabled, and
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_DEPTH_CLAMP_RANGE_EXT dynamic state enabled, and
+    the <<dynamic-state-current-value, current value>> of
+    pname:depthClampEnable is ename:VK_TRUE, then
+    flink:vkCmdSetDepthClampRangeEXT must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
+endif::VK_EXT_depth_clamp_control[]
+ifdef::VK_NV_clip_space_w_scaling[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
+  * [[VUID-{refpage}-None-07640]]
+    If the `apiext:VK_NV_clip_space_w_scaling` extension is enabled, and
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_VIEWPORT_W_SCALING_ENABLE_NV dynamic state
+    enabled, then flink:vkCmdSetViewportWScalingEnableNV must: have been
+    called and not subsequently <<dynamic-state-lifetime, invalidated>> in
+    the current command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 endif::VK_NV_clip_space_w_scaling[]
 ifdef::VK_NV_viewport_swizzle[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07641]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_VIEWPORT_SWIZZLE_NV dynamic state enabled then
-    flink:vkCmdSetViewportSwizzleNV must: have been called in the current
-    command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    If the `apiext:VK_NV_viewport_swizzle` extension is enabled, and
 ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08675]]
-    If the `apiext:VK_NV_viewport_swizzle` extension is enabled, and a
-    shader object is bound to any graphics stage, then
-    flink:vkCmdSetViewportSwizzleNV must: have been called in the current
-    command buffer prior to this drawing command
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_VIEWPORT_SWIZZLE_NV dynamic state enabled, then
+    flink:vkCmdSetViewportSwizzleNV must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 endif::VK_NV_viewport_swizzle[]
 ifdef::VK_NV_fragment_coverage_to_color[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07642]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_COVERAGE_TO_COLOR_ENABLE_NV dynamic state enabled
-    then flink:vkCmdSetCoverageToColorEnableNV must: have been called in the
-    current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08676]]
     If the `apiext:VK_NV_fragment_coverage_to_color` extension is enabled,
-    and a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT
-    stage, and the most recent call to flink:vkCmdSetRasterizerDiscardEnable
-    in the current command buffer set pname:rasterizerDiscardEnable to
-    ename:VK_FALSE, then flink:vkCmdSetCoverageToColorEnableNV must: have
-    been called in the current command buffer prior to this drawing command
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT stage
+    or
 endif::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_COVERAGE_TO_COLOR_ENABLE_NV dynamic state
+    enabled, and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetCoverageToColorEnableNV must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07643]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_COVERAGE_TO_COLOR_LOCATION_NV dynamic state
-    enabled then flink:vkCmdSetCoverageToColorLocationNV must: have been
-    called in the current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08677]]
     If the `apiext:VK_NV_fragment_coverage_to_color` extension is enabled,
-    and a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT
-    stage, and the most recent call to flink:vkCmdSetRasterizerDiscardEnable
-    in the current command buffer set pname:rasterizerDiscardEnable to
-    ename:VK_FALSE, and the most recent call to
-    flink:vkCmdSetCoverageToColorEnableNV in the current command buffer set
-    pname:coverageToColorEnable to ename:VK_TRUE, then
-    flink:vkCmdSetCoverageToColorLocationNV must: have been called in the
-    current command buffer prior to this drawing command
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT stage
+    or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_COVERAGE_TO_COLOR_LOCATION_NV dynamic state
+    enabled, the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:coverageToColorEnable is ename:VK_TRUE, then
+    flink:vkCmdSetCoverageToColorLocationNV must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 endif::VK_NV_fragment_coverage_to_color[]
 ifdef::VK_NV_framebuffer_mixed_samples[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07644]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_COVERAGE_MODULATION_MODE_NV dynamic state enabled
-    then flink:vkCmdSetCoverageModulationModeNV must: have been called in
-    the current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08678]]
     If the `apiext:VK_NV_framebuffer_mixed_samples` extension is enabled,
-    and a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetCoverageModulationModeNV must: have been called in the
-    current command buffer prior to this drawing command
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_COVERAGE_MODULATION_MODE_NV dynamic state
+    enabled, and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetCoverageModulationModeNV must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07645]]
-    If the bound graphics pipeline state was created with the
+    If the `apiext:VK_NV_framebuffer_mixed_samples` extension is enabled,
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
     ename:VK_DYNAMIC_STATE_COVERAGE_MODULATION_TABLE_ENABLE_NV dynamic state
-    enabled then flink:vkCmdSetCoverageModulationTableEnableNV must: have
-    been called in the current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08679]]
-    If the `apiext:VK_NV_framebuffer_mixed_samples` extension is enabled,
-    and a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetCoverageModulationModeNV in the current
-    command buffer set coverageModulationMode to any value other than
+    enabled, the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:coverageModulationMode is any value other than
     ename:VK_COVERAGE_MODULATION_MODE_NONE_NV, then
-    flink:vkCmdSetCoverageModulationTableEnableNV must: have been called in
-    the current command buffer prior to this drawing command
-endif::VK_EXT_shader_object[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+    flink:vkCmdSetCoverageModulationTableEnableNV must: have been called and
+    not subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-None-07646]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_COVERAGE_MODULATION_TABLE_NV dynamic state
-    enabled then flink:vkCmdSetCoverageModulationTableNV must: have been
-    called in the current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08680]]
     If the `apiext:VK_NV_framebuffer_mixed_samples` extension is enabled,
-    and a shader object is bound to any graphics stage, and the most recent
-    call to flink:vkCmdSetRasterizerDiscardEnable in the current command
-    buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, and the most
-    recent call to flink:vkCmdSetCoverageModulationTableEnableNV in the
-    current command buffer set pname:coverageModulationTableEnable to
-    ename:VK_TRUE, then flink:vkCmdSetCoverageModulationTableNV must: have
-    been called in the current command buffer prior to this drawing command
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_COVERAGE_MODULATION_TABLE_NV dynamic state
+    enabled, the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:coverageModulationTableEnable is ename:VK_TRUE, then
+    flink:vkCmdSetCoverageModulationTableNV must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 endif::VK_NV_framebuffer_mixed_samples[]
 ifdef::VK_NV_shading_rate_image[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07647]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_SHADING_RATE_IMAGE_ENABLE_NV dynamic state
-    enabled then flink:vkCmdSetShadingRateImageEnableNV must: have been
-    called in the current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
+    If the <<features-shadingRateImage, pname:shadingRateImage>> feature is
+    enabled,
 ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_SHADING_RATE_IMAGE_ENABLE_NV dynamic state
+    enabled, and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetShadingRateImageEnableNV must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
   * [[VUID-{refpage}-pipelineFragmentShadingRate-09238]]
     If the <<features-pipelineFragmentShadingRate,
-    pname:pipelineFragmentShadingRate>> feature is enabled, and a shader
-    object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT stage, and the
-    most recent call to flink:vkCmdSetRasterizerDiscardEnable in the current
-    command buffer set rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetFragmentShadingRateKHR must: have been called in the
-    current command buffer prior to this drawing command
-  * [[VUID-{refpage}-None-08681]]
-    If the <<features-shadingRateImage, pname:shadingRateImage>> feature is
-    enabled, and a shader object is bound to any graphics stage, and the
-    most recent call to flink:vkCmdSetRasterizerDiscardEnable in the current
-    command buffer set pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetShadingRateImageEnableNV must: have been called in the
-    current command buffer prior to this drawing command
+    pname:pipelineFragmentShadingRate>> feature is enabled,
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT stage
+    or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR dynamic state enabled,
+    and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetFragmentShadingRateKHR must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 endif::VK_NV_shading_rate_image[]
 ifdef::VK_NV_representative_fragment_test[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07648]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_REPRESENTATIVE_FRAGMENT_TEST_ENABLE_NV dynamic
-    state enabled then flink:vkCmdSetRepresentativeFragmentTestEnableNV
-    must: have been called in the current command buffer prior to this
-    drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08682]]
     If the <<features-representativeFragmentTest,
-    pname:representativeFragmentTest>> feature is enabled, and a shader
-    object is bound to any graphics stage, and the most recent call to
-    flink:vkCmdSetRasterizerDiscardEnable in the current command buffer set
-    pname:rasterizerDiscardEnable to ename:VK_FALSE, then
-    flink:vkCmdSetRepresentativeFragmentTestEnableNV must: have been called
-    in the current command buffer prior to this drawing command
+    pname:representativeFragmentTest>> feature is enabled,
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_REPRESENTATIVE_FRAGMENT_TEST_ENABLE_NV dynamic
+    state enabled, and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetRepresentativeFragmentTestEnableNV must: have been called
+    and not subsequently <<dynamic-state-lifetime, invalidated>> in the
+    current command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 endif::VK_NV_representative_fragment_test[]
 ifdef::VK_NV_coverage_reduction_mode[]
-ifdef::VK_EXT_extended_dynamic_state3[]
+ifdef::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
   * [[VUID-{refpage}-None-07649]]
-    If the bound graphics pipeline state was created with the
-    ename:VK_DYNAMIC_STATE_COVERAGE_REDUCTION_MODE_NV dynamic state enabled
-    then flink:vkCmdSetCoverageReductionModeNV must: have been called in the
-    current command buffer prior to this drawing command
-endif::VK_EXT_extended_dynamic_state3[]
-ifdef::VK_EXT_shader_object[]
-  * [[VUID-{refpage}-None-08683]]
     If the <<features-coverageReductionMode, pname:coverageReductionMode>>
-    feature is enabled, and a shader object is bound to any graphics stage,
-    and the most recent call to flink:vkCmdSetRasterizerDiscardEnable in the
-    current command buffer set pname:rasterizerDiscardEnable to
-    ename:VK_FALSE, then flink:vkCmdSetCoverageReductionModeNV must: have
-    been called in the current command buffer prior to this drawing command
+    feature is enabled,
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to any graphics stage or
 endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
+    ename:VK_DYNAMIC_STATE_COVERAGE_REDUCTION_MODE_NV dynamic state enabled,
+    and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetCoverageReductionModeNV must: have been called and not
+    subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
+endif::VK_EXT_shader_object,VK_EXT_extended_dynamic_state3[]
 endif::VK_NV_coverage_reduction_mode[]
   * [[VUID-{refpage}-pColorBlendEnables-07470]]
     If the bound graphics pipeline state was created with the
@@ -1981,6 +1967,10 @@ endif::VK_NV_coverage_reduction_mode[]
   * [[VUID-{refpage}-rasterizationSamples-07474]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state enabled, and
+ifdef::VK_EXT_multisampled_render_to_single_sampled[]
+    the <<features-multisampledRenderToSingleSampled,
+    pname:multisampledRenderToSingleSampled>> feature is not enabled, and
+endif::VK_EXT_multisampled_render_to_single_sampled[]
     neither the `apiext:VK_AMD_mixed_attachment_samples` nor the
     `apiext:VK_NV_framebuffer_mixed_samples` extensions are enabled, then
     the pname:rasterizationSamples in the last call to
@@ -2096,16 +2086,20 @@ ifdef::VK_EXT_sample_locations[]
   * [[VUID-{refpage}-sampleLocationsPerPixel-07482]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT state enabled and the
-    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state disabled, then
-    the pname:sampleLocationsPerPixel member of pname:pSampleLocationsInfo
-    in the last call to flink:vkCmdSetSampleLocationsEXT must: equal the
+    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state disabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:sampleLocationsEnable is ename:VK_TRUE, then the
+    pname:sampleLocationsPerPixel member of pname:pSampleLocationsInfo in
+    the last call to flink:vkCmdSetSampleLocationsEXT must: equal the
     pname:rasterizationSamples member of the
     slink:VkPipelineMultisampleStateCreateInfo structure the bound graphics
     pipeline has been created with
   * [[VUID-{refpage}-sampleLocationsPerPixel-07483]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT state enabled and the
-    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state enabled, then the
+    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:sampleLocationsEnable is ename:VK_TRUE, then the
     pname:sampleLocationsPerPixel member of pname:pSampleLocationsInfo in
     the last call to flink:vkCmdSetSampleLocationsEXT must: equal the
     pname:rasterizationSamples parameter of the last call to
@@ -2169,11 +2163,9 @@ endif::VK_EXT_shader_object[]
   * [[VUID-{refpage}-sampleLocationsEnable-07936]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT state disabled and the
-    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state enabled, the
-    pname:sampleLocationsEnable member of a
-    slink:VkPipelineSampleLocationsStateCreateInfoEXT::pname:sampleLocationsEnable
-    in the bound graphics pipeline is ename:VK_TRUE or
-    ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_ENABLE_EXT state enabled, then,
+    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:sampleLocationsEnable is ename:VK_TRUE, then
     pname:sampleLocationsInfo.sampleLocationGridSize.width must: evenly
     divide
     slink:VkMultisamplePropertiesEXT::pname:sampleLocationGridSize.width as
@@ -2183,11 +2175,9 @@ endif::VK_EXT_shader_object[]
   * [[VUID-{refpage}-sampleLocationsEnable-07937]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT state disabled and the
-    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state enabled, the
-    pname:sampleLocationsEnable member of a
-    slink:VkPipelineSampleLocationsStateCreateInfoEXT::pname:sampleLocationsEnable
-    in the bound graphics pipeline is ename:VK_TRUE or
-    ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_ENABLE_EXT state enabled, then,
+    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:sampleLocationsEnable is ename:VK_TRUE, then
     pname:sampleLocationsInfo.sampleLocationGridSize.height must: evenly
     divide
     slink:VkMultisamplePropertiesEXT::pname:sampleLocationGridSize.height as
@@ -2197,11 +2187,9 @@ endif::VK_EXT_shader_object[]
   * [[VUID-{refpage}-sampleLocationsEnable-07938]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT state disabled and the
-    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state enabled, the
-    pname:sampleLocationsEnable member of a
-    slink:VkPipelineSampleLocationsStateCreateInfoEXT::pname:sampleLocationsEnable
-    in the bound graphics pipeline is ename:VK_TRUE or
-    ename:VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_ENABLE_EXT state enabled, then,
+    ename:VK_DYNAMIC_STATE_RASTERIZATION_SAMPLES_EXT state enabled, and the
+    <<dynamic-state-current-value, current value>> of
+    pname:sampleLocationsEnable is ename:VK_TRUE, then
     pname:sampleLocationsInfo.sampleLocationsPerPixel must: equal
     pname:rasterizationSamples in the last call to
     flink:vkCmdSetRasterizationSamplesEXT
@@ -2224,9 +2212,9 @@ endif::VK_EXT_shader_object[]
   * [[VUID-{refpage}-rasterizationSamples-07489]]
     If the `apiext:VK_NV_framebuffer_mixed_samples` extension is enabled,
     and if current subpass has a depth/stencil attachment and depth test,
-    stencil test, or depth bounds test are enabled in the currently bound
-    pipeline state, then the current pname:rasterizationSamples must: be the
-    same as the sample count of the depth/stencil attachment
+    stencil test, or depth bounds test are enabled in the bound pipeline,
+    then the current pname:rasterizationSamples must: be the same as the
+    sample count of the depth/stencil attachment
 endif::VK_NV_framebuffer_mixed_samples[]
 ifdef::VK_NV_fragment_coverage_to_color[]
   * [[VUID-{refpage}-coverageToColorEnable-07490]]
@@ -2303,14 +2291,14 @@ ifdef::VK_NV_framebuffer_mixed_samples[]
     color samples, then the pipeline pname:sampleShadingEnable must: be
     ename:VK_FALSE
 endif::VK_NV_framebuffer_mixed_samples[]
-ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
+ifdef::VK_VERSION_1_4,VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
   * [[VUID-{refpage}-stippledLineEnable-07495]]
     If the bound graphics pipeline state was created with the
     ename:VK_DYNAMIC_STATE_LINE_STIPPLE_ENABLE_EXT or
     ename:VK_DYNAMIC_STATE_LINE_RASTERIZATION_MODE_EXT dynamic states
     enabled, and if the current pname:stippledLineEnable state is
     ename:VK_TRUE and the current pname:lineRasterizationMode state is
-    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR, then the
+    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR, then the
     <<features-stippledRectangularLines, pname:stippledRectangularLines>>
     feature must: be enabled
   * [[VUID-{refpage}-stippledLineEnable-07496]]
@@ -2319,7 +2307,7 @@ ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
     ename:VK_DYNAMIC_STATE_LINE_RASTERIZATION_MODE_EXT dynamic states
     enabled, and if the current pname:stippledLineEnable state is
     ename:VK_TRUE and the current pname:lineRasterizationMode state is
-    ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM_KHR, then the
+    ename:VK_LINE_RASTERIZATION_MODE_BRESENHAM, then the
     <<features-stippledBresenhamLines, pname:stippledBresenhamLines>>
     feature must: be enabled
   * [[VUID-{refpage}-stippledLineEnable-07497]]
@@ -2328,7 +2316,7 @@ ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
     ename:VK_DYNAMIC_STATE_LINE_RASTERIZATION_MODE_EXT dynamic states
     enabled, and if the current pname:stippledLineEnable state is
     ename:VK_TRUE and the current pname:lineRasterizationMode state is
-    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_KHR, then the
+    ename:VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH, then the
     <<features-stippledSmoothLines, pname:stippledSmoothLines>> feature
     must: be enabled
   * [[VUID-{refpage}-stippledLineEnable-07498]]
@@ -2337,11 +2325,11 @@ ifdef::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
     ename:VK_DYNAMIC_STATE_LINE_RASTERIZATION_MODE_EXT dynamic states
     enabled, and if the current pname:stippledLineEnable state is
     ename:VK_TRUE and the current pname:lineRasterizationMode state is
-    ename:VK_LINE_RASTERIZATION_MODE_DEFAULT_KHR, then the
+    ename:VK_LINE_RASTERIZATION_MODE_DEFAULT, then the
     <<features-stippledRectangularLines, pname:stippledRectangularLines>>
     feature must: be enabled and
     slink:VkPhysicalDeviceLimits::pname:strictLines must: be ename:VK_TRUE
-endif::VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
+endif::VK_VERSION_1_4,VK_KHR_line_rasterization,VK_EXT_line_rasterization[]
 ifdef::VK_EXT_conservative_rasterization[]
   * [[VUID-{refpage}-conservativePointAndLineRasterization-07499]]
     If the bound graphics pipeline state was created with the
@@ -2356,7 +2344,7 @@ endif::VK_EXT_conservative_rasterization[]
 endif::VK_EXT_extended_dynamic_state3,VK_EXT_shader_object[]
 ifdef::VK_EXT_mesh_shader[]
   * [[VUID-{refpage}-stage-07073]]
-    If the currently bound pipeline was created with the
+    If the bound pipeline was created with the
     slink:VkPipelineShaderStageCreateInfo::pname:stage member of an element
     of slink:VkGraphicsPipelineCreateInfo::pname:pStages set to
     ename:VK_SHADER_STAGE_VERTEX_BIT,
@@ -2367,10 +2355,18 @@ ifdef::VK_EXT_mesh_shader[]
 endif::VK_EXT_mesh_shader[]
 ifdef::VK_EXT_attachment_feedback_loop_dynamic_state[]
   * [[VUID-{refpage}-None-08877]]
-    If the bound graphics pipeline state was created with the
+    If
+ifdef::VK_EXT_shader_object[]
+    a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT stage
+    or
+endif::VK_EXT_shader_object[]
+    a graphics pipeline is bound which was created with the
     ename:VK_DYNAMIC_STATE_ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT dynamic state
-    flink:vkCmdSetAttachmentFeedbackLoopEnableEXT must: have been called in
-    the current command buffer prior to this drawing command
+    enabled, and the <<dynamic-state-current-value, current value>> of
+    pname:rasterizerDiscardEnable is ename:VK_FALSE, then
+    flink:vkCmdSetAttachmentFeedbackLoopEnableEXT must: have been called and
+    not subsequently <<dynamic-state-lifetime, invalidated>> in the current
+    command buffer prior to this drawing command
 endif::VK_EXT_attachment_feedback_loop_dynamic_state[]
 ifdef::VK_NV_inherited_viewport_scissor[]
   * [[VUID-{refpage}-None-07850]]
@@ -2474,17 +2470,6 @@ ifdef::VK_ANDROID_external_format_resolve[]
     code:StencilRefReplacingEXT execution modes
 endif::VK_ANDROID_external_format_resolve[]
 endif::VK_EXT_shader_object[]
-ifdef::VK_EXT_attachment_feedback_loop_dynamic_state[]
-  * [[VUID-{refpage}-None-08880]]
-    If the <<features-attachmentFeedbackLoopDynamicState,
-    attachmentFeedbackLoopDynamicState>> feature is enabled on the device,
-    and a shader object is bound to the ename:VK_SHADER_STAGE_FRAGMENT_BIT
-    stage, and the most recent call to flink:vkCmdSetRasterizerDiscardEnable
-    in the current command buffer set pname:rasterizerDiscardEnable to
-    ename:VK_FALSE, then flink:vkCmdSetAttachmentFeedbackLoopEnableEXT must:
-    have been called in the current command buffer prior to this drawing
-    command
-endif::VK_EXT_attachment_feedback_loop_dynamic_state[]
 ifdef::VK_EXT_shader_tile_image[]
   * [[VUID-{refpage}-pDynamicStates-08715]]
     If the bound graphics pipeline state includes a fragment shader stage,
@@ -2510,7 +2495,7 @@ ifdef::VK_EXT_shader_object[]
 endif::VK_EXT_shader_object[]
 ifdef::VK_EXT_extended_dynamic_state3+VK_EXT_shader_object[or]
 ifdef::VK_EXT_extended_dynamic_state3[]
-    the currently bound graphics pipeline was created with
+    the bound graphics pipeline was created with
     ename:VK_DYNAMIC_STATE_COLOR_WRITE_MASK_EXT,
 endif::VK_EXT_extended_dynamic_state3[]
     and the format of any color attachment is
@@ -2528,27 +2513,28 @@ endif::VK_EXT_extended_dynamic_state3,VK_EXT_shader_object[]
     used>> in the code:Fragment {ExecutionModel} executed by this command
     must: be less than <<limits-maxFragmentDualSrcAttachments,
     pname:maxFragmentDualSrcAttachments>>
-ifdef::VK_KHR_dynamic_rendering_local_read[]
+ifdef::VK_VERSION_1_4,VK_KHR_dynamic_rendering_local_read[]
   * [[VUID-{refpage}-None-09548]]
     If the current render pass was begun with flink:vkCmdBeginRendering,
 ifdef::VK_EXT_shader_object[]
     and there is no shader object bound to any graphics stage,
 endif::VK_EXT_shader_object[]
     the value of each element of
-    slink:VkRenderingAttachmentLocationInfoKHR::pname:pColorAttachmentLocations
-    set by flink:vkCmdSetRenderingAttachmentLocationsKHR must: match the
-    value set for the corresponding element in the currently bound pipeline
+    slink:VkRenderingAttachmentLocationInfo::pname:pColorAttachmentLocations
+    set by flink:vkCmdSetRenderingAttachmentLocations must: match the value
+    set for the corresponding element in the bound pipeline
   * [[VUID-{refpage}-None-09549]]
     If the current render pass was begun with flink:vkCmdBeginRendering,
 ifdef::VK_EXT_shader_object[]
     and there is no shader object bound to any graphics stage,
 endif::VK_EXT_shader_object[]
-    input attachment index mappings in the currently bound pipeline must:
-    match those set for the current render pass instance via
-    slink:VkRenderingInputAttachmentIndexInfoKHR
-endif::VK_KHR_dynamic_rendering_local_read[]
+    input attachment index mappings in the bound pipeline must: match those
+    set for the current render pass instance via
+    slink:VkRenderingInputAttachmentIndexInfo
+endif::VK_VERSION_1_4,VK_KHR_dynamic_rendering_local_read[]
 ifdef::VK_VERSION_1_3,VK_KHR_dynamic_rendering[]
-ifdef::VK_EXT_legacy_dithering+VK_KHR_maintenance5[]
+ifdef::VK_VERSION_1_4,VK_KHR_maintenance5[]
+ifdef::VK_EXT_legacy_dithering[]
   * [[VUID-{refpage}-None-09642]]
     If the current render pass was begun with flink:vkCmdBeginRendering with
     the ename:VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT flag, the bound
@@ -2559,7 +2545,8 @@ ifdef::VK_EXT_legacy_dithering+VK_KHR_maintenance5[]
     ename:VK_PIPELINE_CREATE_2_ENABLE_LEGACY_DITHERING_BIT_EXT, the current
     render pass must: have begun with flink:vkCmdBeginRendering with the
     ename:VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT flag
-endif::VK_EXT_legacy_dithering+VK_KHR_maintenance5[]
+endif::VK_EXT_legacy_dithering[]
+endif::VK_VERSION_1_4,VK_KHR_maintenance5[]
 endif::VK_VERSION_1_3,VK_KHR_dynamic_rendering[]
 
 // Common Valid Usage

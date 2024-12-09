@@ -40,7 +40,6 @@ also decorate types and type members used by variables in the code:Private
 and code:Function storage classes.
 
 [NOTE]
-.Note
 ====
 In this chapter, there are references to SPIR-V terms such as the
 code:MeshNV execution model.
@@ -77,7 +76,7 @@ the variable.
 
 
 [[interfaces-iointerfaces-builtin]]
-=== Built-in Interface Block
+=== Built-In Interface Block
 
 Shader <<interfaces-builtin-variables,built-in>> variables meeting the
 following requirements define the _built-in interface block_.
@@ -102,7 +101,7 @@ Built-ins must: not have any code:Location or code:Component decorations.
 
 
 [[interfaces-iointerfaces-user]]
-=== User-defined Variable Interface
+=== User-Defined Variable Interface
 
 The non-built-in variables listed by code:OpEntryPoint with the code:Input
 or code:Output storage class form the _user-defined variable interface_.
@@ -159,7 +158,6 @@ endif::VK_NV_fragment_shader_barycentric,VK_KHR_fragment_shader_barycentric[]
   * If both are structures and every member has an interface match.
 
 [NOTE]
-.Note
 ====
 The word "`structure`" above refers to both variables that have an
 code:OpTypeStruct type and interface blocks (which are also declared as
@@ -343,6 +341,7 @@ A four-component 64-bit data type will consume all four code:Component words
 of the first code:Location and all four code:Component words of the second
 code:Location.
 
+
 [[interfaces-vertexinput]]
 == Vertex Input Interface
 
@@ -407,28 +406,35 @@ The number of available fragment output code:Location slots is given by the
 pname:maxFragmentOutputAttachments member of the
 sname:VkPhysicalDeviceLimits structure.
 
-ifdef::VK_KHR_dynamic_rendering_local_read[]
+ifdef::VK_VERSION_1_4,VK_KHR_dynamic_rendering_local_read[]
 If the
 <<features-dynamicRenderingLocalRead,pname:dynamicRenderingLocalRead>>
 feature is supported, fragment output locations can: be remapped when using
 dynamic rendering.
 
-[open,refpage='vkCmdSetRenderingAttachmentLocationsKHR',desc='Set color attachment location mappings for a command buffer',type='protos']
+[open,refpage='vkCmdSetRenderingAttachmentLocations',desc='Set color attachment location mappings for a command buffer',type='protos',alias='vkCmdSetRenderingAttachmentLocationsKHR']
 --
 To set the fragment output location mappings during rendering, call:
 
+ifdef::VK_VERSION_1_4[]
+include::{generated}/api/protos/vkCmdSetRenderingAttachmentLocations.adoc[]
+endif::VK_VERSION_1_4[]
+
+ifdef::VK_VERSION_1_4+VK_KHR_dynamic_rendering_local_read[or the equivalent command]
+
+ifdef::VK_KHR_dynamic_rendering_local_read[]
 include::{generated}/api/protos/vkCmdSetRenderingAttachmentLocationsKHR.adoc[]
+endif::VK_KHR_dynamic_rendering_local_read[]
 
   * pname:commandBuffer is the command buffer into which the command will be
     recorded.
-  * pname:pLocationInfo is a slink:VkRenderingAttachmentLocationInfoKHR
+  * pname:pLocationInfo is a slink:VkRenderingAttachmentLocationInfo
     structure indicating the new mappings.
 
 This command sets the attachment location mappings for subsequent drawing
-commands, and must: match the mappings provided to the currently bound
-pipeline,
+commands, and must: match the mappings provided to the bound pipeline,
 ifdef::VK_EXT_shader_object[if one is bound,]
-which can: be set by chaining slink:VkRenderingAttachmentLocationInfoKHR to
+which can: be set by chaining slink:VkRenderingAttachmentLocationInfo to
 slink:VkGraphicsPipelineCreateInfo.
 
 Until this command is called, mappings in the command buffer state are
@@ -439,26 +445,32 @@ This state is reset whenever flink:vkCmdBeginRendering is called.
 
 .Valid Usage
 ****
-  * [[VUID-vkCmdSetRenderingAttachmentLocationsKHR-dynamicRenderingLocalRead-09509]]
+  * [[VUID-vkCmdSetRenderingAttachmentLocations-dynamicRenderingLocalRead-09509]]
     <<features-dynamicRenderingLocalRead, pname:dynamicRenderingLocalRead>>
     must: be enabled
-  * [[VUID-vkCmdSetRenderingAttachmentLocationsKHR-pLocationInfo-09510]]
+  * [[VUID-vkCmdSetRenderingAttachmentLocations-pLocationInfo-09510]]
     pname:pLocationInfo->colorAttachmentCount must: be equal to the value of
     slink:VkRenderingInfo::pname:colorAttachmentCount used to begin the
     current render pass instance
-  * [[VUID-vkCmdSetRenderingAttachmentLocationsKHR-commandBuffer-09511]]
+  * [[VUID-vkCmdSetRenderingAttachmentLocations-commandBuffer-09511]]
     The current render pass instance must: have been started or resumed by
     flink:vkCmdBeginRendering in this pname:commandBuffer
 ****
 
-include::{generated}/validity/protos/vkCmdSetRenderingAttachmentLocationsKHR.adoc[]
+include::{generated}/validity/protos/vkCmdSetRenderingAttachmentLocations.adoc[]
 --
 
-[open,refpage='VkRenderingAttachmentLocationInfoKHR',desc='Structure specifying attachment locations',type='structs']
+[open,refpage='VkRenderingAttachmentLocationInfo',desc='Structure specifying attachment locations',type='structs',alias='VkRenderingAttachmentLocationInfoKHR']
 --
-The sname:VkRenderingAttachmentLocationInfoKHR structure is defined as:
+The sname:VkRenderingAttachmentLocationInfo structure is defined as:
+
+include::{generated}/api/structs/VkRenderingAttachmentLocationInfo.adoc[]
+
+ifdef::VK_KHR_dynamic_rendering_local_read[]
+or the equivalent
 
 include::{generated}/api/structs/VkRenderingAttachmentLocationInfoKHR.adoc[]
+endif::VK_KHR_dynamic_rendering_local_read[]
 
   * pname:sType is a elink:VkStructureType value identifying this structure.
   * pname:pNext is `NULL` or a pointer to a structure extending this
@@ -514,25 +526,25 @@ structure with the following properties:
 
 .Valid Usage
 ****
-  * [[VUID-VkRenderingAttachmentLocationInfoKHR-dynamicRenderingLocalRead-09512]]
+  * [[VUID-VkRenderingAttachmentLocationInfo-dynamicRenderingLocalRead-09512]]
     If the <<features-dynamicRenderingLocalRead,
     pname:dynamicRenderingLocalRead>> feature is not enabled, and
-    pname:pColorAttachmentLocations is not `NULL`, each element must: be set
-    to the value of its index within the array
-  * [[VUID-VkRenderingAttachmentLocationInfoKHR-pColorAttachmentLocations-09513]]
+    pname:pColorAttachmentLocations is not `NULL`, each element must: be the
+    value of its index within the array
+  * [[VUID-VkRenderingAttachmentLocationInfo-pColorAttachmentLocations-09513]]
     Elements of pname:pColorAttachmentLocations that are not
     ename:VK_ATTACHMENT_UNUSED must: each be unique
-  * [[VUID-VkRenderingAttachmentLocationInfoKHR-colorAttachmentCount-09514]]
+  * [[VUID-VkRenderingAttachmentLocationInfo-colorAttachmentCount-09514]]
     pname:colorAttachmentCount must: be less than or equal to
     <<limits-maxColorAttachments,pname:maxColorAttachments>>
-  * [[VUID-VkRenderingAttachmentLocationInfoKHR-pColorAttachmentLocations-09515]]
+  * [[VUID-VkRenderingAttachmentLocationInfo-pColorAttachmentLocations-09515]]
     Each element of pname:pColorAttachmentLocations must: be less than
     <<limits-maxColorAttachments,pname:maxColorAttachments>>
 ****
 
-include::{generated}/validity/structs/VkRenderingAttachmentLocationInfoKHR.adoc[]
+include::{generated}/validity/structs/VkRenderingAttachmentLocationInfo.adoc[]
 --
-endif::VK_KHR_dynamic_rendering_local_read[]
+endif::VK_VERSION_1_4,VK_KHR_dynamic_rendering_local_read[]
 
 When an active fragment shader invocation finishes, the values of all
 fragment shader outputs are copied out and used as blend inputs or color
@@ -581,6 +593,7 @@ If the type of the values written by the fragment shader do not match the
 format of the corresponding color attachment, the resulting values are
 undefined: for those components.
 
+
 ifdef::VK_EXT_legacy_dithering[]
 [[interfaces-legacy-dithering]]
 == Legacy Dithering
@@ -589,12 +602,12 @@ The application can: enable dithering to be applied to the color output of a
 subpass, by using the
 ename:VK_SUBPASS_DESCRIPTION_ENABLE_LEGACY_DITHERING_BIT_EXT flag.
 ifdef::VK_VERSION_1_3,VK_KHR_dynamic_rendering[]
-ifdef::VK_KHR_maintenance5[]
+ifdef::VK_VERSION_1_4,VK_KHR_maintenance5[]
 For use in a dynamic render pass, the
 ename:VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT flag must: be used.
 In that case, the pipelines used must: have been created with
 ename:VK_PIPELINE_CREATE_2_ENABLE_LEGACY_DITHERING_BIT_EXT.
-endif::VK_KHR_maintenance5[]
+endif::VK_VERSION_1_4,VK_KHR_maintenance5[]
 endif::VK_VERSION_1_3,VK_KHR_dynamic_rendering[]
 
 When dithering is enabled, the implementation may: modify the output color
@@ -607,13 +620,13 @@ algorithm itself, the formats dithering is applied to, and the stage in
 which it is applied.
 
 [NOTE]
-.Note
 ====
 This extension is intended only for use by OpenGL emulation layers, and as
 such the dithering algorithm applied to the subpass should: be equivalent to
 the vendor's OpenGL implementation, if any.
 ====
 endif::VK_EXT_legacy_dithering[]
+
 
 ifdef::VK_EXT_shader_tile_image[]
 [[interfaces-fragmenttileimage]]
@@ -652,6 +665,7 @@ The basic data type (floating-point, integer, unsigned integer) of the tile
 image variable must: match the basic format of the corresponding color
 attachment, or the values read from the tile image variables are undefined:.
 endif::VK_EXT_shader_tile_image[]
+
 
 [[interfaces-inputattachment]]
 == Fragment Input Attachment Interface
@@ -693,30 +707,37 @@ The number of available input attachment indices is given by the
 pname:maxPerStageDescriptorInputAttachments member of the
 sname:VkPhysicalDeviceLimits structure.
 
-ifdef::VK_KHR_dynamic_rendering_local_read[]
+ifdef::VK_VERSION_1_4,VK_KHR_dynamic_rendering_local_read[]
 When using dynamic rendering with the <<features-dynamicRenderingLocalRead,
 pname:dynamicRenderingLocalRead>> feature enabled, a subpass input variable
 with a code:InputAttachmentIndex decoration of _i_ can be mapped to a color,
 depth, or stencil attachment.
 
-[open,refpage='vkCmdSetRenderingInputAttachmentIndicesKHR',desc='Set input attachment index mappings for a command buffer',type='protos']
+[open,refpage='vkCmdSetRenderingInputAttachmentIndices',desc='Set input attachment index mappings for a command buffer',type='protos',alias='vkCmdSetRenderingInputAttachmentIndicesKHR']
 --
 To set the input attachment index mappings during dynamic rendering, call:
 
+ifdef::VK_VERSION_1_4[]
+include::{generated}/api/protos/vkCmdSetRenderingInputAttachmentIndices.adoc[]
+endif::VK_VERSION_1_4[]
+
+ifdef::VK_VERSION_1_4+VK_KHR_dynamic_rendering_local_read[or the equivalent command]
+
+ifdef::VK_KHR_dynamic_rendering_local_read[]
 include::{generated}/api/protos/vkCmdSetRenderingInputAttachmentIndicesKHR.adoc[]
+endif::VK_KHR_dynamic_rendering_local_read[]
 
   * pname:commandBuffer is the command buffer into which the command will be
     recorded.
   * pname:pInputAttachmentIndexInfo is a
-    slink:VkRenderingInputAttachmentIndexInfoKHR structure indicating the
-    new mappings.
+    slink:VkRenderingInputAttachmentIndexInfo structure indicating the new
+    mappings.
 
 This command sets the input attachment index mappings for subsequent drawing
-commands, and must: match the mappings provided to the currently bound
-pipeline,
+commands, and must: match the mappings provided to the bound pipeline,
 ifdef::VK_EXT_shader_object[if one is bound,]
-which can: be set by chaining slink:VkRenderingInputAttachmentIndexInfoKHR
-to slink:VkGraphicsPipelineCreateInfo.
+which can: be set by chaining slink:VkRenderingInputAttachmentIndexInfo to
+slink:VkGraphicsPipelineCreateInfo.
 
 Until this command is called, mappings in the command buffer state are
 treated as each color attachment specified in flink:vkCmdBeginRendering
@@ -727,26 +748,32 @@ This state is reset whenever flink:vkCmdBeginRendering is called.
 
 .Valid Usage
 ****
-  * [[VUID-vkCmdSetRenderingInputAttachmentIndicesKHR-dynamicRenderingLocalRead-09516]]
+  * [[VUID-vkCmdSetRenderingInputAttachmentIndices-dynamicRenderingLocalRead-09516]]
     <<features-dynamicRenderingLocalRead, pname:dynamicRenderingLocalRead>>
     must: be enabled
-  * [[VUID-vkCmdSetRenderingInputAttachmentIndicesKHR-pInputAttachmentIndexInfo-09517]]
+  * [[VUID-vkCmdSetRenderingInputAttachmentIndices-pInputAttachmentIndexInfo-09517]]
     pname:pInputAttachmentIndexInfo->colorAttachmentCount must: be equal to
     the value of slink:VkRenderingInfo::pname:colorAttachmentCount used to
     begin the current render pass instance
-  * [[VUID-vkCmdSetRenderingInputAttachmentIndicesKHR-commandBuffer-09518]]
+  * [[VUID-vkCmdSetRenderingInputAttachmentIndices-commandBuffer-09518]]
     The current render pass instance must: have been started or resumed by
     flink:vkCmdBeginRendering in this pname:commandBuffer
 ****
 
-include::{generated}/validity/protos/vkCmdSetRenderingInputAttachmentIndicesKHR.adoc[]
+include::{generated}/validity/protos/vkCmdSetRenderingInputAttachmentIndices.adoc[]
 --
 
-[open,refpage='VkRenderingInputAttachmentIndexInfoKHR',desc='Structure specifying input attachment indices',type='structs']
+[open,refpage='VkRenderingInputAttachmentIndexInfo',desc='Structure specifying input attachment indices',type='structs',alias='VkRenderingInputAttachmentIndexInfoKHR']
 --
-The sname:VkRenderingInputAttachmentIndexInfoKHR structure is defined as:
+The sname:VkRenderingInputAttachmentIndexInfo structure is defined as:
+
+include::{generated}/api/structs/VkRenderingInputAttachmentIndexInfo.adoc[]
+
+ifdef::VK_KHR_dynamic_rendering_local_read[]
+or the equivalent
 
 include::{generated}/api/structs/VkRenderingInputAttachmentIndexInfoKHR.adoc[]
+endif::VK_KHR_dynamic_rendering_local_read[]
 
   * pname:sType is a elink:VkStructureType value identifying this structure.
   * pname:pNext is `NULL` or a pointer to a structure extending this
@@ -812,40 +839,40 @@ structure with the following properties:
 
 .Valid Usage
 ****
-  * [[VUID-VkRenderingInputAttachmentIndexInfoKHR-dynamicRenderingLocalRead-09519]]
+  * [[VUID-VkRenderingInputAttachmentIndexInfo-dynamicRenderingLocalRead-09519]]
     If the <<features-dynamicRenderingLocalRead,
     pname:dynamicRenderingLocalRead>> feature is not enabled, and
     pname:pColorAttachmentInputIndices is not `NULL`, each element must: be
-    set to ename:VK_ATTACHMENT_UNUSED
-  * [[VUID-VkRenderingInputAttachmentIndexInfoKHR-dynamicRenderingLocalRead-09520]]
+    ename:VK_ATTACHMENT_UNUSED
+  * [[VUID-VkRenderingInputAttachmentIndexInfo-dynamicRenderingLocalRead-09520]]
     If the <<features-dynamicRenderingLocalRead,
     pname:dynamicRenderingLocalRead>> feature is not enabled,
     pname:pDepthInputAttachmentIndex must: be a valid pointer to a value of
     ename:VK_ATTACHMENT_UNUSED
-  * [[VUID-VkRenderingInputAttachmentIndexInfoKHR-dynamicRenderingLocalRead-09521]]
+  * [[VUID-VkRenderingInputAttachmentIndexInfo-dynamicRenderingLocalRead-09521]]
     If the <<features-dynamicRenderingLocalRead,
     pname:dynamicRenderingLocalRead>> feature is not enabled,
     pname:pStencilInputAttachmentIndex must: be a valid pointer to a value
     of ename:VK_ATTACHMENT_UNUSED
-  * [[VUID-VkRenderingInputAttachmentIndexInfoKHR-pColorAttachmentInputIndices-09522]]
+  * [[VUID-VkRenderingInputAttachmentIndexInfo-pColorAttachmentInputIndices-09522]]
     Elements of pname:pColorAttachmentInputIndices that are not
     ename:VK_ATTACHMENT_UNUSED must: each be unique
-  * [[VUID-VkRenderingInputAttachmentIndexInfoKHR-pColorAttachmentInputIndices-09523]]
+  * [[VUID-VkRenderingInputAttachmentIndexInfo-pColorAttachmentInputIndices-09523]]
     Elements of pname:pColorAttachmentInputIndices that are not
     ename:VK_ATTACHMENT_UNUSED must: not take the same value as the content
     of pname:pDepthInputAttachmentIndex
-  * [[VUID-VkRenderingInputAttachmentIndexInfoKHR-pColorAttachmentInputIndices-09524]]
+  * [[VUID-VkRenderingInputAttachmentIndexInfo-pColorAttachmentInputIndices-09524]]
     Elements of pname:pColorAttachmentInputIndices that are not
     ename:VK_ATTACHMENT_UNUSED must: not take the same value as the content
     of pname:pStencilInputAttachmentIndex
-  * [[VUID-VkRenderingInputAttachmentIndexInfoKHR-colorAttachmentCount-09525]]
+  * [[VUID-VkRenderingInputAttachmentIndexInfo-colorAttachmentCount-09525]]
     pname:colorAttachmentCount must: be less than or equal to
     <<limits-maxColorAttachments,pname:maxColorAttachments>>
 ****
 
-include::{generated}/validity/structs/VkRenderingInputAttachmentIndexInfoKHR.adoc[]
+include::{generated}/validity/structs/VkRenderingInputAttachmentIndexInfo.adoc[]
 --
-endif::VK_KHR_dynamic_rendering_local_read[]
+endif::VK_VERSION_1_4,VK_KHR_dynamic_rendering_local_read[]
 
 Variables identified with the code:InputAttachmentIndex must: only be used
 by a fragment stage.
@@ -865,6 +892,7 @@ An input attachment that is statically accessed by a fragment shader must:
 be backed by a descriptor that is equivalent to the slink:VkImageView in the
 slink:VkFramebuffer, except for pname:subresourceRange.aspectMask.
 The pname:aspectMask must: be equal to the aspect accessed by the shader.
+
 
 ifdef::VK_NV_ray_tracing,VK_KHR_ray_tracing_pipeline[]
 [[interfaces-raypipeline]]
@@ -993,8 +1021,9 @@ following conditions:
 
   * For code:OpImageWrite, if the image format is listed in the
     <<formats-without-shader-storage-format,storage without format>> list
-    and if the pname:shaderStorageImageWriteWithoutFormat feature is enabled
-    and the shader module declares the code:StorageImageWriteWithoutFormat
+    and if the <<features-shaderStorageImageWriteWithoutFormat,
+    pname:shaderStorageImageWriteWithoutFormat>> feature is enabled and the
+    shader module declares the code:StorageImageWriteWithoutFormat
     capability.
 ifdef::VK_VERSION_1_3,VK_KHR_format_feature_flags2[]
   * For code:OpImageWrite, if the image format supports
@@ -1004,9 +1033,10 @@ ifdef::VK_VERSION_1_3,VK_KHR_format_feature_flags2[]
 endif::VK_VERSION_1_3,VK_KHR_format_feature_flags2[]
   * For code:OpImageRead or code:OpImageSparseRead, if the image format is
     listed in the <<formats-without-shader-storage-format,storage without
-    format>> list and if the pname:shaderStorageImageReadWithoutFormat
-    feature is enabled and the shader module declares the
-    code:StorageImageReadWithoutFormat capability.
+    format>> list and if the <<features-shaderStorageImageReadWithoutFormat,
+    pname:shaderStorageImageReadWithoutFormat>> feature is enabled and the
+    shader module declares the code:StorageImageReadWithoutFormat
+    capability.
 ifdef::VK_VERSION_1_3,VK_KHR_format_feature_flags2[]
   * For code:OpImageRead or code:OpImageSparseRead, if the image format
     supports ename:VK_FORMAT_FEATURE_2_STORAGE_READ_WITHOUT_FORMAT_BIT and
@@ -1082,11 +1112,9 @@ SPIR-V variables decorated with a descriptor set and binding that identify a
 can: have a type of code:OpTypeImage, code:OpTypeSampler (code:Sampled=1),
 or code:OpTypeSampledImage.
 
-Arrays of any of these types can: be indexed with _constant integral
-expressions_.
-The following features must: be enabled and capabilities must: be declared
-in order to index such arrays with dynamically uniform or non-uniform
-indices:
+When accessing a resource through such a variable, the resource must: be
+selected via compile time constant expressions unless features are enabled
+to allow dynamically uniform or non-uniform expressions, as described below:
 
   * Storage images (except storage texel buffers and input attachments):
   ** Dynamically uniform: pname:shaderStorageImageArrayDynamicIndexing and
@@ -1146,41 +1174,31 @@ ifdef::VK_QCOM_image_processing[]
   ** Non-uniform: Never supported.
 endif::VK_QCOM_image_processing[]
 
-ifdef::VK_VERSION_1_2,VK_EXT_descriptor_indexing[]
-If an instruction loads from or stores to a resource (including atomics and
-image instructions) and the resource descriptor being accessed is not
-dynamically uniform, then the corresponding non-uniform indexing feature
-must: be enabled and the capability must: be declared.
-endif::VK_VERSION_1_2,VK_EXT_descriptor_indexing[]
-If an instruction loads from or stores to a resource (including atomics and
-image instructions) and the resource descriptor being accessed is loaded
-from an array element with a non-constant index, then the corresponding
-dynamic
-ifdef::VK_VERSION_1_2,VK_EXT_descriptor_indexing[]
-or non-uniform
-endif::VK_VERSION_1_2,VK_EXT_descriptor_indexing[]
-indexing feature must: be enabled and the capability must: be declared.
+ifdef::VK_VERSION_1_1[]
+[Note]
+.Note
+====
+Implementations must take care when implementing this if subgroups are not
+necessarily a subset of the invocation group for their hardware (e.g. if
+multiple draw calls are packed together).
+If such an implementation needs uniformity across the subgroup for any
+resource access, the implementation is responsible for ensuring that indices
+that are only dynamically uniform across the invocation group still function
+as expected if they advertise the respective feature.
+====
+endif::VK_VERSION_1_1[]
 
+ifdef::VK_VERSION_1_1,VK_KHR_sampler_ycbcr_conversion,VK_EXT_fragment_density_map[]
+A combined image sampler in an array that
 ifdef::VK_VERSION_1_1,VK_KHR_sampler_ycbcr_conversion[]
-If the combined image sampler enables sampler {YCbCr}
-ifndef::VK_EXT_fragment_density_map[]
-conversion,
-endif::VK_EXT_fragment_density_map[]
-ifdef::VK_EXT_fragment_density_map[]
-conversion or samples a <<samplers-subsamplesampler,subsampled image>>,
-endif::VK_EXT_fragment_density_map[]
-it must: be indexed only by constant integral expressions when aggregated
-into arrays in shader code, irrespective of the
-pname:shaderSampledImageArrayDynamicIndexing feature.
+enables sampler {YCbCr} conversion
+ifdef::VK_EXT_fragment_density_map[or]
 endif::VK_VERSION_1_1,VK_KHR_sampler_ycbcr_conversion[]
-ifndef::VK_VERSION_1_1,VK_KHR_sampler_ycbcr_conversion[]
 ifdef::VK_EXT_fragment_density_map[]
-If the combined image sampler samples a
-<<samplers-subsamplesampler,subsampled image>>, it must: be indexed only by
-constant integral expressions when aggregated into arrays in shader code,
-irrespective of the pname:shaderSampledImageArrayDynamicIndexing feature.
+samples a <<samplers-subsamplesampler,subsampled image>>
 endif::VK_EXT_fragment_density_map[]
-endif::VK_VERSION_1_1,VK_KHR_sampler_ycbcr_conversion[]
+must: only be indexed by constant integral expressions.
+endif::VK_VERSION_1_1,VK_KHR_sampler_ycbcr_conversion,VK_EXT_fragment_density_map[]
 
 [[interfaces-resources-correspondence]]
 .Shader Resource and Descriptor Type Correspondence
@@ -1304,9 +1322,9 @@ no larger than the number of descriptors in the binding.
 ifdef::VK_VERSION_1_2,VK_EXT_descriptor_indexing[]
 If the array is runtime-sized, then array elements greater than or equal to
 the size of that binding in the bound descriptor set must: not be used.
-If the array is runtime-sized, the pname:runtimeDescriptorArray feature
-must: be enabled and the code:RuntimeDescriptorArray capability must: be
-declared.
+If the array is runtime-sized, the <<features-runtimeDescriptorArray,
+pname:runtimeDescriptorArray>> feature must: be enabled and the
+code:RuntimeDescriptorArray capability must: be declared.
 endif::VK_VERSION_1_2,VK_EXT_descriptor_indexing[]
 ifndef::VK_VERSION_1_2,VK_EXT_descriptor_indexing[]
 The array must: not be runtime-sized.
@@ -1354,14 +1372,13 @@ type, as defined in <<interfaces-resources-correspondence,Shader Resource
 and Descriptor Type Correspondence>>.
 
 [NOTE]
-.Note
 ====
 There are no limits on the number of shader variables that can have
 overlapping set and binding values in a shader; but which resources are
 <<shaders-staticuse,statically used>> has an impact.
 If any shader variable identifying a resource is
 <<shaders-staticuse,statically used>> in a shader, then the underlying
-descriptor bound at the declared set and binding must
+descriptor bound at the declared set and binding must:
 <<interfaces-resources-correspondence,support the declared type in the
 shader>> when the shader executes.
 
@@ -1465,7 +1482,6 @@ explicit layout validation rules].
 All such layouts also must: conform to the following requirements.
 
 [NOTE]
-.Note
 ====
 The numeric order of code:Offset decorations does not need to follow member
 declaration order.
@@ -1476,7 +1492,7 @@ declaration order.
 *Alignment Requirements*
 
 There are different alignment requirements depending on the specific
-resources and on the features enabled on the device.
+resources and on the features enabled.
 
 Matrix types are defined in terms of arrays as follows:
 
@@ -1554,8 +1570,8 @@ If the struct is contained in pointer types of multiple storage classes, it
 must: satisfy the requirements for every storage class used to reference it.
 
 ifdef::VK_VERSION_1_2,VK_EXT_scalar_block_layout[]
-  . If the code:scalarBlockLayout feature is enabled on the device and the
-    storage class is code:Uniform, code:StorageBuffer,
+  . If the <<features-scalarBlockLayout, pname:scalarBlockLayout>> feature
+    is enabled and the storage class is code:Uniform, code:StorageBuffer,
 ifdef::VK_VERSION_1_2,VK_EXT_buffer_device_address,VK_KHR_buffer_device_address[]
     code:PhysicalStorageBuffer,
 endif::VK_VERSION_1_2,VK_EXT_buffer_device_address,VK_KHR_buffer_device_address[]
@@ -1566,16 +1582,17 @@ endif::VK_KHR_ray_tracing_pipeline[]
     scalar alignment.
 endif::VK_VERSION_1_2,VK_EXT_scalar_block_layout[]
 ifdef::VK_KHR_workgroup_memory_explicit_layout[]
-  . If the code:workgroupMemoryExplicitLayoutScalarBlockLayout feature is
-    enabled on the device and the storage class is code:Workgroup then every
-    member must: be aligned according to its scalar alignment.
+  . If the <<features-workgroupMemoryExplicitLayoutScalarBlockLayout,
+    pname:workgroupMemoryExplicitLayoutScalarBlockLayout>> feature is
+    enabled and the storage class is code:Workgroup then every member must:
+    be aligned according to its scalar alignment.
 endif::VK_KHR_workgroup_memory_explicit_layout[]
 ifdef::VK_VERSION_1_1,VK_KHR_relaxed_block_layout[]
   . All vectors must: be aligned according to their scalar alignment.
 endif::VK_VERSION_1_1,VK_KHR_relaxed_block_layout[]
 ifdef::VK_VERSION_1_2,VK_KHR_uniform_buffer_standard_layout[]
-  . If the pname:uniformBufferStandardLayout feature is not enabled on the
-    device, then any
+  . If the <<features-uniformBufferStandardLayout,
+    pname:uniformBufferStandardLayout>> feature is not enabled, then any
 endif::VK_VERSION_1_2,VK_KHR_uniform_buffer_standard_layout[]
 ifndef::VK_VERSION_1_2,VK_KHR_uniform_buffer_standard_layout[]
   . Any
@@ -1587,7 +1604,6 @@ endif::VK_VERSION_1_2,VK_KHR_uniform_buffer_standard_layout[]
 
 ifdef::VK_VERSION_1_2,VK_EXT_scalar_block_layout[]
 [NOTE]
-.Note
 ====
 Even if scalar alignment is supported, it is generally more performant to
 use the _base alignment_.
@@ -1612,14 +1628,15 @@ endif::VK_VERSION_1_2,VK_EXT_buffer_device_address,VK_KHR_buffer_device_address[
 ifdef::VK_KHR_ray_tracing_pipeline[]
     code:ShaderRecordBufferKHR,
 endif::VK_KHR_ray_tracing_pipeline[]
-    or code:PushConstant, and the code:scalarBlockLayout feature is not
-    enabled on the device.
+    or code:PushConstant, and the <<features-scalarBlockLayout,
+    pname:scalarBlockLayout>> feature is not enabled.
 endif::VK_VERSION_1_2,VK_EXT_scalar_block_layout[]
 ifdef::VK_KHR_workgroup_memory_explicit_layout[]
   * The storage class is code:Workgroup, and either the struct member is not
     part of a code:Block or the
-    code:workgroupMemoryExplicitLayoutScalarBlockLayout feature is not
-    enabled on the device.
+    <<features-workgroupMemoryExplicitLayoutScalarBlockLayout,
+    pname:workgroupMemoryExplicitLayoutScalarBlockLayout>> feature is not
+    enabled.
 endif::VK_KHR_workgroup_memory_explicit_layout[]
   * The storage class is any other storage class.
 
@@ -1634,7 +1651,6 @@ endif::VK_VERSION_1_1,VK_KHR_relaxed_block_layout[]
     alignment of that structure, array or matrix.
 
 [NOTE]
-.Note
 ====
 The *std430 layout* in GLSL satisfies these rules for types using the base
 alignment.
@@ -1659,7 +1675,14 @@ unsigned 32-bit integers.
 outputs have an additional level of arrayness relative to other shader
 inputs and outputs.
 This level of arrayness is not included in the type descriptions below, but
-must be included when declaring the built-in.
+must: be included when declaring the built-in.
+
+Any two code:Input storage class code:OpVariable declarations listed as
+operands on the same code:OpEntryPoint must: not have the same code:BuiltIn
+decoration.
+Any two code:Output storage class code:OpVariable declarations listed as
+operands on the same code:OpEntryPoint must: not have the same code:BuiltIn
+decoration.
 
 ifdef::VK_NV_fragment_shader_barycentric,VK_KHR_fragment_shader_barycentric[]
 [[interfaces-builtin-variables-barycoordkhr]]
@@ -1998,14 +2021,12 @@ means the vertex is inside the clip half-space, and a negative distance
 means the vertex is outside the clip half-space.
 
 [NOTE]
-.Note
 ====
 The array variable decorated with code:ClipDistance is explicitly sized by
 the shader.
 ====
 
 [NOTE]
-.Note
 ====
 In the last <<pipelines-graphics-subsets-pre-rasterization,pre-rasterization
 shader stage>>, these values will be linearly interpolated across the
@@ -2139,14 +2160,12 @@ belonging to a primitive, then the primitive is discarded before
 rasterization.
 
 [NOTE]
-.Note
 ====
 In fragment shaders, the values of the code:CullDistance array are linearly
 interpolated across each primitive.
 ====
 
 [NOTE]
-.Note
 ====
 If code:CullDistance decorates an input variable, that variable will contain
 the corresponding value from the code:CullDistance decorated output variable
@@ -2402,17 +2421,18 @@ endif::VK_HUAWEI_cluster_culling_shader[]
 
 
 [[interfaces-builtin-variables-fragcoord]]
-[open,refpage='FragCoord',desc='Screen-space coordinate of the fragment center',type='builtins']
+[open,refpage='FragCoord',desc='Coordinates of the fragment',type='builtins']
 --
 :refpage: FragCoord
 
 code:FragCoord::
 
 Decorating a variable with the code:FragCoord built-in decoration will make
-that variable contain the framebuffer coordinate
-latexmath:[(x,y,z,\frac{1}{w})] of the fragment being processed.
-The [eq]#(x,y)# coordinate [eq]#(0,0)# is the upper left corner of the upper
-left pixel in the framebuffer.
+that variable contain the coordinates [eq]#(x,y,z,1/w)# of the fragment
+being processed.
++
+The [eq]#(x,y)# values are the framebuffer coordinates [eq]#(x~f,y~f)# of
+the fragment.
 +
 When <<primsrast-sampleshading,Sample Shading>> is enabled, the [eq]#x# and
 [eq]#y# components of code:FragCoord reflect the location of one of the
@@ -2772,7 +2792,6 @@ A helper invocation is an invocation of the shader that is produced to
 satisfy internal requirements such as the generation of derivatives.
 
 [NOTE]
-.Note
 ====
 It is very likely that a helper invocation will have a value of
 code:SampleMask fragment shader input value that is zero.
@@ -2860,8 +2879,8 @@ A variable decorated with the code:HitTriangleVertexPositionsKHR decoration
 will specify the object space vertices of the triangle at the current
 intersection in application-provided order.
 The positions returned are transformed by the geometry transform, which is
-performed at standard <<fundamentals-floatingpoint, floating point>>
-precision, but without a specifically defined order of floating point
+performed at standard <<fundamentals-floating-point, floating-point>>
+precision, but without a specifically defined order of floating-point
 operations to perform the matrix multiplication.
 
 .Valid Usage
@@ -3124,7 +3143,11 @@ code:LaunchIdKHR::
 A variable decorated with the code:LaunchIdKHR decoration will specify the
 index of the work item being processed.
 One work item is generated for each of the pname:width {times} pname:height
-{times} pname:depth items dispatched by a flink:vkCmdTraceRaysKHR command.
+{times} pname:depth items dispatched by a
+ifdef::VK_KHR_ray_tracing_pipeline[flink:vkCmdTraceRaysKHR]
+ifdef::VK_NV_ray_tracing+VK_KHR_ray_tracing_pipeline[or]
+ifdef::VK_NV_ray_tracing[flink:vkCmdTraceRaysNV]
+command.
 All shader invocations inherit the same value for variables decorated with
 code:LaunchIdKHR.
 
@@ -3152,7 +3175,10 @@ code:LaunchSizeKHR::
 
 A variable decorated with the code:LaunchSizeKHR decoration will contain the
 pname:width, pname:height, and pname:depth dimensions passed to the
-flink:vkCmdTraceRaysKHR command that initiated this shader execution.
+ifdef::VK_KHR_ray_tracing_pipeline[flink:vkCmdTraceRaysKHR]
+ifdef::VK_NV_ray_tracing+VK_KHR_ray_tracing_pipeline[or]
+ifdef::VK_NV_ray_tracing[flink:vkCmdTraceRaysNV]
+command that initiated this shader execution.
 The pname:width is in the first component, the pname:height is in the second
 component, and the pname:depth is in the third component.
 
@@ -3308,7 +3334,6 @@ Each component ranges from zero through to the size of the workgroup in that
 dimension minus one.
 
 [NOTE]
-.Note
 ====
 If the size of the workgroup in a particular dimension is one, then the
 code:LocalInvocationId in that dimension will be zero.
@@ -3610,7 +3635,6 @@ then the variable decorated with code:PointCoord contains an undefined:
 value.
 
 [NOTE]
-.Note
 ====
 Depending on how the point is rasterized, code:PointCoord may: never reach
 [eq]#(0,0)# or [eq]#(1,1)#.
@@ -3639,25 +3663,24 @@ code:PointSize::
 
 Decorating a variable with the code:PointSize built-in decoration will make
 that variable contain the size of point primitives
-ifdef::VK_KHR_maintenance5[]
+ifdef::VK_VERSION_1_4,VK_KHR_maintenance5[]
 or the final rasterization of polygons if <<primsrast-polygonmode, polygon
 mode>> is ename:VK_POLYGON_MODE_POINT when
-sname:VkPhysicalDeviceMaintenance5PropertiesKHR::pname:polygonModePointSize
-is set to ename:VK_TRUE
-endif::VK_KHR_maintenance5[]
+sname:VkPhysicalDeviceMaintenance5Properties::pname:polygonModePointSize is
+set to ename:VK_TRUE
+endif::VK_VERSION_1_4,VK_KHR_maintenance5[]
 .
 The value written to the variable decorated with code:PointSize by the last
 <<pipelines-graphics-subsets-pre-rasterization,pre-rasterization shader
 stage>> in the pipeline is used as the framebuffer-space size of points
 produced by rasterization.
-ifdef::VK_KHR_maintenance5[]
-If <<features-maintenance5, pname:maintenance5>> is enabled and a value is
-not written to a variable decorated with code:PointSize, a value of 1.0 is
-used as the size of points.
-endif::VK_KHR_maintenance5[]
+ifdef::VK_VERSION_1_4,VK_KHR_maintenance5[]
+If the <<features-maintenance5, pname:maintenance5>> feature is enabled and
+a value is not written to a variable decorated with code:PointSize, a value
+of 1.0 is used as the size of points.
+endif::VK_VERSION_1_4,VK_KHR_maintenance5[]
 
 [NOTE]
-.Note
 ====
 When code:PointSize decorates a variable in the code:Input {StorageClass},
 it contains the data written to the output variable decorated with
@@ -3700,7 +3723,6 @@ used in subsequent primitive assembly, clipping, and rasterization
 operations.
 
 [NOTE]
-.Note
 ====
 When code:Position decorates a variable in the code:Input {StorageClass}, it
 contains the data written to the output variable decorated with
@@ -3864,7 +3886,6 @@ index within the geometry of the triangle or bounding box being processed.
 endif::VK_NV_ray_tracing,VK_KHR_ray_tracing_pipeline[]
 
 [NOTE]
-.Note
 ====
 When the code:PrimitiveId decoration is applied to an output variable in the
 ifdef::VK_NV_mesh_shader,VK_EXT_mesh_shader[mesh shader or]
@@ -4648,7 +4669,6 @@ code:SubgroupLocalInvocationId for each value in range
 endif::VK_VERSION_1_3,VK_EXT_subgroup_size_control[]
 
 [NOTE]
-.Note
 ====
 There is no direct relationship between code:SubgroupLocalInvocationId and
 code:LocalInvocationId or code:LocalInvocationIndex.
@@ -4671,7 +4691,6 @@ endif::VK_VERSION_1_3,VK_EXT_subgroup_size_control[]
 
 ifdef::VK_VERSION_1_3[]
 [NOTE]
-.Note
 ====
 ename:VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT
 ifndef::VK_EXT_shader_object[]
@@ -4707,7 +4726,7 @@ code:SubgroupSize::
 +
 Decorating a variable with the code:SubgroupSize builtin decoration will
 make that variable contain the implementation-dependent
-<<limits-subgroup-size, number of invocations in a subgroup>>.
+<<limits-subgroupSize, number of invocations in a subgroup>>.
 This value must: be a power-of-two integer.
 +
 ifdef::VK_VERSION_1_3,VK_EXT_subgroup_size_control[]
@@ -4759,7 +4778,7 @@ endif::VK_VERSION_1_3,VK_EXT_subgroup_size_control[]
 ifndef::VK_VERSION_1_3,VK_EXT_subgroup_size_control[]
 The
 endif::VK_VERSION_1_3,VK_EXT_subgroup_size_control[]
-variable decorated with code:SubgroupSize will match <<limits-subgroup-size,
+variable decorated with code:SubgroupSize will match <<limits-subgroupSize,
 pname:subgroupSize>>.
 +
 The maximum number of invocations that an implementation can support per
@@ -4767,7 +4786,6 @@ subgroup is 128.
 
 ifdef::VK_VERSION_1_3[]
 [NOTE]
-.Note
 ====
 The old behavior for code:SubgroupSize is considered deprecated as certain
 compute algorithms cannot be easily implemented without the guarantees of
@@ -4970,7 +4988,6 @@ the pname:vertexOffset member of the structure consumed by
 flink:vkCmdDrawIndexedIndirect.
 
 [NOTE]
-.Note
 ====
 code:VertexIndex starts at the same starting value for each instance.
 ====
@@ -4999,7 +5016,7 @@ code:VertexOffsetHUAWEI::
 
 The code:VertexOffsetHUAWEI decoration can be used to decorate a cluster
 culling shader output variable,this indexed mode specific variable will
-contain an integer value that specifies a offset value added to the vertex
+contain an integer value that specifies an offset value added to the vertex
 index of a cluster before indexing into the vertex buffer.
 
 .Valid Usage
@@ -5026,8 +5043,9 @@ The code:ViewIndex decoration can: be applied to a shader input which will
 be filled with the index of the view that is being processed by the current
 shader invocation.
 +
-If multiview is enabled in the render pass, this value will be one of the
-bits set in the view mask of the subpass the pipeline is compiled against.
+If multiview is enabled in the render pass, this value will be the index of
+one of the bits set in the view mask of the subpass the pipeline is compiled
+against.
 If multiview is not enabled in the render pass, this value will be zero.
 
 .Valid Usage
@@ -5087,8 +5105,8 @@ If the last active
 stage>> shader entry point's interface does not include a variable decorated
 with code:ViewportIndex
 ifdef::VK_QCOM_multiview_per_view_viewports[]
-, and if <<features-multiview-per-view-viewports,
-multiviewPerViewViewports>> is not enabled,
+, and if the <<features-multiviewPerViewViewports,
+multiviewPerViewViewports>> feature is not enabled,
 endif::VK_QCOM_multiview_per_view_viewports[]
 then the first viewport is used.
 If a <<pipelines-graphics-subsets-pre-rasterization,pre-rasterization shader
@@ -5101,8 +5119,8 @@ contains the viewport index of the primitive that the fragment invocation
 belongs to.
 ifdef::VK_QCOM_multiview_per_view_viewports[]
 +
-If <<features-multiview-per-view-viewports,
-pname:multiviewPerViewViewports>> is enabled, and if the last active
+If the <<features-multiviewPerViewViewports,
+pname:multiviewPerViewViewports>> feature is enabled, and if the last active
 <<pipelines-graphics-subsets-pre-rasterization,pre-rasterization shader
 stage>> shader entry point's interface does not include a variable decorated
 with code:ViewportIndex, then the value of code:ViewIndex is used as an
@@ -5354,7 +5372,6 @@ code:WorkgroupSize::
 
 ifdef::VK_VERSION_1_3[]
 [NOTE]
-.Note
 ====
 SPIR-V 1.6 deprecated code:WorkgroupSize in favor of using the
 code:LocalSizeId Execution Mode instead.

@@ -66,6 +66,7 @@ include::{generated}/api/handles/VkQueryPool.adoc[]
 :refpage: vkCreateQueryPool
 :objectnameplural: query pools
 :objectnamecamelcase: queryPool
+:objectnamestruct: VkDeviceObjectReservationCreateInfo
 :objectcount: 1
 
 To create a query pool, call:
@@ -83,12 +84,21 @@ include::{generated}/api/protos/vkCreateQueryPool.adoc[]
 
 include::{chapters}/commonvalidity/no_dynamic_allocations_common.adoc[]
 
-ifdef::VKSC_VERSION_1_0[]
 .Valid Usage
 ****
+  * [[VUID-vkCreateQueryPool-device-09663]]
+    pname:device must: support at least one queue family with one of the
+ifdef::VK_KHR_video_encode_queue[]
+    ename:VK_QUEUE_VIDEO_ENCODE_BIT_KHR,
+endif::VK_KHR_video_encode_queue[]
+ifdef::VK_KHR_video_decode_queue[]
+    ename:VK_QUEUE_VIDEO_DECODE_BIT_KHR,
+endif::VK_KHR_video_decode_queue[]
+    ename:VK_QUEUE_COMPUTE_BIT, or ename:VK_QUEUE_GRAPHICS_BIT capabilities
+ifdef::VKSC_VERSION_1_0[]
 include::{chapters}/commonvalidity/memory_reservation_request_count_common.adoc[]
-****
 endif::VKSC_VERSION_1_0[]
+****
 
 include::{generated}/validity/protos/vkCreateQueryPool.adoc[]
 --
@@ -192,6 +202,14 @@ ifdef::VK_KHR_video_encode_queue[]
     <<video-profiles,video profile>> described by
     slink:VkVideoProfileInfoKHR and its pname:pNext chain
 endif::VK_KHR_video_encode_queue[]
+ifdef::VK_KHR_video_encode_av1[]
+  * [[VUID-VkQueryPoolCreateInfo-pNext-10248]]
+    If the pname:pNext chain includes a slink:VkVideoProfileInfoKHR
+    structure and its pname:videoCodecOperation member is
+    ename:VK_VIDEO_CODEC_OPERATION_ENCODE_AV1_BIT_KHR, then the
+    <<features-videoEncodeAV1,pname:videoEncodeAV1>> feature must: be
+    enabled
+endif::VK_KHR_video_encode_av1[]
 ****
 
 include::{generated}/validity/structs/VkQueryPoolCreateInfo.adoc[]
@@ -250,7 +268,6 @@ include::{generated}/api/protos/vkDestroyQueryPool.adoc[]
 ****
 
 [NOTE]
-.Note
 ====
 Applications can: verify that pname:queryPool can: be destroyed by checking
 that fname:vkGetQueryPoolResults() without the
@@ -426,7 +443,6 @@ indicated by a call to
 flink:vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR.
 
 [NOTE]
-.Note
 ====
 Because fname:vkCmdResetQueryPool resets all the passes of the indicated
 queries, applications must not record a fname:vkCmdResetQueryPool command
@@ -610,7 +626,6 @@ index, issuing any further video coding operations results in undefined:
 behavior.
 
 [NOTE]
-.Note
 ====
 In practice, this means that currently no more than a single video coding
 operation must: be issued between a begin and end query pair.
@@ -1069,8 +1084,8 @@ include::{generated}/api/protos/vkGetQueryPoolResults.adoc[]
   * pname:queryCount is the number of queries to read.
   * pname:dataSize is the size in bytes of the buffer pointed to by
     pname:pData.
-  * pname:pData is a pointer to a user-allocated buffer where the results
-    will be written
+  * pname:pData is a pointer to an application-allocated buffer where the
+    results will be written
   * pname:stride is the stride in bytes between results for individual
     queries within pname:pData.
   * pname:flags is a bitmask of elink:VkQueryResultFlagBits specifying how
@@ -1119,7 +1134,6 @@ results of the used query type.
 endif::VK_KHR_video_queue[]
 
 [NOTE]
-.Note
 ====
 If ename:VK_QUERY_RESULT_WITH_AVAILABILITY_BIT
 ifdef::VK_KHR_video_queue[or ename:VK_QUERY_RESULT_WITH_STATUS_BIT_KHR]
@@ -1151,10 +1165,15 @@ ifdef::VK_KHR_video_queue[or status]
 values are written as an array of 32-bit values.
 If an unsigned integer query's value overflows the result type, the value
 may: either wrap or saturate.
+ifdef::VK_KHR_maintenance7[]
+If the <<features-maintenance7,pname:maintenance7>> feature is enabled, for
+an unsigned integer query, the 32-bit result value must: be equal to the 32
+least significant bits of the equivalent 64-bit result value.
+endif::VK_KHR_maintenance7[]
 ifdef::VK_KHR_performance_query[]
 If a signed integer query's value overflows the result type, the value is
 undefined:.
-If a floating point query's value is not representable as the result type,
+If a floating-point query's value is not representable as the result type,
 the value is undefined:.
 endif::VK_KHR_performance_query[]
 
@@ -1180,7 +1199,6 @@ may: return ename:VK_NOT_READY if there are queries in the unavailable
 state.
 
 [NOTE]
-.Note
 ====
 Applications must: take care to ensure that use of the
 ename:VK_QUERY_RESULT_WAIT_BIT bit has the desired effect.
@@ -1214,7 +1232,6 @@ endif::VK_KHR_video_queue[]
 ====
 
 [NOTE]
-.Note
 ====
 Applications can: double-buffer query pool usage, with a pool per frame, and
 reset queries at the end of the frame in which they are read.
@@ -1309,15 +1326,15 @@ Specific status codes that can: be returned from a query are:
 
 include::{generated}/api/enums/VkQueryResultStatusKHR.adoc[]
 
-  * ename:VK_QUERY_RESULT_STATUS_NOT_READY_KHR indicates that the query
+  * ename:VK_QUERY_RESULT_STATUS_NOT_READY_KHR specifies that the query
     result is not yet available.
-  * ename:VK_QUERY_RESULT_STATUS_ERROR_KHR indicates that operations did not
+  * ename:VK_QUERY_RESULT_STATUS_ERROR_KHR specifies that operations did not
     complete successfully.
-  * ename:VK_QUERY_RESULT_STATUS_COMPLETE_KHR indicates that operations
+  * ename:VK_QUERY_RESULT_STATUS_COMPLETE_KHR specifies that operations
     completed successfully and the query result is available.
 ifdef::VK_KHR_video_encode_queue[]
   * ename:VK_QUERY_RESULT_STATUS_INSUFFICIENT_BITSTREAM_BUFFER_RANGE_KHR
-    indicates that a video encode operation did not complete successfully
+    specifies that a video encode operation did not complete successfully
     due to the destination video bitstream buffer range not being
     sufficiently large to fit the encoded bitstream data.
 endif::VK_KHR_video_encode_queue[]
@@ -1406,10 +1423,15 @@ ifdef::VK_KHR_video_queue[or status]
 values are written as an array of 32-bit values.
 If an unsigned integer query's value overflows the result type, the value
 may: either wrap or saturate.
+ifdef::VK_KHR_maintenance7[]
+If the <<features-maintenance7,pname:maintenance7>> feature is enabled, for
+an unsigned integer query, the 32-bit result value must: be equal to the 32
+least significant bits of the equivalent 64-bit result value.
+endif::VK_KHR_maintenance7[]
 ifdef::VK_KHR_performance_query[]
 If a signed integer query's value overflows the result type, the value is
 undefined:.
-If a floating point query's value is not representable as the result type,
+If a floating-point query's value is not representable as the result type,
 the value is undefined:.
 endif::VK_KHR_performance_query[]
 
@@ -1520,7 +1542,6 @@ implementation may: generate any non-zero result value for the query if the
 count of passing samples is non-zero.
 
 [NOTE]
-.Note
 ====
 Not setting ename:VK_QUERY_CONTROL_PRECISE_BIT mode may: be more efficient
 on some implementations, and should: be used where it is sufficient to know
@@ -1545,7 +1566,6 @@ fname:vkCmdCopyQueryPoolResults) or request it be put into host memory (via
 fname:vkGetQueryPoolResults).
 
 [NOTE]
-.Note
 ====
 If occluding geometry is not drawn first, samples can: pass the depth test,
 but still not be visible in a final image.
@@ -1690,7 +1710,6 @@ task shaders, which may affect several of the counters in unexpected ways.
 endif::VK_EXT_mesh_shader,VK_NV_mesh_shader[]
 
 [NOTE]
-.Note
 ====
 For example, tile-based rendering devices may: need to replay the scene
 multiple times, affecting some of the counts.
@@ -1788,7 +1807,6 @@ The second <<synchronization-dependencies-scopes, synchronization scope>>
 includes only the timestamp write operation.
 
 [NOTE]
-.Note
 ====
 Implementations may write the timestamp at any stage that is
 <<synchronization-pipeline-stages-order, logically later>> than pname:stage.
@@ -1816,7 +1834,6 @@ endif::VK_KHR_calibrated_timestamps,VK_EXT_calibrated_timestamps[]
 If an overflow occurs, the timestamp value must: wrap back to zero.
 
 [NOTE]
-.Note
 ====
 Comparisons between timestamps should be done between timestamps where they
 are guaranteed to not decrease.
@@ -1928,7 +1945,6 @@ The second <<synchronization-dependencies-scopes, synchronization scope>>
 includes only the timestamp write operation.
 
 [NOTE]
-.Note
 ====
 Implementations may write the timestamp at any stage that is
 <<synchronization-pipeline-stages-order, logically later>> than pname:stage.
@@ -1956,7 +1972,6 @@ endif::VK_KHR_calibrated_timestamps,VK_EXT_calibrated_timestamps[]
 If an overflow occurs, the timestamp value must: wrap back to zero.
 
 [NOTE]
-.Note
 ====
 Comparisons between timestamps should be done between timestamps where they
 are guaranteed to not decrease.
@@ -2091,7 +2106,6 @@ fname:vkCmdCopyQueryPoolResults) or request it be put into host memory (via
 fname:vkGetQueryPoolResults).
 
 [NOTE]
-.Note
 ====
 The result of this query is typically identical to
 ename:VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT, but the
@@ -2223,13 +2237,11 @@ If the result status of a video encode feedback query is negative, then the
 results of all enabled video encode feedback values will be undefined:.
 
 [NOTE]
-.Note
 ====
-Thus it is recommended that applications always specify
-ename:VK_QUERY_RESULT_WITH_STATUS_BIT_KHR when retrieving the results of
-video encode feedback queries and ignore such undefined: video encode
-feedback values for any <<encode-unsuccessful,unsuccessfully>> completed
-video encode operations.
+Applications should always specify ename:VK_QUERY_RESULT_WITH_STATUS_BIT_KHR
+when retrieving the results of video encode feedback queries and ignore such
+undefined: video encode feedback values for any
+<<encode-unsuccessful,unsuccessfully>> completed video encode operations.
 ====
 --
 

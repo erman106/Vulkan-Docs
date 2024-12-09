@@ -56,7 +56,6 @@ multiple micromaps builds, however there is no ordering or synchronization
 implied between any of the individual micromap builds.
 
 [NOTE]
-.Note
 ====
 This means that there cannot: be any memory aliasing between any micromap
 memories or scratch memories being used by any of the builds.
@@ -144,16 +143,15 @@ slink:VkMicromapTriangleEXT::pname:format for micromap builds, are:
 
 include::{generated}/api/enums/VkOpacityMicromapFormatEXT.adoc[]
 
-  * ename:VK_OPACITY_MICROMAP_FORMAT_2_STATE_EXT indicates that the given
+  * ename:VK_OPACITY_MICROMAP_FORMAT_2_STATE_EXT specifies that the given
     micromap format has one bit per subtriangle encoding either fully opaque
     or fully transparent.
-  * ename:VK_OPACITY_MICROMAP_FORMAT_4_STATE_EXT indicates that the given
+  * ename:VK_OPACITY_MICROMAP_FORMAT_4_STATE_EXT specifies that the given
     micromap format has two bits per subtriangle encoding four modes which
     can be interpreted as described in <<ray-opacity-micromap,ray
     traversal>>.
 
 [NOTE]
-.Note
 ====
 For compactness, these values are stored as 16-bit in some structures.
 ====
@@ -169,21 +167,20 @@ slink:VkMicromapTriangleEXT::pname:format for micromap builds, are:
 
 include::{generated}/api/enums/VkDisplacementMicromapFormatNV.adoc[]
 
-  * ename:VK_DISPLACEMENT_MICROMAP_FORMAT_64_TRIANGLES_64_BYTES_NV indicates
+  * ename:VK_DISPLACEMENT_MICROMAP_FORMAT_64_TRIANGLES_64_BYTES_NV specifies
     that the given micromap format encodes 64 micro-triangles worth of
     displacements in 64 bytes as described in
     <<displacement-micromap-encoding, Displacement Micromap Encoding>>.
   * ename:VK_DISPLACEMENT_MICROMAP_FORMAT_256_TRIANGLES_128_BYTES_NV
-    indicates that the given micromap format encodes 256 micro-triangles
+    specifies that the given micromap format encodes 256 micro-triangles
     worth of displacements in 128 bytes as described in
     <<displacement-micromap-encoding, Displacement Micromap Encoding>>.
   * ename:VK_DISPLACEMENT_MICROMAP_FORMAT_1024_TRIANGLES_128_BYTES_NV
-    indicates that the given micromap format encodes 1024 micro-triangles
+    specifies that the given micromap format encodes 1024 micro-triangles
     worth of displacements in 128 bytes as described in
     <<displacement-micromap-encoding, Displacement Micromap Encoding>>.
 
 [NOTE]
-.Note
 ====
 For compactness, these values are stored as 16-bit in some structures.
 ====
@@ -670,7 +667,7 @@ include::{generated}/api/protos/vkCmdCopyMemoryToMicromapEXT.adoc[]
 
   * pname:commandBuffer is the command buffer into which the command will be
     recorded.
-  * pname:pInfo is a pointer to a slink:VkCopyMicromapToMemoryInfoEXT
+  * pname:pInfo is a pointer to a slink:VkCopyMemoryToMicromapInfoEXT
     structure defining the copy operation.
 
 Accesses to pname:pInfo->dst must: be <<synchronization-dependencies,
@@ -780,7 +777,6 @@ include::{generated}/api/structs/VkMicromapVersionInfoEXT.adoc[]
     defined in flink:vkCmdCopyMicromapToMemoryEXT
 
 [NOTE]
-.Note
 ====
 pname:pVersionData is a _pointer_ to an array of 2{times}ename:VK_UUID_SIZE
 code:uint8_t values instead of two ename:VK_UUID_SIZE arrays as the expected
@@ -822,7 +818,6 @@ commands.
 
 
 [NOTE]
-.Note
 ====
 The flink:vkBuildMicromapsEXT and flink:vkCmdBuildMicromapsEXT may: use
 different algorithms, and thus are not required to produce identical
@@ -833,7 +828,6 @@ interchangeable.
 ====
 
 [NOTE]
-.Note
 ====
 For efficient execution, micromaps manipulated using these commands should
 always be bound to host cached memory, as the implementation may need to
@@ -867,7 +861,6 @@ multiple micromaps builds, however there is no ordering or synchronization
 implied between any of the individual micromap builds.
 
 [NOTE]
-.Note
 ====
 This means that there cannot: be any memory aliasing between any micromap
 memories or scratch memories being used by any of the builds.
@@ -1064,8 +1057,8 @@ include::{generated}/api/protos/vkWriteMicromapsPropertiesEXT.adoc[]
     be queried.
   * pname:dataSize is the size in bytes of the buffer pointed to by
     pname:pData.
-  * pname:pData is a pointer to a user-allocated buffer where the results
-    will be written.
+  * pname:pData is a pointer to an application-allocated buffer where the
+    results will be written.
   * pname:stride is the stride in bytes between results for individual
     queries within pname:pData.
 
@@ -1075,16 +1068,16 @@ flink:vkCmdWriteMicromapsPropertiesEXT but is executed by the host.
 .Valid Usage
 ****
 include::{chapters}/commonvalidity/write_micromap_properties_common.adoc[]
-  * [[VUID-vkWriteMicromapsPropertiesEXT-queryType-07573]]
+  * [[VUID-vkWriteMicromapsPropertiesEXT-queryType-10071]]
     If pname:queryType is
-    ename:VK_QUERY_TYPE_MICROMAP_SERIALIZATION_SIZE_EXT, then pname:stride
-    must: be a multiple of the size of basetype:VkDeviceSize
-  * [[VUID-vkWriteMicromapsPropertiesEXT-queryType-07574]]
+    ename:VK_QUERY_TYPE_MICROMAP_SERIALIZATION_SIZE_EXT or
+    ename:VK_QUERY_TYPE_MICROMAP_COMPACTED_SIZE_EXT then pname:stride must:
+    be a multiple of the size of basetype:VkDeviceSize
+  * [[VUID-vkWriteMicromapsPropertiesEXT-queryType-10072]]
     If pname:queryType is
-    ename:VK_QUERY_TYPE_MICROMAP_SERIALIZATION_SIZE_EXT, then pname:pData
-    must: point to a basetype:VkDeviceSize
-  * [[VUID-vkWriteMicromapsPropertiesEXT-queryType-07575]]
-    If pname:queryType is
+    ename:VK_QUERY_TYPE_MICROMAP_SERIALIZATION_SIZE_EXT or
+    ename:VK_QUERY_TYPE_MICROMAP_COMPACTED_SIZE_EXT then pname:pData must:
+    point to a basetype:VkDeviceSize
   * [[VUID-vkWriteMicromapsPropertiesEXT-dataSize-07576]]
     pname:dataSize must: be greater than or equal to
     [eq]#pname:micromapCount*pname:stride#
@@ -1105,6 +1098,7 @@ endif::VK_KHR_device_group,VK_VERSION_1_1[]
 include::{generated}/validity/protos/vkWriteMicromapsPropertiesEXT.adoc[]
 --
 
+
 ifdef::VK_NV_displacement_micromap[]
 [[displacement-micromap]]
 === Displacement Micromap
@@ -1114,6 +1108,7 @@ the slink:VkAccelerationStructureTrianglesDisplacementMicromapNV to define a
 base triangle and displacement directions then uses displacement information
 encoded in the micromap to apply to those values to generate the final
 position.
+
 
 ==== Displacement Base Triangle
 
@@ -1142,9 +1137,9 @@ microVertexBarycentrics)#
 [eq]#microVertexDisplacedPosition = microVertexBasePosition {plus}
 microVertexDisplacementVector {times} micromapDisplacementValue#
 
-==== Displacement Micromap Encoding
 
 [[displacement-micromap-encoding]]
+==== Displacement Micromap Encoding
 
 // XXX Needs a lot of diagrams and pseudocode
 

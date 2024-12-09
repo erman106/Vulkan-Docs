@@ -183,7 +183,6 @@ execution dependency chains>>:
      made visible to *ScopedMemOps~2~*.
 
 [NOTE]
-.Note
 ====
 Execution and memory dependencies are used to solve data hazards, i.e. to
 ensure that read and write operations occur in a well-defined order.
@@ -223,7 +222,6 @@ If the old layout is ename:VK_IMAGE_LAYOUT_UNDEFINED, the contents of that
 range may: be discarded.
 
 [NOTE]
-.Note
 ====
 Image layout transitions with ename:VK_IMAGE_LAYOUT_UNDEFINED allow the
 implementation to discard the image subresource range, which can provide
@@ -248,7 +246,6 @@ flink:vkGetDeviceGroupPeerMemoryFeatures.
 endif::VK_VERSION_1_1,VK_KHR_device_group[]
 
 [NOTE]
-.Note
 ====
 Applications must: ensure that layout transitions happen-after all
 operations accessing the image with the old layout, and happen-before any
@@ -305,7 +302,6 @@ The exact pipeline stages executed depend on the particular command that is
 used, and current command buffer state when the command was recorded.
 
 [NOTE]
-.Note
 ====
 Operations performed by synchronization commands (e.g.
 <<synchronization-dependencies-available-and-visible, availability and
@@ -336,14 +332,6 @@ ifdef::VK_VERSION_1_3,VK_KHR_synchronization2[]
 Bits which can: be set in a tlink:VkPipelineStageFlags2 mask, specifying
 stages of execution, are:
 
-ifdef::editing-notes[]
-[NOTE]
-.editing-note
-====
-The many places pipeline stage flags are used are not currently listed here.
-====
-endif::editing-notes[]
-
 include::{generated}/api/enums/VkPipelineStageFlagBits2.adoc[]
 
 ifdef::VK_KHR_synchronization2[]
@@ -359,6 +347,10 @@ ifdef::VK_NV_device_generated_commands[]
     This stage also includes reading commands written by
     flink:vkCmdPreprocessGeneratedCommandsNV.
 endif::VK_NV_device_generated_commands[]
+ifdef::VK_EXT_device_generated_commands[]
+    This stage also includes reading commands written by
+    flink:vkCmdPreprocessGeneratedCommandsEXT.
+endif::VK_EXT_device_generated_commands[]
 ifdef::VK_NV_mesh_shader,VK_EXT_mesh_shader[]
   * ename:VK_PIPELINE_STAGE_2_TASK_SHADER_BIT_EXT specifies the task shader
     stage.
@@ -459,6 +451,11 @@ ifdef::VK_NV_device_generated_commands[]
     of the pipeline where device-side generation of commands via
     flink:vkCmdPreprocessGeneratedCommandsNV is handled.
 endif::VK_NV_device_generated_commands[]
+ifdef::VK_EXT_device_generated_commands[]
+  * ename:VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_EXT specifies the stage
+    of the pipeline where device-side generation of commands via
+    flink:vkCmdPreprocessGeneratedCommandsEXT is handled.
+endif::VK_EXT_device_generated_commands[]
 ifdef::VK_KHR_fragment_shading_rate,VK_NV_shading_rate_image[]
   * ename:VK_PIPELINE_STAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR
     specifies the stage of the pipeline where the
@@ -518,7 +515,6 @@ endif::VK_HUAWEI_cluster_culling_shader[]
     to ename:VK_PIPELINE_STAGE_2_NONE in the second scope.
 
 [NOTE]
-.Note
 ====
 The etext:TOP and etext:BOTTOM pipeline stages are deprecated, and
 applications should prefer ename:VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT and
@@ -526,7 +522,6 @@ ename:VK_PIPELINE_STAGE_2_NONE.
 ====
 
 [NOTE]
-.Note
 ====
 The tname:VkPipelineStageFlags2 bitmask goes beyond the 31 individual bit
 flags allowable within a C99 enum, which is how
@@ -572,6 +567,10 @@ ifdef::VK_NV_device_generated_commands[]
     This stage also includes reading commands written by
     flink:vkCmdExecuteGeneratedCommandsNV.
 endif::VK_NV_device_generated_commands[]
+ifdef::VK_EXT_device_generated_commands[]
+    This stage also includes reading commands written by
+    flink:vkCmdExecuteGeneratedCommandsEXT.
+endif::VK_EXT_device_generated_commands[]
 ifdef::VK_NV_mesh_shader,VK_EXT_mesh_shader[]
   * ename:VK_PIPELINE_STAGE_TASK_SHADER_BIT_EXT specifies the task shader
     stage.
@@ -698,6 +697,11 @@ ifdef::VK_NV_device_generated_commands[]
     the pipeline where device-side preprocessing for generated commands via
     flink:vkCmdPreprocessGeneratedCommandsNV is handled.
 endif::VK_NV_device_generated_commands[]
+ifdef::VK_EXT_device_generated_commands[]
+  * ename:VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT specifies the stage
+    of the pipeline where device-side preprocessing for generated commands
+    via flink:vkCmdPreprocessGeneratedCommandsEXT is handled.
+endif::VK_EXT_device_generated_commands[]
 ifdef::VK_KHR_fragment_shading_rate,VK_NV_shading_rate_image[]
   * ename:VK_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR
     specifies the stage of the pipeline where the
@@ -753,11 +757,11 @@ includes memory accesses performed by pipeline stages explicitly specified
 in the destination stage mask.
 
 [NOTE]
-.Note
 ====
 Note that <<synchronization-dependencies-access-scopes, access scopes>> do
 not interact with the logically earlier or later stages for either scope -
-only the stages the app specifies are considered part of each access scope.
+only the stages the application specifies are considered part of each access
+scope.
 ====
 
 Certain pipeline stages are only available on queues that support a
@@ -772,7 +776,7 @@ For further details on queue capabilities see
 and <<devsandqueues-queues,Queues>>.
 
 [[synchronization-pipeline-stages-supported]]
-.Supported pipeline stage flags
+.Supported Pipeline Stage Flags
 [cols="70%,30%",options="header"]
 |====
 |Pipeline stage flag                                          | Required queue capability flag
@@ -795,7 +799,6 @@ synchronization command also implies that any logically later stages are
 included in *Scope~2nd~* for that command.
 
 [NOTE]
-.Note
 ====
 Implementations may: not support synchronization at every pipeline stage for
 every synchronization operation.
@@ -876,12 +879,12 @@ guaranteed:
 
 include::{generated}/sync/pipelineOrders/host.adoc[]
 
-ifdef::VK_NV_device_generated_commands[]
+ifdef::VK_NV_device_generated_commands,VK_EXT_device_generated_commands[]
 For the command preprocessing pipeline, the following stages occur in this
 order:
 
 include::{generated}/sync/pipelineOrders/command_preprocessing.adoc[]
-endif::VK_NV_device_generated_commands[]
+endif::VK_NV_device_generated_commands,VK_EXT_device_generated_commands[]
 
 ifdef::VK_NV_ray_tracing,VK_KHR_acceleration_structure[]
 For acceleration structure build operations, only one pipeline stage occurs,
@@ -919,6 +922,7 @@ For the video encode pipeline, the following stages occur in this order:
 
 include::{generated}/sync/pipelineOrders/video_encode.adoc[]
 endif::VK_KHR_video_encode_queue[]
+
 
 [[synchronization-access-types]]
 === Access Types
@@ -970,7 +974,7 @@ ifdef::VK_KHR_ray_tracing_pipeline[trace,]
     pipeline stage.
   * ename:VK_ACCESS_2_INDEX_READ_BIT specifies read access to an index
     buffer as part of an indexed drawing command, bound by
-ifdef::VK_KHR_maintenance5[flink:vkCmdBindIndexBuffer2KHR and]
+ifdef::VK_VERSION_1_4,VK_KHR_maintenance5[flink:vkCmdBindIndexBuffer2 and]
     flink:vkCmdBindIndexBuffer.
     Such access occurs in the ename:VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT
     pipeline stage.
@@ -1135,6 +1139,16 @@ ifdef::VK_NV_device_generated_commands[]
     Such access occurs in the
     ename:VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_NV pipeline stage.
 endif::VK_NV_device_generated_commands[]
+ifdef::VK_EXT_device_generated_commands[]
+  * ename:VK_ACCESS_2_COMMAND_PREPROCESS_READ_BIT_EXT specifies reads from
+    buffer inputs to flink:vkCmdPreprocessGeneratedCommandsEXT.
+    Such access occurs in the
+    ename:VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_EXT pipeline stage.
+  * ename:VK_ACCESS_2_COMMAND_PREPROCESS_WRITE_BIT_EXT specifies writes to
+    the target command buffer preprocess outputs.
+    Such access occurs in the
+    ename:VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_EXT pipeline stage.
+endif::VK_EXT_device_generated_commands[]
 ifdef::VK_EXT_blend_operation_advanced[]
   * ename:VK_ACCESS_2_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT specifies
     read access to <<renderpass, color attachments>>, including
@@ -1144,7 +1158,7 @@ ifdef::VK_EXT_blend_operation_advanced[]
 endif::VK_EXT_blend_operation_advanced[]
 ifdef::VK_HUAWEI_invocation_mask[]
   * ename:VK_ACCESS_2_INVOCATION_MASK_READ_BIT_HUAWEI specifies read access
-    to a invocation mask image in the
+    to an invocation mask image in the
     ename:VK_PIPELINE_STAGE_2_INVOCATION_MASK_BIT_HUAWEI pipeline stage.
 endif::VK_HUAWEI_invocation_mask[]
 ifdef::VK_KHR_acceleration_structure,VK_NV_ray_tracing[]
@@ -1248,7 +1262,6 @@ ifdef::VK_EXT_opacity_micromap[]
 endif::VK_EXT_opacity_micromap[]
 
 [NOTE]
-.Note
 ====
 In situations where an application wishes to select all access types for a
 given set of pipeline stages, ename:VK_ACCESS_2_MEMORY_READ_BIT or
@@ -1258,7 +1271,6 @@ access type.
 ====
 
 [NOTE]
-.Note
 ====
 The tname:VkAccessFlags2 bitmask goes beyond the 31 individual bit flags
 allowable within a C99 enum, which is how elink:VkAccessFlagBits is defined.
@@ -1312,7 +1324,7 @@ ifdef::VK_KHR_ray_tracing_pipeline[trace,]
     pipeline stage.
   * ename:VK_ACCESS_INDEX_READ_BIT specifies read access to an index buffer
     as part of an indexed drawing command, bound by
-ifdef::VK_KHR_maintenance5[flink:vkCmdBindIndexBuffer2KHR and]
+ifdef::VK_VERSION_1_4,VK_KHR_maintenance5[flink:vkCmdBindIndexBuffer2 and]
     flink:vkCmdBindIndexBuffer.
     Such access occurs in the ename:VK_PIPELINE_STAGE_VERTEX_INPUT_BIT
     pipeline stage.
@@ -1467,6 +1479,17 @@ ifdef::VK_NV_device_generated_commands[]
     Such access occurs in the
     ename:VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_NV pipeline stage.
 endif::VK_NV_device_generated_commands[]
+ifdef::VK_EXT_device_generated_commands[]
+  * ename:VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_EXT specifies reads from
+    buffer inputs to flink:vkCmdPreprocessGeneratedCommandsEXT.
+    Such access occurs in the
+    ename:VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT pipeline stage.
+  * ename:VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT specifies writes to the
+    target command buffer preprocess outputs in
+    flink:vkCmdPreprocessGeneratedCommandsEXT.
+    Such access occurs in the
+    ename:VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT pipeline stage.
+endif::VK_EXT_device_generated_commands[]
 ifdef::VK_EXT_blend_operation_advanced[]
   * ename:VK_ACCESS_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT specifies read
     access to <<renderpass, color attachments>>, including
@@ -1477,7 +1500,7 @@ endif::VK_EXT_blend_operation_advanced[]
 ifdef::VK_KHR_acceleration_structure,VK_NV_ray_tracing[]
 ifdef::VK_HUAWEI_invocation_mask[]
   * ename:VK_ACCESS_2_INVOCATION_MASK_READ_BIT_HUAWEI specifies read access
-    to a invocation mask image in the
+    to an invocation mask image in the
     ename:VK_PIPELINE_STAGE_2_INVOCATION_MASK_BIT_HUAWEI pipeline stage.
 endif::VK_HUAWEI_invocation_mask[]
   * ename:VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR specifies read
@@ -1535,7 +1558,7 @@ The following table lists, for each access flag, which pipeline stages can:
 perform that type of access.
 
 [[synchronization-access-types-supported]]
-.Supported access types
+.Supported Access Types
 [cols="50,50",options="header"]
 |====
 |Access flag                                                  | Supported pipeline stages
@@ -1571,7 +1594,6 @@ Similarly, writes made available to the host domain are automatically made
 visible to the host.
 
 [NOTE]
-.Note
 ====
 <<devsandqueues-submission, Queue submission commands>> automatically
 perform a <<synchronization-submission-host-writes,domain operation from
@@ -1668,7 +1690,6 @@ dependency.
 endif::VK_EXT_rasterization_order_attachment_access,VK_ARM_rasterization_order_attachment_access[]
 
 [NOTE]
-.Note
 ====
 Since fragment shader invocations are not specified to run in any particular
 groupings, the size of a framebuffer region is implementation-dependent, not
@@ -1677,7 +1698,6 @@ specified above.
 ====
 
 [NOTE]
-.Note
 ====
 Practically, the pixel vs. sample granularity dependency means that if an
 input attachment has a different number of samples than the pipeline's
@@ -1709,7 +1729,6 @@ dependencies between framebuffer-space and non-framebuffer-space pipeline
 stages.
 
 [NOTE]
-.Note
 ====
 Framebuffer-local dependencies are more efficient for most architectures;
 particularly tile-based architectures - which can keep framebuffer-regions
@@ -1822,7 +1841,6 @@ endif::VK_VERSION_1_3,VK_KHR_synchronization2[]
     command buffer on the host, from first to last.
 
 [NOTE]
-.Note
 ====
 When using a <<renderpass-objects,render pass object>> with multiple
 subpasses, commands in different subpasses have no defined submission order
@@ -1890,7 +1908,6 @@ flink:vkSignalSemaphore command happens-after the flink:vkSignalSemaphore
 command is invoked and happens-before the command returns.
 
 [NOTE]
-.Note
 ====
 When signaling timeline semaphores, it is the responsibility of the
 application to ensure that they are ordered such that the semaphore value is
@@ -1966,6 +1983,7 @@ include::{generated}/api/handles/VkFence.adoc[]
 :refpage: vkCreateFence
 :objectnameplural: fences
 :objectnamecamelcase: fence
+:objectnamestruct: VkDeviceObjectReservationCreateInfo
 :objectcount: 1
 
 To create a fence, call:
@@ -2063,12 +2081,15 @@ endif::VK_KHR_external_fence[]
 ifdef::VK_NV_external_sci_sync,VK_NV_external_sci_sync2[]
   * [[VUID-VkExportFenceCreateInfo-pNext-05107]]
     If the pname:pNext chain includes a slink:VkExportFenceSciSyncInfoNV
-    structure,
-    slink:VkPhysicalDeviceExternalSciSyncFeaturesNV::pname:sciSyncFence and
-    slink:VkPhysicalDeviceExternalSciSyncFeaturesNV::pname:sciSyncExport, or
-    slink:VkPhysicalDeviceExternalSciSync2FeaturesNV::pname:sciSyncFence and
-    slink:VkPhysicalDeviceExternalSciSync2FeaturesNV::pname:sciSyncExport
-    must: be enabled
+    structure, the <<features-sciSyncFence,
+    slink:VkPhysicalDeviceExternalSciSyncFeaturesNV::pname:sciSyncFence>>
+    and <<features-sciSyncExport,
+    slink:VkPhysicalDeviceExternalSciSyncFeaturesNV::pname:sciSyncExport>>
+    features, or the <<features-sciSyncFence2,
+    slink:VkPhysicalDeviceExternalSciSync2FeaturesNV::pname:sciSyncFence>>
+    and <<features-sciSyncExport,
+    slink:VkPhysicalDeviceExternalSciSync2FeaturesNV::pname:sciSyncExport>>
+    features, must: be enabled
 endif::VK_NV_external_sci_sync,VK_NV_external_sci_sync2[]
 ****
 
@@ -2102,8 +2123,8 @@ chain, this structure is ignored.
 If slink:VkExportFenceCreateInfo is included in the pname:pNext chain of
 slink:VkFenceCreateInfo with a Windows pname:handleType, but either
 sname:VkExportFenceWin32HandleInfoKHR is not included in the pname:pNext
-chain, or it is included but pname:pAttributes is set to `NULL`, default
-security descriptor values will be used, and child processes created by the
+chain, or it is included but pname:pAttributes is `NULL`, default security
+descriptor values will be used, and child processes created by the
 application will not inherit the handle, as described in the MSDN
 documentation for "`Synchronization Object Security and Access Rights`"^1^.
 Further, if the structure is not present, the access rights will be
@@ -2226,7 +2247,6 @@ To avoid leaking resources, the application must: release ownership of the
 file descriptor when it is no longer needed.
 
 [NOTE]
-.Note
 ====
 Ownership can be released in many ways.
 For example, the application can call code:close() on the file descriptor,
@@ -2317,7 +2337,7 @@ chain, this structure is ignored.
 If the pname:pNext chain of slink:VkFenceCreateInfo includes a
 slink:VkExportFenceCreateInfo structure with a NvSciSync pname:handleType,
 but either slink:VkExportFenceSciSyncInfoNV is not included in the
-pname:pNext chain, or it is included but pname:pAttributes is set to `NULL`,
+pname:pNext chain, or it is included but pname:pAttributes is `NULL`,
 flink:vkCreateFence will return ename:VK_ERROR_INITIALIZATION_FAILED.
 
 The pname:pAttributes must: be a reconciled sname:NvSciSyncAttrList.
@@ -2713,11 +2733,10 @@ the timeout has expired, fname:vkWaitForFences must: return in finite time
 with either ename:VK_SUCCESS or ename:VK_ERROR_DEVICE_LOST.
 
 [NOTE]
-.Note
 ====
 While we guarantee that fname:vkWaitForFences must: return in finite time,
 no guarantees are made that it returns immediately upon device loss.
-However, the client can reasonably expect that the delay will be on the
+However, the application can reasonably expect that the delay will be on the
 order of seconds and that calling fname:vkWaitForFences will not result in a
 permanently (or seemingly permanently) dead process.
 ====
@@ -2740,7 +2759,6 @@ includes the host operations of flink:vkWaitForFences or
 flink:vkGetFenceStatus indicating that the fence has become signaled.
 
 [NOTE]
-.Note
 ====
 Signaling a fence and waiting on the host does not guarantee that the
 results of memory accesses will be visible to the host, as the access scope
@@ -2768,7 +2786,6 @@ If the import is temporary, the fence will be _restored_ to its permanent
 state the next time that fence is passed to flink:vkResetFences.
 
 [NOTE]
-.Note
 ====
 Restoring a fence to its prior permanent payload is a distinct operation
 from resetting a fence payload.
@@ -2813,7 +2830,6 @@ permanent payload will be restored.
 
 ifdef::VK_KHR_external_fence_win32,VK_KHR_external_fence_fd[]
 [NOTE]
-.Note
 ====
 The
 ifdef::VK_KHR_external_fence_win32+VK_KHR_external_fence_fd[tables]
@@ -2870,7 +2886,6 @@ In particular:
     effective.
 
 [NOTE]
-.Note
 ====
 These rules allow processes to synchronize access to shared memory without
 trusting each other.
@@ -2895,7 +2910,6 @@ Passing a fence to flink:vkAcquireNextImageKHR is equivalent to temporarily
 importing a fence payload to that fence.
 
 [NOTE]
-.Note
 ====
 Because the exportable handle types of an imported fence correspond to its
 current imported payload, and flink:vkAcquireNextImageKHR behaves the same
@@ -3097,7 +3111,6 @@ temporarily imported payload as if a valid file descriptor had been
 provided.
 
 [NOTE]
-.Note
 ====
 This special behavior for importing an invalid sync file descriptor allows
 easier interoperability with other system APIs which use the convention that
@@ -3316,6 +3329,7 @@ include::{generated}/api/handles/VkSemaphore.adoc[]
 :refpage: vkCreateSemaphore
 :objectnameplural: semaphores
 :objectnamecamelcase: semaphore
+:objectnamestruct: VkDeviceObjectReservationCreateInfo
 :objectcount: 1
 
 To create a semaphore, call:
@@ -3445,7 +3459,7 @@ endif::VK_NV_external_sci_sync2[]
 ifdef::VK_NV_external_sci_sync[]
   * [[VUID-VkSemaphoreTypeCreateInfo-pNext-05119]]
     If the pname:pNext chain includes slink:VkExportSemaphoreSciSyncInfoNV,
-    pname:initialValue must: be zero.
+    pname:initialValue must: be zero
 endif::VK_NV_external_sci_sync[]
 ****
 
@@ -3512,10 +3526,11 @@ endif::VK_KHR_external_semaphore[]
 ifdef::VK_NV_external_sci_sync[]
   * [[VUID-VkExportSemaphoreCreateInfo-pNext-05120]]
     If the pname:pNext chain includes a sname:VkExportSemaphoreSciSyncInfoNV
-    structure,
-    slink:VkPhysicalDeviceExternalSciSyncFeaturesNV::pname:sciSyncSemapore
-    and slink:VkPhysicalDeviceExternalSciSyncFeaturesNV::pname:sciSyncExport
-    must: be enabled
+    structure, the <<features-sciSyncSemapore,
+    slink:VkPhysicalDeviceExternalSciSyncFeaturesNV::pname:sciSyncSemapore>>
+    and <<features-sciSyncExport,
+    slink:VkPhysicalDeviceExternalSciSyncFeaturesNV::pname:sciSyncExport>>
+    features must: be enabled
 endif::VK_NV_external_sci_sync[]
 ****
 
@@ -3549,8 +3564,8 @@ chain, this structure is ignored.
 If slink:VkExportSemaphoreCreateInfo is included in the pname:pNext chain of
 slink:VkSemaphoreCreateInfo with a Windows pname:handleType, but either
 sname:VkExportSemaphoreWin32HandleInfoKHR is not included in the pname:pNext
-chain, or it is included but pname:pAttributes is set to `NULL`, default
-security descriptor values will be used, and child processes created by the
+chain, or it is included but pname:pAttributes is `NULL`, default security
+descriptor values will be used, and child processes created by the
 application will not inherit the handle, as described in the MSDN
 documentation for "`Synchronization Object Security and Access Rights`"^1^.
 Further, if the structure is not present, the access rights used depend on
@@ -3709,7 +3724,6 @@ To avoid leaking resources, the application must: release ownership of the
 file descriptor when it is no longer needed.
 
 [NOTE]
-.Note
 ====
 Ownership can be released in many ways.
 For example, the application can call code:close() on the file descriptor,
@@ -3812,7 +3826,6 @@ To avoid leaking resources, the application must: release ownership of the
 Zircon event handle when it is no longer needed.
 
 [NOTE]
-.Note
 ====
 Ownership can be released in many ways.
 For example, the application can call zx_handle_close() on the file
@@ -3901,7 +3914,7 @@ If the pname:pNext chain of slink:VkSemaphoreCreateInfo includes a
 slink:VkExportSemaphoreCreateInfo structure with a NvSciSync
 pname:handleType, but either slink:VkExportSemaphoreSciSyncInfoNV is not
 included in the pname:pNext chain, or it is included but pname:pAttributes
-is set to `NULL`, flink:vkCreateSemaphore will return
+is `NULL`, flink:vkCreateSemaphore will return
 ename:VK_ERROR_INITIALIZATION_FAILED.
 
 The pname:pAttributes must: be a reconciled sname:NvSciSyncAttrList.
@@ -4091,6 +4104,10 @@ slink:VkSemaphoreCreateInfo.
 [open,refpage='vkCreateSemaphoreSciSyncPoolNV',desc='Create a slink:VkSemaphoreSciSyncPoolNV object',type='protos']
 --
 :refpage: vkCreateSemaphoreSciSyncPoolNV
+:objectnameplural: semaphore pools
+:objectnamecamelcase: semaphoreSciSyncPool
+:objectnamestruct: VkDeviceSemaphoreSciSyncPoolReservationCreateInfoNV
+:objectcount: 1
 
 To create a sname:VkSemaphoreSciSyncPoolNV, call:
 
@@ -4109,18 +4126,11 @@ include::{chapters}/commonvalidity/no_dynamic_allocations_common.adoc[]
 
 .Valid Usage
 ****
-ifdef::VKSC_VERSION_1_0[]
-  * [[VUID-vkCreateSemaphoreSciSyncPoolNV-device-05150]]
-    The number of semaphore pools currently allocated from pname:device plus
-    1 must: be less than or equal to the total number of semaphore pools
-    requested via
-    slink:VkDeviceSemaphoreSciSyncPoolReservationCreateInfoNV::pname:semaphoreSciSyncPoolRequestCount
-    specified when pname:device was created
-endif::VKSC_VERSION_1_0[]
   * [[VUID-vkCreateSemaphoreSciSyncPoolNV-sciSyncSemaphore2-05151]]
     The <<features-sciSyncSemaphore2,
     slink:VkPhysicalDeviceExternalSciSync2FeaturesNV::pname:sciSyncSemaphore2>>
     feature must: be enabled
+include::{chapters}/commonvalidity/memory_reservation_request_count_common.adoc[]
 ****
 
 include::{generated}/validity/protos/vkCreateSemaphoreSciSyncPoolNV.adoc[]
@@ -4277,9 +4287,46 @@ signaled with respect to the counter value waited on as specified in
 slink:VkTimelineSemaphoreSubmitInfo.
 endif::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
 
-The first synchronization scope includes all semaphore signal operations
-that operate on semaphores waited on in the same batch, and that
-happen-before the wait completes.
+The first <<synchronization-dependencies-scopes, synchronization scope>>
+includes one <<synchronization-semaphores-signaling,semaphore signal
+operation>> for each semaphore waited on by this batch.
+The specific signal operation waited on for each semaphore must: meet the
+following criteria:
+
+  * {empty}
+ifdef::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
+    for binary semaphores,
+endif::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
+    the signal operation is either earlier in
+    <<synchronization-submission-order,submission order>> on the same queue,
+    or is submitted by a command whose host operation happens-before this
+    batch is submitted on the host
+  * {empty}
+ifdef::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
+    for binary semaphores,
+endif::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
+    no wait operation exists that happens-after the signal operation and
+    happens-before this wait operation
+  * the signal operation is not guaranteed to happen-after the semaphore
+    wait operation in this batch
+ifdef::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
+  * for timeline semaphores, the signal value is greater than or equal to
+    the wait value
+endif::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
+
+If multiple semaphore signal operations meet these criteria, any of those
+operations may: be included in the first
+<<synchronization-dependencies-scopes, synchronization scope>>.
+When waiting on a binary semaphore, applications must: ensure that exactly
+one semaphore signal operation meets these criteria.
+ifdef::VK_KHR_timelines_semaphore[]
+When waiting on a timeline semaphore, the semaphore wait operation will not
+complete until at least one semaphore signal operation meets these criteria.
+Multiple timeline semaphore signal operations can: meet these criteria, but
+applications must: ensure that other synchronization dependencies exist to
+prevent any data races.
+endif::VK_KHR_timelines_semaphore[]
+
 
 The second <<synchronization-dependencies-scopes, synchronization scope>>
 includes every command submitted in the same batch.
@@ -4311,14 +4358,13 @@ the execution dependency, and happens-before the second set of operations in
 the execution dependency.
 
 [NOTE]
-.Note
 ====
 Unlike
 ifdef::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
 timeline semaphores,
 endif::VK_VERSION_1_2,VK_KHR_timeline_semaphore[]
-fences or events, the act of waiting for a binary semaphore also unsignals
-that semaphore.
+fences or events, waiting for a binary semaphore also unsignals that
+semaphore when the wait completes.
 Applications must: ensure that between two such wait operations, the
 semaphore is signaled again, with execution dependencies used to ensure
 these occur in order.
@@ -4327,7 +4373,6 @@ Binary semaphore waits and signals should thus occur in discrete 1:1 pairs.
 
 ifdef::VK_KHR_swapchain[]
 [NOTE]
-.Note
 ====
 A common scenario for using pname:pWaitDstStageMask with values other than
 ename:VK_PIPELINE_STAGE_ALL_COMMANDS_BIT is when synchronizing a window
@@ -4432,7 +4477,6 @@ endif::VK_KHR_timeline_semaphore[]
     counter value of the semaphore is returned.
 
 [NOTE]
-.Note
 ====
 If a <<devsandqueues-submission, queue submission>> command is pending
 execution, then the value returned by this command may: immediately be out
@@ -4537,7 +4581,7 @@ ifdef::VK_NV_external_sci_sync,VK_NV_external_sci_sync2[]
     If any of the semaphores in pname:pSemaphores have stext:NvSciSyncObj as
     payload, application must: calculate the corresponding timeline
     semaphore values in pname:pValues by calling
-    <<NvSciSync2-extension-page, NvSciSync APIs>>.
+    <<NvSciSync2-extension-page, NvSciSync APIs>>
 endif::VK_NV_external_sci_sync,VK_NV_external_sci_sync2[]
 ****
 
@@ -4659,7 +4703,7 @@ ifdef::VK_NV_external_sci_sync,VK_NV_external_sci_sync2[]
   * [[VUID-VkSemaphoreSignalInfo-semaphores-05125]]
     If pname:semaphores has stext:NvSciSyncObj as payload, application must:
     calculate the corresponding timeline semaphore value in pname:value by
-    calling <<NvSciSync2-extension-page, NvSciSync APIs>>.
+    calling <<NvSciSync2-extension-page, NvSciSync APIs>>
 endif::VK_NV_external_sci_sync,VK_NV_external_sci_sync2[]
 ****
 
@@ -4719,7 +4763,6 @@ prior permanent payload will be restored.
 
 ifdef::VK_KHR_external_semaphore_win32,VK_KHR_external_semaphore_fd,VK_FUCHSIA_external_semaphore[]
 [NOTE]
-.Note
 ====
 The permanence and transference of handle types can be found in:
 
@@ -4773,7 +4816,6 @@ to one or more of the following:
     import operation to again have a well-defined state.
 
 [NOTE]
-.Note
 ====
 These rules allow processes to synchronize access to shared memory without
 trusting each other.
@@ -4798,7 +4840,6 @@ Passing a semaphore to flink:vkAcquireNextImageKHR is equivalent to
 temporarily importing a semaphore payload to that semaphore.
 
 [NOTE]
-.Note
 ====
 Because the exportable handle types of an imported semaphore correspond to
 its current imported payload, and flink:vkAcquireNextImageKHR behaves the
@@ -4832,7 +4873,6 @@ was created with, the implementation may: fail the semaphore payload import
 operation with the error code ename:VK_ERROR_INVALID_EXTERNAL_HANDLE.
 
 [NOTE]
-.Note
 ====
 As the introduction of the external semaphore handle type
 ename:VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT predates that of
@@ -5061,7 +5101,6 @@ temporarily imported payload as if a valid file descriptor had been
 provided.
 
 [NOTE]
-.Note
 ====
 This special behavior for importing an invalid sync file descriptor allows
 easier interoperability with other system APIs which use the convention that
@@ -5315,6 +5354,7 @@ include::{generated}/api/handles/VkEvent.adoc[]
 :refpage: vkCreateEvent
 :objectnameplural: events
 :objectnamecamelcase: event
+:objectnamestruct: VkDeviceObjectReservationCreateInfo
 :objectcount: 1
 
 To create an event, call:
@@ -5335,6 +5375,15 @@ include::{chapters}/commonvalidity/no_dynamic_allocations_common.adoc[]
 
 .Valid Usage
 ****
+  * [[VUID-vkCreateEvent-device-09672]]
+    pname:device must: support at least one queue family with one of the
+ifdef::VK_KHR_video_encode_queue[]
+    ename:VK_QUEUE_VIDEO_ENCODE_BIT_KHR,
+endif::VK_KHR_video_encode_queue[]
+ifdef::VK_KHR_video_decode_queue[]
+    ename:VK_QUEUE_VIDEO_DECODE_BIT_KHR,
+endif::VK_KHR_video_decode_queue[]
+    ename:VK_QUEUE_COMPUTE_BIT, or ename:VK_QUEUE_GRAPHICS_BIT capabilities
 ifdef::VK_KHR_portability_subset[]
   * [[VUID-vkCreateEvent-events-04468]]
     If the `apiext:VK_KHR_portability_subset` extension is enabled, and
@@ -5386,7 +5435,6 @@ endif::VK_VERSION_1_3,VK_KHR_synchronization2[]
 
 ifndef::VK_VERSION_1_3,VK_KHR_synchronization2[]
 [NOTE]
-.Note
 ====
 All bits for this type are defined by extensions, and none of those
 extensions are enabled in this build of the specification.
@@ -5497,7 +5545,6 @@ executed, then flink:vkSetEvent has no effect, and no event signal operation
 occurs.
 
 [NOTE]
-.Note
 ====
 If a command buffer is waiting for an event to be signaled from the host,
 the application must signal the event before submitting the command buffer,
@@ -5619,7 +5666,6 @@ flink:vkCmdWaitEvents must: not be used to wait on the result of a signal
 operation defined by fname:vkCmdSetEvent2.
 
 [NOTE]
-.Note
 ====
 The extra information provided by flink:vkCmdSetEvent2 compared to
 flink:vkCmdSetEvent allows implementations to more efficiently schedule the
@@ -5985,7 +6031,6 @@ are applied to operations that occurred later in
 fname:vkCmdWaitEvents2.
 
 [NOTE]
-.Note
 ====
 flink:vkCmdWaitEvents2 is used with flink:vkCmdSetEvent2 to define a memory
 dependency between two sets of action commands, roughly in the same way as
@@ -5994,7 +6039,6 @@ two may: execute unhindered.
 ====
 
 [NOTE]
-.Note
 ====
 Applications should be careful to avoid race conditions when using events.
 There is no direct ordering guarantee between fname:vkCmdSetEvent2 and
@@ -6036,10 +6080,9 @@ condition.
   * [[VUID-vkCmdWaitEvents2-srcStageMask-03842]]
     The pname:srcStageMask member of any element of the
     pname:pMemoryBarriers, pname:pBufferMemoryBarriers, or
-    pname:pImageMemoryBarriers members of pname:pDependencyInfos must:
-    either include only pipeline stages valid for the queue family that was
-    used to create the command pool that pname:commandBuffer was allocated
-    from
+    pname:pImageMemoryBarriers members of pname:pDependencyInfos must: only
+    include pipeline stages valid for the queue family that was used to
+    create the command pool that pname:commandBuffer was allocated from
   * [[VUID-vkCmdWaitEvents2-dstStageMask-03843]]
     The pname:dstStageMask member of any element of the
     pname:pMemoryBarriers, pname:pBufferMemoryBarriers, or
@@ -6102,7 +6145,6 @@ fname:vkCmdWaitEvents defines the first access scope for each event signal
 operation in addition to its own access scopes.
 
 [NOTE]
-.Note
 ====
 Since flink:vkCmdSetEvent does not have any dependency information beyond a
 stage mask, implementations do not have the same opportunity to perform
@@ -6164,7 +6206,6 @@ no accesses.
 
 ifndef::VK_VERSION_1_3,VK_KHR_synchronization2[]
 [NOTE]
-.Note
 ====
 flink:vkCmdWaitEvents is used with flink:vkCmdSetEvent to define a memory
 dependency between two sets of action commands, roughly in the same way as
@@ -6177,7 +6218,6 @@ flink:vkCmdWaitEvents.
 ====
 
 [NOTE]
-.Note
 ====
 Applications should be careful to avoid race conditions when using events.
 There is no direct ordering guarantee between flink:vkCmdWaitEvents and
@@ -6295,18 +6335,32 @@ include::{chapters}/commonvalidity/pipeline_barrier_common.adoc[]
   * [[VUID-vkCmdPipelineBarrier2-synchronization2-03848]]
     The <<features-synchronization2, pname:synchronization2>> feature must:
     be enabled
-  * [[VUID-vkCmdPipelineBarrier2-srcStageMask-03849]]
+  * [[VUID-vkCmdPipelineBarrier2-srcStageMask-09673]]
     The pname:srcStageMask member of any element of the
-    pname:pMemoryBarriers, pname:pBufferMemoryBarriers, or
-    pname:pImageMemoryBarriers members of pname:pDependencyInfo must: only
-    include pipeline stages valid for the queue family that was used to
-    create the command pool that pname:commandBuffer was allocated from
-  * [[VUID-vkCmdPipelineBarrier2-dstStageMask-03850]]
+    pname:pMemoryBarriers member of pname:pDependencyInfo must: only include
+    pipeline stages valid for the queue family that was used to create the
+    command pool that pname:commandBuffer was allocated from
+  * [[VUID-vkCmdPipelineBarrier2-dstStageMask-09674]]
     The pname:dstStageMask member of any element of the
-    pname:pMemoryBarriers, pname:pBufferMemoryBarriers, or
-    pname:pImageMemoryBarriers members of pname:pDependencyInfo must: only
-    include pipeline stages valid for the queue family that was used to
-    create the command pool that pname:commandBuffer was allocated from
+    pname:pMemoryBarriers member of pname:pDependencyInfo must: only include
+    pipeline stages valid for the queue family that was used to create the
+    command pool that pname:commandBuffer was allocated from
+  * [[VUID-vkCmdPipelineBarrier2-srcStageMask-09675]]
+    If a buffer or image memory barrier does not specify an
+    <<synchronization-queue-transfers-acquire,acquire operation>>, the
+    respective pname:srcStageMask member of the element of the
+    pname:pBufferMemoryBarriers or pname:pImageMemoryBarriers members of
+    pname:pDependencyInfo must: only include pipeline stages valid for the
+    queue family that was used to create the command pool that
+    pname:commandBuffer was allocated from
+  * [[VUID-vkCmdPipelineBarrier2-dstStageMask-09676]]
+    If a buffer or image memory barrier does not specify an
+    <<synchronization-queue-transfers-release,release operation>>, the
+    respective pname:dstStageMask member of the element of the
+    pname:pBufferMemoryBarriers or pname:pImageMemoryBarriers members of
+    pname:pDependencyInfo must: only include pipeline stages valid for the
+    queue family that was used to create the command pool that
+    pname:commandBuffer was allocated from
 ****
 
 include::{generated}/validity/protos/vkCmdPipelineBarrier2.adoc[]
@@ -6482,6 +6536,7 @@ include::{generated}/api/flags/VkDependencyFlags.adoc[]
 tname:VkDependencyFlags is a bitmask type for setting a mask of zero or more
 elink:VkDependencyFlagBits.
 --
+
 
 [[synchronization-memory-barriers]]
 == Memory Barriers
@@ -6765,7 +6820,6 @@ operation>> is performed where available memory in the device domain is also
 made available to the host domain.
 
 [NOTE]
-.Note
 ====
 When ename:VK_MEMORY_PROPERTY_HOST_COHERENT_BIT is used, available memory in
 host domain is automatically made visible to host domain, and any host write
@@ -6952,7 +7006,6 @@ family ownership transfer operation>>, the layout transition is only
 executed once between the queues.
 
 [NOTE]
-.Note
 ====
 When the old and new layout are equal, the layout values are ignored - data
 is preserved no matter what values are specified, or what layout the image
@@ -7070,7 +7123,6 @@ the specified image subresource range.
 
 ifdef::VK_VERSION_1_3,VK_KHR_synchronization2[]
 [NOTE]
-.Note
 ====
 If the <<features-synchronization2, pname:synchronization2>> feature is
 enabled, when the old and new layout are equal, the layout values are
@@ -7134,35 +7186,49 @@ endif::VK_VERSION_1_1,VK_KHR_external_memory[]
 include::{generated}/validity/structs/VkImageMemoryBarrier.adoc[]
 --
 
-ifdef::VK_EXT_host_image_copy[]
+ifdef::VK_VERSION_1_4,VK_EXT_host_image_copy[]
 To facilitate usage of images whose memory is initialized on the host,
 Vulkan allows image layout transitions to be performed by the host as well,
 albeit supporting limited layouts.
 
-[open,refpage='vkTransitionImageLayoutEXT',desc='Perform an image layout transition on the host',type='protos']
+[open,refpage='vkTransitionImageLayout',desc='Perform an image layout transition on the host',type='protos',alias='vkTransitionImageLayoutEXT']
 --
 To perform an image layout transition on the host, call:
 
+ifdef::VK_VERSION_1_4[]
+include::{generated}/api/protos/vkTransitionImageLayout.adoc[]
+endif::VK_VERSION_1_4[]
+
+ifdef::VK_VERSION_1_4+VK_EXT_host_image_copy[or the equivalent command]
+
+ifdef::VK_EXT_host_image_copy[]
 include::{generated}/api/protos/vkTransitionImageLayoutEXT.adoc[]
+endif::VK_EXT_host_image_copy[]
 
   * pname:device is the device which owns pname:pTransitions[i].pname:image.
   * pname:transitionCount is the number of image layout transitions to
     perform.
   * pname:pTransitions is a pointer to an array of
-    slink:VkHostImageLayoutTransitionInfoEXT structures specifying the image
+    slink:VkHostImageLayoutTransitionInfo structures specifying the image
     and <<resources-image-views, subresource ranges>> within them to
     transition.
 
-include::{generated}/validity/protos/vkTransitionImageLayoutEXT.adoc[]
+include::{generated}/validity/protos/vkTransitionImageLayout.adoc[]
 --
 
-[open,refpage='VkHostImageLayoutTransitionInfoEXT',desc='Structure specifying the parameters of a host-side image layout transition',type='structs']
+[open,refpage='VkHostImageLayoutTransitionInfo',desc='Structure specifying the parameters of a host-side image layout transition',type='structs',alias='VkHostImageLayoutTransitionInfoEXT']
 --
-:refpage: VkHostImageLayoutTransitionInfoEXT
+:refpage: VkHostImageLayoutTransitionInfo
 
-The sname:VkHostImageLayoutTransitionInfoEXT structure is defined as:
+The sname:VkHostImageLayoutTransitionInfo structure is defined as:
+
+include::{generated}/api/structs/VkHostImageLayoutTransitionInfo.adoc[]
+
+ifdef::VK_EXT_host_image_copy[]
+or the equivalent
 
 include::{generated}/api/structs/VkHostImageLayoutTransitionInfoEXT.adoc[]
+endif::VK_EXT_host_image_copy[]
 
   * pname:sType is a elink:VkStructureType value identifying this structure.
   * pname:pNext is `NULL` or a pointer to a structure extending this
@@ -7176,43 +7242,61 @@ include::{generated}/api/structs/VkHostImageLayoutTransitionInfoEXT.adoc[]
     subresource range>> within pname:image that is affected by this layout
     transition.
 
-fname:vkTransitionImageLayoutEXT does not check whether the device memory
+fname:vkTransitionImageLayout does not check whether the device memory
 associated with an image is currently in use before performing the layout
 transition.
 The application must: guarantee that any previously submitted command that
 reads from or writes to this subresource has completed before the host
 performs the layout transition.
+The memory of pname:image is accessed by the host as if <<memory-coherent,
+coherent>>.
 
 [NOTE]
-.Note
 ====
 Image layout transitions performed on the host do not require queue family
 ownership transfers as the physical layout of the image will not vary
 between queue families for the layouts supported by this function.
 ====
 
+[NOTE]
+====
+If the device has written to the image memory, it is not automatically made
+available to the host.
+Before this command can be called, a memory barrier for this image must:
+have been issued on the device with the second
+<<synchronization-dependencies-scopes, synchronization scope>> including
+ename:VK_PIPELINE_STAGE_HOST_BIT and ename:VK_ACCESS_HOST_READ_BIT.
+
+Because queue submissions <<synchronization-submission-host-writes,
+automatically make host memory visible to the device>>, there would not be a
+need for a memory barrier before using the results of this layout transition
+on the device.
+====
+
 .Valid Usage
 ****
-  * [[VUID-VkHostImageLayoutTransitionInfoEXT-image-09055]]
+  * [[VUID-VkHostImageLayoutTransitionInfo-image-09055]]
     pname:image must: have been created with
-    ename:VK_IMAGE_USAGE_HOST_TRANSFER_BIT_EXT
+    ename:VK_IMAGE_USAGE_HOST_TRANSFER_BIT
 include::{chapters}/commonvalidity/image_layout_transition_common.adoc[]
-  * [[VUID-VkHostImageLayoutTransitionInfoEXT-oldLayout-09229]]
+  * [[VUID-VkHostImageLayoutTransitionInfo-oldLayout-09229]]
     pname:oldLayout must: be either ename:VK_IMAGE_LAYOUT_UNDEFINED or the
     current layout of the image subresources as specified in
     pname:subresourceRange
-  * [[VUID-VkHostImageLayoutTransitionInfoEXT-oldLayout-09230]]
+  * [[VUID-VkHostImageLayoutTransitionInfo-oldLayout-09230]]
     If pname:oldLayout is not ename:VK_IMAGE_LAYOUT_UNDEFINED or
     ename:VK_IMAGE_LAYOUT_PREINITIALIZED, it must: be one of the layouts in
-    slink:VkPhysicalDeviceHostImageCopyPropertiesEXT::pname:pCopySrcLayouts
-  * [[VUID-VkHostImageLayoutTransitionInfoEXT-newLayout-09057]]
+    slink:VkPhysicalDeviceHostImageCopyProperties::pname:pCopySrcLayouts
+  * [[VUID-VkHostImageLayoutTransitionInfo-newLayout-09057]]
     pname:newLayout must: be one of the layouts in
-    slink:VkPhysicalDeviceHostImageCopyPropertiesEXT::pname:pCopyDstLayouts
+    slink:VkPhysicalDeviceHostImageCopyProperties::pname:pCopyDstLayouts
 ****
 
-include::{generated}/validity/structs/VkHostImageLayoutTransitionInfoEXT.adoc[]
+include::{generated}/validity/structs/VkHostImageLayoutTransitionInfo.adoc[]
 --
-endif::VK_EXT_host_image_copy[]
+endif::VK_VERSION_1_4,VK_EXT_host_image_copy[]
+
+
 
 [[synchronization-queue-transfers]]
 === Queue Family Ownership Transfer
@@ -7280,7 +7364,6 @@ is defined, the contents of that resource are undefined: for any read
 accesses performed by the second queue family.
 
 [NOTE]
-.Note
 ====
 If an application does not need the contents of a resource to remain valid
 when transferring from one queue family to another, then the ownership
@@ -7289,7 +7372,6 @@ transfer should: be skipped.
 
 ifdef::VK_EXT_queue_family_foreign[]
 [NOTE]
-.Note
 ====
 Applications should expect transfers to/from
 ename:VK_QUEUE_FAMILY_FOREIGN_EXT to be more expensive than transfers
@@ -7313,9 +7395,9 @@ A release operation is defined by executing a
 buffer range) or an <<synchronization-image-memory-barriers, image memory
 barrier>> (for an image subresource range) using a pipeline barrier command,
 on a queue from the source queue family.
-The pname:srcQueueFamilyIndex parameter of the barrier must: be set to the
-source queue family index, and the pname:dstQueueFamilyIndex parameter to
-the destination queue family index.
+The pname:srcQueueFamilyIndex parameter of the barrier must: be the source
+queue family index, and the pname:dstQueueFamilyIndex parameter to the
+destination queue family index.
 pname:dstAccessMask is ignored for such a barrier, such that no visibility
 operation is executed - the value of this mask does not affect the validity
 of the barrier.
@@ -7335,17 +7417,23 @@ barrier>> (for an image subresource range) using a pipeline barrier command,
 on a queue from the destination queue family.
 The buffer range or image subresource range specified in an acquire
 operation must: match exactly that of a previous release operation.
-The pname:srcQueueFamilyIndex parameter of the barrier must: be set to the
-source queue family index, and the pname:dstQueueFamilyIndex parameter to
-the destination queue family index.
+The pname:srcQueueFamilyIndex parameter of the barrier must: be the source
+queue family index, and the pname:dstQueueFamilyIndex parameter to the
+destination queue family index.
 pname:srcAccessMask is ignored for such a barrier, such that no availability
 operation is executed - the value of this mask does not affect the validity
 of the barrier.
-The acquire operation happens-after operations in the first synchronization
-scope of the calling command, and happens-before the visibility operation.
+The acquire operation happens-before the visibility operation.
+pname:srcStageMask is also ignored for such a barrier as defined by
+<<buffer-memory-barrier-ownership-transfer,buffer memory ownership
+transfer>> and <<image-memory-barrier-ownership-transfer,image memory
+ownership transfer>>.
+As the first synchronization scope for an acquire operation is empty there
+is no happens-before dependency.
+Such a dependency can: be introduced by using
+ename:VK_PIPELINE_STAGE_ALL_COMMANDS_BIT.
 
 [NOTE]
-.Note
 ====
 Whilst it is not invalid to provide destination or source access masks for
 memory barriers used for release or acquire operations, respectively, they
@@ -7361,7 +7449,6 @@ These masks should: be set to 0.
 ====
 
 [NOTE]
-.Note
 ====
 Since a release and acquire operation does not synchronize with second and
 first scopes respectively, the ename:VK_PIPELINE_STAGE_ALL_COMMANDS_BIT
@@ -7412,7 +7499,6 @@ bound to the transferred buffer or image subresource range are undefined:
 after a release or acquire operation.
 
 [NOTE]
-.Note
 ====
 Because <<synchronization-events, events>> cannot: be used directly for
 inter-queue synchronization, and because flink:vkCmdSetEvent does not have
@@ -7462,7 +7548,6 @@ This struct is ignored if the memory barrier's pname:srcQueueFamilyIndex is
 not a special queue family reserved for external memory ownership transfers.
 
 [NOTE]
-.Note
 ====
 The method by which the application determines whether memory was modified
 between the _release operation_ and _acquire operation_ is outside the scope
@@ -7496,6 +7581,7 @@ associated with the resource.
 include::{generated}/validity/structs/VkExternalMemoryAcquireUnmodifiedEXT.adoc[]
 --
 endif::VK_EXT_external_memory_acquire_unmodified[]
+
 
 [[synchronization-wait-idle]]
 == Wait Idle Operations
@@ -7555,7 +7641,6 @@ includes execution of flink:vkQueueSubmit on the host and anything that
 happened-before it, as defined by the host memory model.
 
 [NOTE]
-.Note
 ====
 Some systems allow writes that do not directly integrate with the host
 memory model; these have to be synchronized by the application manually.
@@ -7574,6 +7659,7 @@ host memory domain.
 
 The second <<synchronization-dependencies-access-scopes, access scope>>
 includes all memory access performed by the device.
+
 
 ifdef::VK_VERSION_1_1,VK_KHR_device_group[]
 [[synchronization-device-group]]
@@ -7638,7 +7724,6 @@ endif::VK_EXT_calibrated_timestamps[]
     calibrated timestamp values is returned.
 
 [NOTE]
-.Note
 ====
 The maximum deviation may: vary between calls to
 fname:vkGetCalibratedTimestampsKHR even for the same set of time domains due
@@ -7724,7 +7809,6 @@ endif::VK_VERSION_1_3,VK_KHR_synchronization2[]
     clock_gettime API as computed by this example:
 
 [NOTE]
-.Note
 ====
 An implementation supporting
 ifdef::VK_KHR_calibrated_timestamps[`apiext:VK_KHR_calibrated_timestamps`]
